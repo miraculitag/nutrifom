@@ -2,16 +2,26 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./components/Home";
 import { User } from "./components/User";
-import { Food } from "./components/Food";
+import { FoodLog } from "./components/FoodLog";
+import { Weight } from "./components/Weight";
+import { Calc } from "./components/Calc";
+import { Recipes } from "./components/Recipes";
+import { Header } from "./components/Header";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/user" element={<User />} />
-        <Route path="/food" element={<Food />} />
-      </Routes>
-    </Router>
+    <>
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/user" element={<User />} />
+          <Route path="/foodlog" element={<FoodLog />} />
+          <Route path="/weight" element={<Weight />} />
+          <Route path="/calc" element={<Calc />} />
+          <Route path="/recipes" element={<Recipes />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
