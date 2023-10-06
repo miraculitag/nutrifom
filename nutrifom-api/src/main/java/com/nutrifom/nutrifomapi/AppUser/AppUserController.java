@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("nutrifom-api/appUser")
+@RequestMapping("api/appUser")
 public class AppUserController {
     private final AppUserService appUserService;
 

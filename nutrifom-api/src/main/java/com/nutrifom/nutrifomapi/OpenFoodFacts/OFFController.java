@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("nutrifom-api/OFF")
+@RequestMapping("api/OFF")
 public class OFFController {
     @Autowired
     private OFFService offService;
