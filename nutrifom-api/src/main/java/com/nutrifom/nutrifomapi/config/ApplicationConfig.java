@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.security.config;
+package com.nutrifom.nutrifomapi.config;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
 import lombok.RequiredArgsConstructor;

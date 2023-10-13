@@ -2,7 +2,7 @@ package com.nutrifom.nutrifomapi.auth;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
-import com.nutrifom.nutrifomapi.security.JwtService;
+import com.nutrifom.nutrifomapi.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

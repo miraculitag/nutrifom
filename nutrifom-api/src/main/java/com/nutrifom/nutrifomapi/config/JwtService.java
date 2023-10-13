@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.security;
+package com.nutrifom.nutrifomapi.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
