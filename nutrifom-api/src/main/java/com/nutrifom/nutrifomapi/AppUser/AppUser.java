@@ -1,6 +1,7 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nutrifom.nutrifomapi.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +47,10 @@ public class AppUser implements UserDetails {
 
     @Column(name = "Image_Blob_Url")
     private String imageBlobUrl;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "appUser")
+    private List<Token> tokens;
 
     @Override
     @JsonIgnore
