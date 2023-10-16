@@ -48,6 +48,15 @@ public class AppUser implements UserDetails {
     @Column(name = "Image_Blob_Url")
     private String imageBlobUrl;
 
+    @Column(name = "Height")
+    private Integer height;
+
+    @Column(name = "Gender")
+    private Character gender;
+
+    @Column(name = "PAL")
+    private String pal;
+
     @JsonIgnore
     @OneToMany(mappedBy = "appUser")
     private List<Token> tokens;
