@@ -1,12 +1,26 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nutrifom.nutrifomapi.token.Token;
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 @Entity
-public class AppUser {
+public class AppUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,14 +30,17 @@ public class AppUser {
     @Column(name = "Name")
     private String name;
 
+    @Column(name = "Email")
+    private String email;
+
+    @Column(name = "Password")
+    private String password;
+
     @Column(name = "Weight")
     private int weight;
 
     @Column(name = "DOB")
     private LocalDate dob;
-
-    @Transient
-    private Integer age;
 
     @Column(name = "Goal")
     private String goal;
@@ -31,55 +48,49 @@ public class AppUser {
     @Column(name = "Image_Blob_Url")
     private String imageBlobUrl;
 
-    public int getId() {
-        return id;
+    @JsonIgnore
+    @OneToMany(mappedBy = "appUser")
+    private List<Token> tokens;
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return password;
     }
 
-    public String getName() {
-        return name;
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public int getWeight() {
-        return weight;
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public LocalDate getDob() {
-        return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public Integer getAge() {
-        return Period.between(this.dob, LocalDate.now()).getYears();
-    }
-
-    public String getGoal() {
-        return goal;
-    }
-
-    public void setGoal(String goal) {
-        this.goal = goal;
-    }
-
-    public String getImageBlobUrl() {
-        return imageBlobUrl;
-    }
-
-    public void setImageBlobUrl(String imageBlobUrl) {
-        this.imageBlobUrl = imageBlobUrl;
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return true;
     }
 }
