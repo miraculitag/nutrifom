@@ -13,13 +13,14 @@ import java.time.LocalDate;
 public class RegisterRequest {
     private String name;
     private LocalDate dob;
-    private String email;
-    private String password;
-    private int weight;
-    private String goal;
-    private String imageBlobUrl;
-    private String GoogleIDToken;
     private Integer height;
     private Character gender;
     private String pal;
+    private int weight;
+    private String goal;
+    private byte[] image;
+    private String GoogleIDToken;
+    private String email;
+    private String password;
+
 }
