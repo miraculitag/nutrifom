@@ -52,10 +52,10 @@ public class AuthenticationService {
                     .dob(request.getDob())
                     .weight(request.getWeight())
                     .goal(request.getGoal())
-                    .imageBlobUrl(request.getImageBlobUrl())
                     .gender(request.getGender())
                     .height(request.getHeight())
                     .pal(request.getPal())
+                    .image(request.getImage())
                     .build();
             var savedUser = appUserRepository.save(user);
             var jwtToken = jwtService.generateJwt(user);
@@ -71,10 +71,10 @@ public class AuthenticationService {
                     .dob(request.getDob())
                     .weight(request.getWeight())
                     .goal(request.getGoal())
-                    .imageBlobUrl(request.getImageBlobUrl())
                     .gender(request.getGender())
                     .height(request.getHeight())
                     .pal(request.getPal())
+                    .image(request.getImage())
                     .build();
             var savedUser = appUserRepository.save(user);
             var jwtToken = jwtService.generateJwt(user);

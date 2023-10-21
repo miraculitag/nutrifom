@@ -30,12 +30,6 @@ public class AppUser implements UserDetails {
     @Column(name = "Name")
     private String name;
 
-    @Column(name = "Email")
-    private String email;
-
-    @Column(name = "Password")
-    private String password;
-
     @Column(name = "Weight")
     private int weight;
 
@@ -44,9 +38,6 @@ public class AppUser implements UserDetails {
 
     @Column(name = "Goal")
     private String goal;
-
-    @Column(name = "Image_Blob_Url")
-    private String imageBlobUrl;
 
     @Column(name = "Height")
     private Integer height;
@@ -57,9 +48,19 @@ public class AppUser implements UserDetails {
     @Column(name = "PAL")
     private String pal;
 
+    @Column(name = "Image", columnDefinition="VARBINARY(MAX)")
+    private byte[] image;
+
+    @Column(name = "Email")
+    private String email;
+
+    @Column(name = "Password")
+    private String password;
+
     @JsonIgnore
-    @OneToMany(mappedBy = "appUser")
+    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
+
 
     @Override
     @JsonIgnore
