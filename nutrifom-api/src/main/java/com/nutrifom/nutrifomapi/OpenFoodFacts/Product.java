@@ -4,12 +4,13 @@ public class Product {
     private String code;
     private String productName;
 
-    private String productQuantity;
-    private double proteins;
-    private double carbohydrates;
-    private double energyKcal;
-    private double fat;
-    private double saturatedFat;
+    private double product_quantity;
+    private double serving_quantity;
+    private double proteins_serving;
+    private double carbohydrates_serving;
+    private double energy_kcal_serving;
+    private double fat_serving;
+    private double saturated_fat_serving;
 
     public String getCode() {
         return code;
@@ -27,51 +28,59 @@ public class Product {
         this.productName = productName;
     }
 
-    public String getProductQuantity() {
-        return productQuantity;
+    public double getProduct_quantity() {
+        return product_quantity;
     }
 
-    public void setProductQuantity(String productQuantity) {
-        this.productQuantity = productQuantity;
+    public void setProduct_quantity(double productQuantity) {
+        this.product_quantity = productQuantity;
     }
 
-    public double getProteins() {
-        return proteins;
+    public double getServing_quantity() {
+        return serving_quantity;
     }
 
-    public void setProteins(double proteins) {
-        this.proteins = proteins;
+    public void setServing_quantity(double serving_quantity) {
+        this.serving_quantity = serving_quantity;
     }
 
-    public double getCarbohydrates() {
-        return carbohydrates;
+    public double getProteins_serving() {
+        return proteins_serving;
     }
 
-    public void setCarbohydrates(double carbohydrates) {
-        this.carbohydrates = carbohydrates;
+    public void setProteins_serving(double proteins_serving) {
+        this.proteins_serving = proteins_serving;
     }
 
-    public double getEnergyKcal() {
-        return energyKcal;
+    public double getCarbohydrates_serving() {
+        return carbohydrates_serving;
     }
 
-    public void setEnergyKcal(double energyKcal) {
-        this.energyKcal = energyKcal;
+    public void setCarbohydrates_serving(double carbohydrates_serving) {
+        this.carbohydrates_serving = carbohydrates_serving;
     }
 
-    public double getFat() {
-        return fat;
+    public double getEnergy_kcal_serving() {
+        return energy_kcal_serving;
     }
 
-    public void setFat(double fat) {
-        this.fat = fat;
+    public void setEnergy_kcal_serving(double energy_kcal_serving) {
+        this.energy_kcal_serving = energy_kcal_serving;
     }
 
-    public double getSaturatedFat() {
-        return saturatedFat;
+    public double getFat_serving() {
+        return fat_serving;
     }
 
-    public void setSaturatedFat(double saturatedFat) {
-        this.saturatedFat = saturatedFat;
+    public void setFat_serving(double fat_serving) {
+        this.fat_serving = fat_serving;
+    }
+
+    public double getSaturated_fat_serving() {
+        return saturated_fat_serving;
+    }
+
+    public void setSaturated_fat_serving(double saturated_fat_serving) {
+        this.saturated_fat_serving = saturated_fat_serving;
     }
 }
