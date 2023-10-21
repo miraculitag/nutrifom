@@ -5,11 +5,13 @@ import {
   Button,
   IconButton,
   Toolbar,
+  useTheme,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 
 export const Header = (testParams: any) => {
+  const theme = useTheme();
   const navigate = useNavigate();
   const userProfilePicture = ""; //tbd
 
@@ -32,8 +34,7 @@ export const Header = (testParams: any) => {
       >
         <Avatar src={userProfilePicture} />
       </IconButton>
-
-      <AppBar sx={{ position: "static", marginBottom: "1%" }}>
+      <AppBar sx={{ position: "static", marginBottom: "2%" }}>
         <Toolbar
           sx={{
             backgroundColor: "lightgrey",
