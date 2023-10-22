@@ -31,11 +31,14 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "api/auth/**", "swagger-ui/**", "v3/**").permitAll();
-                    auth.requestMatchers(GET,"api/auth/**").permitAll();
-                    auth.requestMatchers(POST,"api/auth/**").permitAll();
-                    auth.requestMatchers(PUT,"api/auth/**").permitAll();
-                    auth.requestMatchers(DELETE,"api/auth/**").permitAll();
+                    auth.requestMatchers(
+                            "/",
+                            "/api/auth/**",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html")
+                    .permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {
