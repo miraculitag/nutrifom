@@ -24,6 +24,16 @@ public class WeightTrackerController {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @GetMapping("/history")
+    public ResponseEntity<List<WeightEntry>> getWeightHistory(@RequestParam Integer userId) {
+        AppUser appUser = appUserRepository.findById(userId).orElse(null);
+        if (appUser == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<WeightEntry> weightHistory = weightTrackerService.getWeightHistory(appUser);
+        return new ResponseEntity<>(weightHistory, HttpStatus.OK);
+    }
+
     @PostMapping("/entry")
     public ResponseEntity<String> addWeightEntry(
             @RequestParam Integer userId,
@@ -35,15 +45,5 @@ public class WeightTrackerController {
         }
         weightTrackerService.addWeightEntry(appUser, weight, entryDate);
         return new ResponseEntity<>("Weight entry added successfully", HttpStatus.OK);
-    }
-
-    @GetMapping("/history")
-    public ResponseEntity<List<WeightEntry>> getWeightHistory(@RequestParam Integer userId) {
-        AppUser appUser = appUserRepository.findById(userId).orElse(null);
-        if (appUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<WeightEntry> weightHistory = weightTrackerService.getWeightHistory(appUser);
-        return new ResponseEntity<>(weightHistory, HttpStatus.OK);
     }
 }

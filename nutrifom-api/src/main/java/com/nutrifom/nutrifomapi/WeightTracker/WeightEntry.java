@@ -1,5 +1,6 @@
 package com.nutrifom.nutrifomapi.WeightTracker;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import jakarta.persistence.*;
 
@@ -11,10 +12,12 @@ public class WeightEntry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "appUser_id", nullable = false)
+    @JsonIgnore
     private AppUser appUser;
 
     @Column(nullable = false)
