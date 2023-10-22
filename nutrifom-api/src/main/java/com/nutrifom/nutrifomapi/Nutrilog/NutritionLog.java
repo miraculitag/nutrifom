@@ -1,0 +1,129 @@
+package com.nutrifom.nutrifomapi.Nutrilog;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nutrifom.nutrifomapi.AppUser.AppUser;
+import jakarta.persistence.*;
+
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "Nutrilog")
+public class NutritionLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonIgnore
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "appUserId", nullable = false)
+    @JsonIgnore
+    private AppUser appUser;
+
+    private String code;
+    private String productName;
+    private Double product_quantity;
+    private Double serving_quantity;
+    private Double proteins_serving;
+    private Double carbohydrates_serving;
+    private Double energy_kcal_serving;
+    private Double fat_serving;
+    private Double saturated_fat_serving;
+    private LocalDate entryDate;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public Double getProduct_quantity() {
+        return product_quantity;
+    }
+
+    public void setProduct_quantity(Double product_quantity) {
+        this.product_quantity = product_quantity;
+    }
+
+    public Double getServing_quantity() {
+        return serving_quantity;
+    }
+
+    public void setServing_quantity(Double serving_quantity) {
+        this.serving_quantity = serving_quantity;
+    }
+
+    public Double getProteins_serving() {
+        return proteins_serving;
+    }
+
+    public void setProteins_serving(Double proteins_serving) {
+        this.proteins_serving = proteins_serving;
+    }
+
+    public Double getCarbohydrates_serving() {
+        return carbohydrates_serving;
+    }
+
+    public void setCarbohydrates_serving(Double carbohydrates_serving) {
+        this.carbohydrates_serving = carbohydrates_serving;
+    }
+
+    public Double getEnergy_kcal_serving() {
+        return energy_kcal_serving;
+    }
+
+    public void setEnergy_kcal_serving(Double energy_kcal_serving) {
+        this.energy_kcal_serving = energy_kcal_serving;
+    }
+
+    public Double getFat_serving() {
+        return fat_serving;
+    }
+
+    public void setFat_serving(Double fat_serving) {
+        this.fat_serving = fat_serving;
+    }
+
+    public Double getSaturated_fat_serving() {
+        return saturated_fat_serving;
+    }
+
+    public void setSaturated_fat_serving(Double saturated_fat_serving) {
+        this.saturated_fat_serving = saturated_fat_serving;
+    }
+
+    public LocalDate getEntryDate() {
+        return entryDate;
+    }
+
+    public void setEntryDate(LocalDate entryDate) {
+        this.entryDate = entryDate;
+    }
+}
+
