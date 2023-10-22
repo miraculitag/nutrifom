@@ -1,5 +1,6 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/appUser")
+@SecurityRequirement(name = "bearerAuth")
 public class AppUserController {
     private final AppUserService appUserService;
 
@@ -21,13 +23,13 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
-    @GetMapping("/get/{appUserEmail}")
-    public Optional<AppUser> getUserByEmail(@PathVariable("appUserEmail") String appUserEmail) {
-        return appUserService.getAppUserByEmail(appUserEmail);
+    @GetMapping("/get/user")
+    public Optional<AppUser> getUserByEmail(@RequestParam String email) {
+        return appUserService.getAppUserByEmail(email);
     }
 
-    @GetMapping("/get/image/{email}")
-    public ResponseEntity<byte[]> getAppUserImage(@PathVariable String email) {
+    @GetMapping("/get/image")
+    public ResponseEntity<byte[]> getAppUserImage(@RequestParam String email) {
         try {
             byte[] imageData = appUserService.getAppUserImage(email);
 
@@ -41,25 +43,25 @@ public class AppUserController {
     }
 
 
-    @PutMapping("/put/goal/{goal}")
-    public ResponseEntity<String> updateGoal(@PathVariable String goal, @RequestParam String email) {
+    @PutMapping("/put/goal")
+    public ResponseEntity<String> updateGoal(@RequestParam String goal, @RequestParam String email) {
         return appUserService.updateAppUserGoal(email, goal);
     }
 
-    @PutMapping("/put/weight/{weight}")
-    public ResponseEntity<String> updateWeight(@PathVariable int weight, @RequestParam String email) {
+    @PutMapping("/put/weight")
+    public ResponseEntity<String> updateWeight(@RequestParam int weight, @RequestParam String email) {
         return appUserService.updateAppUserWeight(email, weight);
     }
 
-    @PutMapping("/put/pal/{pal}")
-    public ResponseEntity<String> updatePal(@PathVariable String pal, @RequestParam String email) {
+    @PutMapping("/put/pal")
+    public ResponseEntity<String> updatePal(@RequestParam String pal, @RequestParam String email) {
         return appUserService.updateAppUserPal(email, pal);
     }
 
     @PutMapping("/put/image")
-    public ResponseEntity<?> updateAppUserImage(@RequestParam String email, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<?> updateAppUserImage(@RequestParam String email, @RequestParam MultipartFile image) {
         try {
-            HttpStatus status = appUserService.updateAppUserImage(email, file);
+            HttpStatus status = appUserService.updateAppUserImage(email, image);
             return new ResponseEntity<>(status);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -67,8 +69,8 @@ public class AppUserController {
     }
 
 
-    @DeleteMapping(path = "/del/{appUserEmail}")
-    public ResponseEntity<String> deleteAppUser(@PathVariable("appUserEmail") String email) {
+    @DeleteMapping(path = "/del")
+    public ResponseEntity<String> deleteAppUser(@RequestParam String email) {
         try {
             appUserService.deleteAppUserByEmail(email);
             return new ResponseEntity<>("User with email " + email + " deleted successfully.", HttpStatus.OK);

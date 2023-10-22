@@ -2,6 +2,7 @@ package com.nutrifom.nutrifomapi.WeightTracker;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/weightTrack")
-
+@SecurityRequirement(name = "bearerAuth")
 public class WeightTrackerController {
 
     @Autowired
