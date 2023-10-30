@@ -1,10 +1,12 @@
 package com.nutrifom.nutrifomapi.OpenFoodFacts;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class OFFService {
@@ -29,10 +31,10 @@ public class OFFService {
         return Math.round(value * 10.0) / 10.0;
     }
 
-
     public List<Product> searchProducts(String searchTerm) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + searchTerm + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,product_quantity,serving_quantity";
+        String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + searchTerm
+                + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,product_quantity,serving_quantity";
 
         // API-Aufruf
         JsonNode root = restTemplate.getForObject(url, JsonNode.class);
@@ -62,10 +64,13 @@ public class OFFService {
             JsonNode nutriments = product.path("nutriments");
 
             double proteins = roundToOneDecimalPlace(nutriments.path("proteins_serving").asDouble() * quantityFactor);
-            double carbohydrates = roundToOneDecimalPlace(nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
-            double energyKcal = roundToOneDecimalPlace(nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
+            double carbohydrates = roundToOneDecimalPlace(
+                    nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
+            double energyKcal = roundToOneDecimalPlace(
+                    nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
             double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
-            double saturatedFat = roundToOneDecimalPlace(nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
+            double saturatedFat = roundToOneDecimalPlace(
+                    nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
 
             Product p = new Product();
             p.setCode(code);
@@ -84,4 +89,3 @@ public class OFFService {
         return productList;
     }
 }
-

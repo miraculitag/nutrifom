@@ -1,13 +1,14 @@
 package com.nutrifom.nutrifomapi.Nutrilog;
 
-import com.nutrifom.nutrifomapi.AppUser.AppUser;
-import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
-import com.nutrifom.nutrifomapi.OpenFoodFacts.Product;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.nutrifom.nutrifomapi.AppUser.AppUser;
+import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import com.nutrifom.nutrifomapi.OpenFoodFacts.Product;
 
 @Service
 public class NutritionLogService {
@@ -43,4 +44,3 @@ public class NutritionLogService {
         return nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, entryDate);
     }
 }
-

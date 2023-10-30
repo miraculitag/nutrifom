@@ -1,25 +1,26 @@
 package com.nutrifom.nutrifomapi.auth;
 
+import java.util.Collections;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.gson.Gson;
+import com.google.api.client.json.gson.GsonFactory;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import com.nutrifom.nutrifomapi.token.Token;
 import com.nutrifom.nutrifomapi.token.TokenRepository;
 import com.nutrifom.nutrifomapi.token.TokenType;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +41,11 @@ public class AuthenticationService {
         if (request.getGoogleIDToken() != null) {
             if (!verifyGoogleIDToken(request.getGoogleIDToken())) {
                 // Token ist ungültig
-                return null;  // Oder werfe eine Ausnahme
+                return null; // Oder werfe eine Ausnahme
             }
         }
 
-        if(request.getPassword() == null) {
+        if (request.getPassword() == null) {
             var user = AppUser.builder()
                     .name(request.getName())
                     .email(request.getEmail())
@@ -113,9 +114,7 @@ public class AuthenticationService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.getEmail(),
-                            request.getPassword()
-                    )
-            );
+                            request.getPassword()));
             AppUser user = appUserRepository.findByEmail(request.getEmail())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             String jwt = jwtService.generateJwt(user);
@@ -125,7 +124,6 @@ public class AuthenticationService {
         }
         return null; // or throw an exception
     }
-
 
     private void saveUserToken(AppUser appUser, String jwtToken) {
         var token = Token.builder()
@@ -163,6 +161,5 @@ public class AuthenticationService {
         }
         return false;
     }
-
 
 }

@@ -1,18 +1,18 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
-import org.springframework.http.HttpStatus;
+import java.io.IOException;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class AppUserService {
     private final AppUserRepository appUserRepository;
+
     @Autowired
     public AppUserService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
@@ -92,8 +92,6 @@ public class AppUserService {
         return imageData;
     }
 
-
-
     public void deleteAppUserByEmail(String email) {
         Optional<AppUser> foundUser = appUserRepository.findByEmail(email);
         if (!foundUser.isPresent()) {
@@ -101,6 +99,5 @@ public class AppUserService {
         }
         appUserRepository.deleteById(foundUser.get().getId());
     }
-
 
 }

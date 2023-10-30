@@ -1,6 +1,7 @@
 package com.nutrifom.nutrifomapi.token;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

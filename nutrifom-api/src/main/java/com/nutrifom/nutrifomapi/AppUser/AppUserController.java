@@ -1,16 +1,21 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("api/appUser")
@@ -34,14 +39,13 @@ public class AppUserController {
             byte[] imageData = appUserService.getAppUserImage(email);
 
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);  // Oder den tatsächlichen Medientyp des Bildes
+            headers.setContentType(MediaType.IMAGE_JPEG); // Oder den tatsächlichen Medientyp des Bildes
 
             return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 
     @PutMapping("/put/goal")
     public ResponseEntity<String> updateGoal(@RequestParam String goal, @RequestParam String email) {
@@ -67,7 +71,6 @@ public class AppUserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 
     @DeleteMapping(path = "/del")
     public ResponseEntity<String> deleteAppUser(@RequestParam String email) {
