@@ -41,7 +41,7 @@ public class AuthenticationService {
         if (request.getGoogleIDToken() != null) {
             if (!verifyGoogleIDToken(request.getGoogleIDToken())) {
                 // Token ist ungültig
-                return null; // Oder werfe eine Ausnahme
+                throw new RuntimeException("Invalid Google ID token");
             }
         }
 
@@ -65,24 +65,28 @@ public class AuthenticationService {
                     .token(jwtToken)
                     .build();
         } else {
-            var user = AppUser.builder()
-                    .name(request.getName())
-                    .email(request.getEmail())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .dob(request.getDob())
-                    .weight(request.getWeight())
-                    .goal(request.getGoal())
-                    .gender(request.getGender())
-                    .height(request.getHeight())
-                    .pal(request.getPal())
-                    .image(request.getImage())
-                    .build();
-            var savedUser = appUserRepository.save(user);
-            var jwtToken = jwtService.generateJwt(user);
-            saveUserToken(savedUser, jwtToken);
-            return AuthenticationResponse.builder()
-                    .token(jwtToken)
-                    .build();
+            try {
+                var user = AppUser.builder()
+                        .name(request.getName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .dob(request.getDob())
+                        .weight(request.getWeight())
+                        .goal(request.getGoal())
+                        .gender(request.getGender())
+                        .height(request.getHeight())
+                        .pal(request.getPal())
+                        .image(request.getImage())
+                        .build();
+                var savedUser = appUserRepository.save(user);
+                var jwtToken = jwtService.generateJwt(user);
+                saveUserToken(savedUser, jwtToken);
+                return AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to authenticate user");
+            }
         }
     }
 
@@ -107,7 +111,7 @@ public class AuthenticationService {
                     return AuthenticationResponse.builder().token(jwt).build();
                 }
             } catch (Exception e) {
-                // Log error and throw an exception
+                throw new RuntimeException("Failed to verify Google ID token");
             }
         } else {
             // The existing username-password authentication
@@ -122,7 +126,7 @@ public class AuthenticationService {
             saveUserToken(user, jwt);
             return AuthenticationResponse.builder().token(jwt).build();
         }
-        return null; // or throw an exception
+        throw new RuntimeException("Authentication failed");
     }
 
     private void saveUserToken(AppUser appUser, String jwtToken) {
