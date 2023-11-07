@@ -64,6 +64,20 @@ public class AppUserService {
         return new ResponseEntity<>("Updated PAL: " + updatedPal + " for " + email, HttpStatus.OK);
     }
 
+    public ResponseEntity<String> updateAppUserWpa(String email, String updatedWpa) {
+        Optional<AppUser> existingAppUserOptional = appUserRepository.findByEmail(email);
+
+        if (!existingAppUserOptional.isPresent()) {
+            return new ResponseEntity<>("User with email " + email + " doesn't exist", HttpStatus.NOT_FOUND);
+        }
+
+        AppUser existingAppUser = existingAppUserOptional.get();
+        existingAppUser.setWpa(updatedWpa);
+        appUserRepository.save(existingAppUser);
+
+        return new ResponseEntity<>("Updated WPA: " + updatedWpa + " for " + email, HttpStatus.OK);
+    }
+
     public HttpStatus updateAppUserImage(String email, MultipartFile file) {
         AppUser existingAppUser = appUserRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User with email " + email + " doesn't exist"));

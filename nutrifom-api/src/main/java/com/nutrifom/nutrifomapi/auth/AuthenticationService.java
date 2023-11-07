@@ -56,6 +56,7 @@ public class AuthenticationService {
                     .gender(request.getGender())
                     .height(request.getHeight())
                     .pal(request.getPal())
+                    .wpa(request.getWpa())
                     .image(request.getImage())
                     .build();
             var savedUser = appUserRepository.save(user);
@@ -76,6 +77,7 @@ public class AuthenticationService {
                         .gender(request.getGender())
                         .height(request.getHeight())
                         .pal(request.getPal())
+                        .wpa(request.getWpa())
                         .image(request.getImage())
                         .build();
                 var savedUser = appUserRepository.save(user);

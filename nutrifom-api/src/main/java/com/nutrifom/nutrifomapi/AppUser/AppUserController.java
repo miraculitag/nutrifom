@@ -62,6 +62,11 @@ public class AppUserController {
         return appUserService.updateAppUserPal(email, pal);
     }
 
+    @PutMapping("/put/wpa")
+    public ResponseEntity<String> updateWpa(@RequestParam String wpa, @RequestParam String email) {
+        return appUserService.updateAppUserWpa(email, wpa);
+    }
+
     @PutMapping("/put/image")
     public ResponseEntity<?> updateAppUserImage(@RequestParam String email, @RequestParam MultipartFile image) {
         try {
