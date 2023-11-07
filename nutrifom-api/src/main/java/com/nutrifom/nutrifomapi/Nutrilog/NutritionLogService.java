@@ -3,6 +3,8 @@ package com.nutrifom.nutrifomapi.Nutrilog;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.nutrifom.nutrifomapi.Recipe.Recipe;
+import com.nutrifom.nutrifomapi.Recipe.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +18,14 @@ public class NutritionLogService {
     private NutritionLogRepository nutritionLogRepository;
 
     @Autowired
+    private RecipeRepository recipeRepository;
+
+    @Autowired
     private AppUserRepository appUserRepository;
 
-    public NutritionLog saveNutritionLog(Integer userId, Product product, LocalDate entryDate) {
-        AppUser appUser = appUserRepository.findById(userId).orElse(null);
-        if (appUser == null) {
-            throw new IllegalStateException("User not found");
-        }
+    public NutritionLog saveProductLog(Integer userId, Product product, LocalDate entryDate) {
+        AppUser appUser = appUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
 
         NutritionLog nutritionLog = new NutritionLog();
         nutritionLog.setAppUser(appUser);
@@ -39,6 +42,22 @@ public class NutritionLogService {
 
         return nutritionLogRepository.save(nutritionLog);
     }
+
+    public NutritionLog saveRecipeLog(Integer userId, Integer recipeId, LocalDate entryDate) {
+        AppUser appUser = appUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalStateException("Recipe not found"));
+
+        NutritionLog nutritionLog = new NutritionLog();
+        nutritionLog.setAppUser(appUser);
+        nutritionLog.setRecipe(recipe);
+        nutritionLog.setEntryDate(entryDate);
+
+        return nutritionLogRepository.save(nutritionLog);
+    }
+
+
 
     public List<NutritionLog> getNutritionLogs(Integer appUserId, LocalDate entryDate) {
         return nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, entryDate);

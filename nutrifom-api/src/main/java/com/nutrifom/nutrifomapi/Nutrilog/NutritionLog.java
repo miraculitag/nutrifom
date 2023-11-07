@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 
+import com.nutrifom.nutrifomapi.Recipe.Recipe;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,9 +23,14 @@ public class NutritionLog {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "appUserId", nullable = false)
+    @JoinColumn(name = "appUserId", nullable = true)
     @JsonIgnore
     private AppUser appUser;
+
+    @ManyToOne
+    @JoinColumn(name = "recipeId", nullable = true)
+    @JsonIgnore
+    private Recipe recipe;
 
     private String code;
     private String productName;
@@ -51,6 +57,14 @@ public class NutritionLog {
 
     public void setAppUser(AppUser appUser) {
         this.appUser = appUser;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 
     public String getCode() {
