@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material";
+import { createTheme, rgbToHex } from "@mui/material";
 import { green, purple } from "@mui/material/colors";
 
 const nutrifomTheme = {
@@ -8,7 +8,8 @@ const nutrifomTheme = {
 
   palette: {
     primary: {
-      main: green[500],
+      main: "#33cc33",
+      light: "#A9D18E",
     },
     secondary: {
       main: purple[100],
