@@ -1,10 +1,11 @@
 package com.nutrifom.nutrifomapi.auth;
 
+import java.time.LocalDate;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -13,9 +14,15 @@ import java.time.LocalDate;
 public class RegisterRequest {
     private String name;
     private LocalDate dob;
-    private String email;
-    private String password;
+    private Integer height;
+    private Character gender;
+    private String wpa;
+    private String pal;
     private int weight;
     private String goal;
-    private String imageBlobUrl;
+    private byte[] image;
+    private String GoogleIDToken;
+    private String email;
+    private String password;
+
 }

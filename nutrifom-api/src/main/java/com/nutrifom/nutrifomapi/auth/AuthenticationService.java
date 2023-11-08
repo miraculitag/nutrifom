@@ -1,16 +1,26 @@
 package com.nutrifom.nutrifomapi.auth;
 
+import java.util.Collections;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import com.nutrifom.nutrifomapi.token.Token;
 import com.nutrifom.nutrifomapi.token.TokenRepository;
 import com.nutrifom.nutrifomapi.token.TokenType;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -22,39 +32,103 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    private static final HttpTransport TRANSPORT = new NetHttpTransport();
+    private static final JsonFactory JSON_FACTORY = new GsonFactory();
+    private static final String CLIENT_ID = "286231394640-t7gi95sph1bu8v19sq8khp83c0bi3h61.apps.googleusercontent.com";
+
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = AppUser.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .dob(request.getDob())
-                .weight(request.getWeight())
-                .goal(request.getGoal())
-                .imageBlobUrl(request.getImageBlobUrl())
-                .build();
-        var savedUser = appUserRepository.save(user);
-        var jwtToken = jwtService.generateJwt(user);
-        saveUserToken(savedUser, jwtToken);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+
+        if (request.getGoogleIDToken() != null) {
+            if (!verifyGoogleIDToken(request.getGoogleIDToken())) {
+                // Token ist ungültig
+                throw new RuntimeException("Invalid Google ID token");
+            }
+        }
+
+        if (request.getPassword() == null) {
+            var user = AppUser.builder()
+                    .name(request.getName())
+                    .email(request.getEmail())
+                    .password((request.getPassword()))
+                    .dob(request.getDob())
+                    .weight(request.getWeight())
+                    .goal(request.getGoal())
+                    .gender(request.getGender())
+                    .height(request.getHeight())
+                    .pal(request.getPal())
+                    .wpa(request.getWpa())
+                    .image(request.getImage())
+                    .build();
+            var savedUser = appUserRepository.save(user);
+            var jwtToken = jwtService.generateJwt(user);
+            saveUserToken(savedUser, jwtToken);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } else {
+            try {
+                var user = AppUser.builder()
+                        .name(request.getName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .dob(request.getDob())
+                        .weight(request.getWeight())
+                        .goal(request.getGoal())
+                        .gender(request.getGender())
+                        .height(request.getHeight())
+                        .pal(request.getPal())
+                        .wpa(request.getWpa())
+                        .image(request.getImage())
+                        .build();
+                var savedUser = appUserRepository.save(user);
+                var jwtToken = jwtService.generateJwt(user);
+                saveUserToken(savedUser, jwtToken);
+                return AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .build();
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to authenticate user");
+            }
+        }
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var user = appUserRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwt = jwtService.generateJwt(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwt);
-        return AuthenticationResponse.builder()
-                .token(jwt)
-                .build();
+        if (request.getGoogleIDToken() != null) {
+            try {
+                GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
+                        .setAudience(Collections.singletonList(CLIENT_ID))
+                        .build();
+                GoogleIdToken idToken = verifier.verify(request.getGoogleIDToken());
+                if (idToken != null) {
+                    GoogleIdToken.Payload payload = idToken.getPayload();
+                    String email = payload.getEmail();
+
+                    AppUser existingUser = appUserRepository.findByEmail(email)
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+
+                    String jwt = jwtService.generateJwt(existingUser);
+                    revokeAllUserTokens(existingUser);
+                    saveUserToken(existingUser, jwt);
+
+                    return AuthenticationResponse.builder().token(jwt).build();
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to verify Google ID token");
+            }
+        } else {
+            // The existing username-password authentication
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()));
+            AppUser user = appUserRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            String jwt = jwtService.generateJwt(user);
+            revokeAllUserTokens(user);
+            saveUserToken(user, jwt);
+            return AuthenticationResponse.builder().token(jwt).build();
+        }
+        throw new RuntimeException("Authentication failed");
     }
 
     private void saveUserToken(AppUser appUser, String jwtToken) {
@@ -79,5 +153,19 @@ public class AuthenticationService {
         tokenRepository.saveAll(validUserTokens);
     }
 
+    private boolean verifyGoogleIDToken(String idToken) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
+                    .setAudience(Collections.singletonList(CLIENT_ID))
+                    .build();
+            GoogleIdToken googleIdToken = verifier.verify(idToken);
+            if (idToken != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            // Loggen oder weiterreichen
+        }
+        return false;
+    }
 
 }

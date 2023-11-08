@@ -1,17 +1,40 @@
 package com.nutrifom.nutrifomapi.OpenFoodFacts;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
 public class OFFService {
 
+    public Double convertToDouble(Object value) {
+        if (value instanceof Integer) {
+            return ((Integer) value).doubleValue();
+        } else if (value instanceof String) {
+            try {
+                return Double.parseDouble((String) value);
+            } catch (NumberFormatException e) {
+                // handle the exception, for example, return null or log the error
+                return null;
+            }
+        } else {
+            // handle unexpected type, for example, return null or log the error
+            return null;
+        }
+    }
+
+    public double roundToOneDecimalPlace(double value) {
+        return Math.round(value * 10.0) / 10.0;
+    }
+
     public List<Product> searchProducts(String searchTerm) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + searchTerm + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,quantity";
+        String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + searchTerm
+                + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,product_quantity,serving_quantity";
 
         // API-Aufruf
         JsonNode root = restTemplate.getForObject(url, JsonNode.class);
@@ -29,24 +52,36 @@ public class OFFService {
                 continue;
             }
             String code = product.path("code").asText();
-            String productQuantity = product.path("quantity").asText();
+            Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
+            Double servingQuantityDouble = convertToDouble(product.path("serving_quantity").asText());
+
+            if (productQuantityDouble == null || servingQuantityDouble == null || servingQuantityDouble == 0) {
+                // handle the error, for example, skip this product
+                continue;
+            }
+
+            Double quantityFactor = productQuantityDouble / servingQuantityDouble;
             JsonNode nutriments = product.path("nutriments");
 
-            double proteins = nutriments.path("proteins_100g").asDouble();
-            double carbohydrates = nutriments.path("carbohydrates_100g").asDouble();
-            double energyKcal = nutriments.path("energy-kcal_100g").asDouble();
-            double fat = nutriments.path("fat_100g").asDouble();
-            double saturatedFat = nutriments.path("saturated-fat_100g").asDouble();
+            double proteins = roundToOneDecimalPlace(nutriments.path("proteins_serving").asDouble() * quantityFactor);
+            double carbohydrates = roundToOneDecimalPlace(
+                    nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
+            double energyKcal = roundToOneDecimalPlace(
+                    nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
+            double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
+            double saturatedFat = roundToOneDecimalPlace(
+                    nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
 
             Product p = new Product();
             p.setCode(code);
             p.setProductName(productName);
-            p.setProductQuantity(productQuantity);
-            p.setProteins(proteins);
-            p.setCarbohydrates(carbohydrates);
-            p.setEnergyKcal(energyKcal);
-            p.setFat(fat);
-            p.setSaturatedFat(saturatedFat);
+            p.setProduct_quantity(productQuantityDouble);
+            p.setServing_quantity(servingQuantityDouble);
+            p.setProteins_serving(proteins);
+            p.setCarbohydrates_serving(carbohydrates);
+            p.setEnergy_kcal_serving(energyKcal);
+            p.setFat_serving(fat);
+            p.setSaturated_fat_serving(saturatedFat);
 
             productList.add(p);
         }
@@ -54,4 +89,3 @@ public class OFFService {
         return productList;
     }
 }
-
