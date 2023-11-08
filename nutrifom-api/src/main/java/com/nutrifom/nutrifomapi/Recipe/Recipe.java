@@ -17,7 +17,8 @@ public class Recipe {
     private Integer portions;
     private Double fat;
     private Double rating;
-    private String image;
+    @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
+    private byte[] image;
 
     private String tag;
 
@@ -93,11 +94,11 @@ public class Recipe {
         this.rating = rating;
     }
 
-    public String getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 
