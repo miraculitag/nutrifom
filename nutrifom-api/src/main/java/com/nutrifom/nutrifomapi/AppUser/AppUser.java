@@ -55,6 +55,9 @@ public class AppUser implements UserDetails {
     @Column(name = "PAL")
     private String pal;
 
+    @Column(name = "WPA")
+    private String wpa;
+
     @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
     private byte[] image;
 
