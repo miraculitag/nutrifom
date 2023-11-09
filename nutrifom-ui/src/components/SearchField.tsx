@@ -49,7 +49,8 @@ export const SearchField = ({ labelText, placeholderText, suffixText, iconName }
       <ThemeProvider theme={nutrifomTheme}>
         <Box
           sx={{
-            backgroundColor: 'background.paper', // Hintergrundfarbe aus dem Thema
+            //backgroundColor: 'background.paper', // Hintergrundfarbe aus dem Thema
+            backgroundColor: "darkgray",
             width: '100%', // 100% der Breite
             maxHeight: '10%', // Maximal 10% der Höhe
             display: 'flex', // Verwenden Sie Flexbox, um Container nebeneinander anzuordnen
