@@ -19,6 +19,7 @@ export const Weight = (testParams: any) => {
             display: "flex",
             alignItems: "top",
             justifyContent: "center",
+            boxShadow: '2', // Hinzugefügter Schatten
           }}
         >
           <SearchField labelText="Gewicht hinzufügen" placeholderText="Trage hier dein aktuelles Gewicht ein…" suffixText="kg" iconName="add_circle"/>

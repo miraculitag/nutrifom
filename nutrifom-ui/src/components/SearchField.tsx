@@ -58,6 +58,7 @@ export const SearchField = ({ labelText, placeholderText, suffixText, iconName }
             alignItems: 'center', // Zentrieren Sie die Elemente vertikal
             margin: '10px', // Außenabstand
             pl: '10px', // Linker Innenabstand
+            boxShadow: '2', // Hinzugefügter Schatten
           }}
         >
           <Box sx={{ color: "inherit", fontSize: "inherit", width: "20%" }}>{labelText}</Box>
