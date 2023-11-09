@@ -13,7 +13,7 @@ import { ThemeProvider, Typography } from "@mui/material";
 export default function App() {
   return (
     <>
-      <ThemeProvider theme={nutrifomTheme}>
+    <ThemeProvider theme={nutrifomTheme}>
         <Typography> 
           <Router>
             <Header />

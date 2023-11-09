@@ -4,6 +4,7 @@ import Box from "@mui/material/Box"; // Importieren Sie das Material-UI-Box-Elem
 import { SearchField } from './SearchField';
 import { ThemeProvider } from '@mui/material/styles';
 import nutrifomTheme from '../theme/nutrifomTheme';
+import BasicDatePicker from "./BasicDatePicker";
 
 
 export const Weight = (testParams: any) => {
@@ -20,7 +21,7 @@ export const Weight = (testParams: any) => {
             justifyContent: "center",
           }}
         >
-          <SearchField></SearchField>
+          <SearchField labelText="Gewicht hinzufügen" placeholderText="Trage hier dein aktuelles Gewicht ein…" suffixText="kg" iconName="add_circle"/>
         </Box>
         <WhiteBar />
       </Box>
