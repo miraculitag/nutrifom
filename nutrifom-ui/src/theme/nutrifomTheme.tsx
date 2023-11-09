@@ -13,6 +13,9 @@ const nutrifomTheme = {
     secondary: {
       main: purple[100],
     },
+    background: {
+      paper: 'darkgrey',
+    },
   },
 };
 
