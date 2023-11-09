@@ -1,20 +1,20 @@
 import React from "react";
 import nutrifomTheme from "./theme/nutrifomTheme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home } from "./components/Home";
-import { User } from "./components/User";
-import { FoodLog } from "./components/FoodLog";
-import { Weight } from "./components/Weight";
-import { Calc } from "./components/Calc";
-import { Recipes } from "./components/Recipes";
-import { Header } from "./components/Header";
+import { Home } from "./components/pages/Home";
+import { User } from "./components/pages/User";
+import { FoodLog } from "./components/pages/FoodLog";
+import { Weight } from "./components/pages/Weight";
+import { Calc } from "./components/pages/Calc";
+import { Recipes } from "./components/pages/Recipes";
+import { Header } from "./components/layout/Header";
 import { ThemeProvider, Typography } from "@mui/material";
 
 export default function App() {
   return (
     <>
-    <ThemeProvider theme={nutrifomTheme}>
-        <Typography> 
+      <ThemeProvider theme={nutrifomTheme}>
+        <Typography>
           <Router>
             <Header />
             <Routes>

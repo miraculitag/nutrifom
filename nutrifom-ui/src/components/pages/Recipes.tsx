@@ -5,15 +5,12 @@ import {
   AccordionSummary,
   Box,
   IconButton,
-  List,
-  ListItem,
-  ListItemText,
   Rating,
   Typography,
 } from "@mui/material";
 import { ExpandMore, FilterAlt } from "@mui/icons-material";
-import FilterDialog from "./FilterDialog";
-import NutritionalTable from "./NutritionalTable";
+import FilterDialog from "../common/FilterDialog";
+import NutritionalTable from "../common/NutritionalTable";
 
 export const Recipes = (testParams: any) => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
