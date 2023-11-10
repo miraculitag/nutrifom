@@ -1,3 +1,5 @@
+import { Typography } from "@mui/material";
+
 export const FoodLog = (testParams: any) => {
-  return <div>TEST_FOODLOG</div>;
+  return <Typography>TEST_FOODLOG</Typography>;
 };

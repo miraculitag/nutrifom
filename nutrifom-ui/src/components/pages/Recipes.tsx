@@ -72,9 +72,9 @@ export const Recipes = (testParams: any) => {
 
   const filterRecipes = (filter: String) => {
     if (filter === "Aufbauen") {
-      setShownRecipes(recipes.filter((recipe) => recipe.tag == "Aufbauen"));
+      setShownRecipes(recipes.filter((recipe) => recipe.tag === "Aufbauen"));
     } else if (filter === "Definieren") {
-      setShownRecipes(recipes.filter((recipe) => recipe.tag == "Definieren"));
+      setShownRecipes(recipes.filter((recipe) => recipe.tag === "Definieren"));
     } else {
       setShownRecipes(recipes);
     }
@@ -90,7 +90,7 @@ export const Recipes = (testParams: any) => {
   };
 
   return (
-    <div>
+    <>
       <IconButton onClick={() => setOpenFilterDialog(true)}>
         <FilterAlt />
       </IconButton>
@@ -111,13 +111,13 @@ export const Recipes = (testParams: any) => {
             <Box>
               <Typography sx={{ width: "33%", flexShrink: 0 }}>
                 {recipe.title}
-                <Rating
-                  size="small"
-                  precision={0.1}
-                  value={ratingValues[recipe.id] || recipe.rating}
-                  onChange={handleRatingChange(recipe.id)}
-                />
               </Typography>
+              <Rating
+                size="small"
+                precision={0.1}
+                value={ratingValues[recipe.id] || recipe.rating}
+                onChange={handleRatingChange(recipe.id)}
+              />
             </Box>
             <Typography sx={{ color: "text.secondary" }}>
               {recipe.tag}
@@ -131,24 +131,26 @@ export const Recipes = (testParams: any) => {
                 justifyContent: "space-between",
               }}
             >
-              <Typography key={recipe.id} sx={{ minWidth: "25%" }}>
-                Zutaten:
+              <Box sx={{ minWidth: "25%" }}>
+                <Typography>Zutaten:</Typography>
                 {recipe.ingredients.map((ingredient) => (
-                  <Box sx={{ marginLeft: "20px" }}>{ingredient}</Box>
+                  <Box sx={{ marginLeft: "20px" }}>
+                    <Typography>{ingredient}</Typography>
+                  </Box>
                 ))}
-              </Typography>
-              <Typography sx={{ minWidth: "25%", maxWidth: "40%" }}>
-                Beschreibung:
+              </Box>
+              <Box sx={{ minWidth: "25%", maxWidth: "40%" }}>
+                <Typography>Beschreibung:</Typography>
                 <Box
                   sx={{
                     marginLeft: "20px",
                   }}
                 >
-                  {recipe.description}
+                  <Typography>{recipe.description}</Typography>
                 </Box>
-              </Typography>
-              <Typography sx={{ minWidth: "25%" }}>
-                Nährwerte pro Portion:
+              </Box>
+              <Box sx={{ minWidth: "25%" }}>
+                <Typography>Nährwerte pro Portion:</Typography>
                 <Box sx={{ paddingTop: "5%", paddingBottom: "5%" }}>
                   <NutritionalTable
                     energy_kcal={Math.round(
@@ -166,12 +168,14 @@ export const Recipes = (testParams: any) => {
                     )}
                   />
                 </Box>
-                Das Rezept ergibt {recipe.portions} Portionen.
-              </Typography>
+                <Typography>
+                  Das Rezept ergibt {recipe.portions} Portionen.
+                </Typography>
+              </Box>
             </Box>
           </AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </>
   );
 };
