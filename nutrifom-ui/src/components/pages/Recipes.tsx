@@ -24,7 +24,7 @@ export const Recipes = (testParams: any) => {
     {
       id: 1,
       title: "name1",
-      ingredients: ["200g Apfel", "100g Banane", "2TL Honig"],
+      ingredients: "200g Apfel, 100g Banane, 2TL Honig",
       rating: 3,
       clicks: 23,
       tag: "Aufbauen",
@@ -40,7 +40,7 @@ export const Recipes = (testParams: any) => {
     {
       id: 2,
       title: "name2",
-      ingredients: ["75g Möhre", "150g Brokkoli", "75g Blumenkohl"],
+      ingredients: "75g Möhre, 150g Brokkoli, 75g Blumenkohl",
       rating: 4.5,
       clicks: 19,
       tag: "Definieren",
@@ -133,8 +133,8 @@ export const Recipes = (testParams: any) => {
             >
               <Box sx={{ minWidth: "25%" }}>
                 <Typography>Zutaten:</Typography>
-                {recipe.ingredients.map((ingredient) => (
-                  <Box sx={{ marginLeft: "20px" }}>
+                {recipe.ingredients.split(",").map((ingredient, index) => (
+                  <Box key={index} sx={{ marginLeft: "20px" }}>
                     <Typography>{ingredient}</Typography>
                   </Box>
                 ))}
