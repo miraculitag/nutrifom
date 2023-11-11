@@ -8,11 +8,11 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-const options = ["Alle", "Aufbauen", "Definieren"];
-
 export interface FilterDialogProps {
   id: string;
   keepMounted: boolean;
+  heading: string;
+  options: string[];
   valueFilter: string;
   open: boolean;
   onClose: (value?: string) => void;
@@ -55,14 +55,14 @@ export default function FilterDialog(props: FilterDialogProps) {
       open={open}
       {...other}
     >
-      <DialogTitle>Rezeptkategorien</DialogTitle>
+      <DialogTitle>{props.heading}</DialogTitle>
       <DialogContent dividers>
         <RadioGroup
           ref={radioGroupRef}
           value={valueFilter}
           onChange={handleChange}
         >
-          {options.map((option) => (
+          {props.options.map((option) => (
             <FormControlLabel
               value={option}
               key={option}

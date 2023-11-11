@@ -20,6 +20,9 @@ export const Recipes = (testParams: any) => {
   const [filterValue, setFilterValue] = React.useState("Alle");
   const [openFilterDialog, setOpenFilterDialog] = React.useState(false);
 
+  const filterHeading = "Rezeptkategorien";
+  const filterOptions = ["Alle", "Aufbauen", "Definieren"];
+
   const recipes = [
     {
       id: 1,
@@ -97,6 +100,8 @@ export const Recipes = (testParams: any) => {
       <FilterDialog
         id="filterRecipes"
         keepMounted
+        heading={filterHeading}
+        options={filterOptions}
         open={openFilterDialog}
         onClose={handleClose}
         valueFilter={filterValue}

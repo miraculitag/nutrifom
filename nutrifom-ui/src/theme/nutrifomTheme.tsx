@@ -9,7 +9,7 @@ const nutrifomTheme = {
   palette: {
     primary: {
       main: "#33cc33",
-      light: "#A9D18E",
+      light: "#eff8ef",
     },
     secondary: {
       main: purple[100],
