@@ -1,4 +1,4 @@
-import { Alert, Box, Stack, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import JustifiedTypography from "../common/JustifiedTypography";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -6,7 +6,7 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 export const Home = (testParams: any) => {
   const theme = useTheme();
   const aboutNutrifom =
-    'Die nutrifom GmbH stellt ihre Kunden in den Vordergrund. Seit 2023 schafft die nutrifom GmbH neue Lösungen zur Unterstützung bei einer gesunden Ernährung. "nutrifom" die Webanwendung stellt hierbei das Erreichen deiner individuellen Ziele in den Fokus.';
+    'Die nutrifom GmbH stellt ihre Kunden in den Vordergrund. Seit 2023 schafft die nutrifom GmbH neue Lösungen zur Unterstützung bei einer gesunden Ernährung. "nutrifom" die Webanwendung stellt hierbei das Erreichen deiner individuellen Ziele in den Fokus. Hier findest du eine Übersicht und eine Vorstellung der enthaltenen Features und außerdem einige hilfreiche Tipps für eine gesunde Ernährung. Falls du Hilfe benötigen solltest, kontaktiere uns gerne über das Kontaktfeld. Dieses findest du am unteren Seitenrand.';
 
   const aboutNutrifomFoodLog =
     "Das Nutriprotokoll dient der Protokollierung deiner Ernährung. Sowohl Speisen als auch Getränke kannst du hier eintragen. Auswählen kannst du hierbei aus einer großen Datenbank an Nahrungsmitteln. Auch Rezepte, welche du in unserem Rezeptebereich entdeckt und nachgekocht hast, kannst du hier portionsweise eintragen. Deine tägliche Kalorienbilanz wird übersichtlich dargestellt, wobei du auch die Zusammensetzung deiner Ernährung einsehen kannst.";
@@ -21,10 +21,10 @@ export const Home = (testParams: any) => {
     'Im Rezeptebereich steht dir eine Auswahl an gesunden Rezepten zur Verfügung. Die Nährwerte der Gerichte sind übersichtlich dargestellt und können dir dabei helfen dein individuelles Kalorienziel zu erreichen. Rezepte mit einer höheren Kaloriendichte werden hierbei unter der Kategorie "Aufbauen" gelistet, während Rezepte mit niedrigerer Kaloriendichte der Kategorie "Definieren" zugeordnet sind. Beachte: auch die Rezepte mit höherer Kaloriendichte sind gesund!';
 
   const infoTextMicros =
-    "Mineralstoffe und Vitamine erfüllen wichtige Funktionen innerhalb des Körpers. Besonders Obst und Gemüse, aber auch Vollkornprodukte sind zur Aufnahme von ausreichend Mikronährstoffen geeignet. Empfohlen werden täglich mindestens fünf Portionen rohes oder schonend zubereitetes Gemüse (min. 400g) und Obst (min. 250g). Als besonders mikronährstoffreich gilt hierbei grünes Gemüse.";
+    "Mineralstoffe und Vitamine erfüllen wichtige Funktionen innerhalb des Körpers. Besonders Obst und Gemüse, aber auch Vollkornprodukte, sind zur Aufnahme von ausreichend Mikronährstoffen geeignet. Empfohlen werden täglich mindestens fünf Portionen rohes oder schonend zubereitetes Gemüse (min. 400g) und Obst (min. 250g). Als besonders mikronährstoffreich gilt hierbei grünes Gemüse.";
 
   const infoTextProteins =
-    "Proteine sättigen dich besonders. Außerdem sind sie essentiell für Muskelaufbau und -erhalt. Die Quelle der Proteine entscheidet über die Qualität und Verwertbarkeit der Proteine. Tierische Proteine haben meist eine höhere biologische Wertigkeit als pflanzliche Proteine. Auch die Kombination bestimmter Nahrungsmittel kann dir helfen die biologische Wertigkeit deiner Mahlzeit zu erhöhen. Das geht beispielsweise mit Kartoffeln + Ei, Soja + Reis oder Mais + Bohnen.";
+    "Proteine sättigen besonders gut. Außerdem sind sie essentiell für Muskelaufbau und -erhalt. Die Quelle der Proteine entscheidet über die Qualität und die Verwertbarkeit der Proteine. Tierische Proteine haben meist eine höhere biologische Wertigkeit als pflanzliche Proteine. Auch die Kombination bestimmter Nahrungsmittel kann dir helfen, die biologische Wertigkeit deiner Mahlzeit zu erhöhen. Das geht beispielsweise mit Kartoffeln + Ei, Soja + Reis oder Mais + Bohnen.";
 
   const infoTextFat =
     "Achte bei dem Verzehr von Fetten auch auf die Quellen. Besonders Nüsse und pflanzliche Öle liefern gesunde ungesättigte Fettsäuren, welche positive Effekte auf den Körper haben. Beispiele hierfür sind die Hirnfuktion oder das Immunsystem.";
@@ -37,10 +37,26 @@ export const Home = (testParams: any) => {
       title: "Nutriprotokoll",
       url: "/foodlog",
       description: aboutNutrifomFoodLog,
+      image: "./assets/img/foodlog.jpg",
     },
-    { title: "Gewicht", url: "/weight", description: aboutNutrifomWeight },
-    { title: "Bedarfsrechner", url: "/calc", description: aboutNutrifomCalc },
-    { title: "Rezepte", url: "/recipes", description: aboutNutrifomRecipes },
+    {
+      title: "Gewicht",
+      url: "/weight",
+      description: aboutNutrifomWeight,
+      image: "./assets/img/weight.jpg",
+    },
+    {
+      title: "Bedarfsrechner",
+      url: "/calc",
+      description: aboutNutrifomCalc,
+      image: "./assets/img/calc.jpg",
+    },
+    {
+      title: "Rezepte",
+      url: "/recipes",
+      description: aboutNutrifomRecipes,
+      image: "./assets/img/recipes.jpg",
+    },
   ];
 
   const infoTexts = [
@@ -57,7 +73,7 @@ export const Home = (testParams: any) => {
           display: "flex",
           flexDirection: "column",
           margin: "auto",
-          width: "60%",
+          width: "80%",
         }}
       >
         <Box>
@@ -66,30 +82,61 @@ export const Home = (testParams: any) => {
         </Box>
         <Box
           sx={{
-            paddingTop: 2,
+            paddingTop: 3,
           }}
         >
           <Typography sx={{ fontSize: "150%" }}>Unsere Features</Typography>
           {aboutFeatureTexts.map((aboutFeatureText, index) => (
-            <Box key={index}>
-              <Link
-                to={aboutFeatureText.url}
-                style={{
-                  textDecoration: "none",
-                }}
+            <Grid
+              container
+              key={index}
+              sx={{
+                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
+                alignItems: "center",
+                marginTop: "-4%",
+              }}
+            >
+              <Grid
+                item
+                xs={6}
+                paddingLeft={index % 2 === 0 ? "0%" : "5%"}
+                paddingRight={index % 2 === 0 ? "5%" : "0%"}
+                sx={{ paddingTop: "5%", paddingBottom: "5%" }}
               >
-                <Typography
-                  sx={{
-                    fontWeight: "bold",
-                    paddingTop: 1,
-                    color: theme.palette.primary.main,
+                <Link
+                  to={aboutFeatureText.url}
+                  style={{
+                    textDecoration: "none",
                   }}
                 >
-                  {aboutFeatureText.title}
-                </Typography>
-              </Link>
-              <JustifiedTypography text={aboutFeatureText.description} />
-            </Box>
+                  <Typography
+                    sx={{
+                      fontWeight: "bold",
+                      paddingTop: 1,
+                      color: theme.palette.primary.main,
+                    }}
+                  >
+                    {aboutFeatureText.title}
+                  </Typography>
+                </Link>
+                <JustifiedTypography text={aboutFeatureText.description} />
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                textAlign={index % 2 === 0 ? "left" : "right"}
+                paddingLeft={index % 2 === 0 ? "5%" : "0%"}
+                paddingRight={index % 2 === 0 ? "0%" : "5%"}
+              >
+                <Link to={aboutFeatureText.url}>
+                  <img
+                    src={aboutFeatureText.image}
+                    alt={aboutFeatureText.title}
+                    width="100%"
+                  />
+                </Link>
+              </Grid>
+            </Grid>
           ))}
         </Box>
         <Box

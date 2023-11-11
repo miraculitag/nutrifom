@@ -93,7 +93,12 @@ export const Recipes = (testParams: any) => {
   };
 
   return (
-    <>
+    <Box
+      sx={{
+        margin: "auto",
+        width: "80%",
+      }}
+    >
       <IconButton onClick={() => setOpenFilterDialog(true)}>
         <FilterAlt />
       </IconButton>
@@ -181,6 +186,6 @@ export const Recipes = (testParams: any) => {
           </AccordionDetails>
         </Accordion>
       ))}
-    </>
+    </Box>
   );
 };
