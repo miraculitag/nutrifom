@@ -70,8 +70,8 @@ export const Home = (testParams: any) => {
           }}
         >
           <Typography sx={{ fontSize: "150%" }}>Unsere Features</Typography>
-          {aboutFeatureTexts.map((aboutFeatureText) => (
-            <Box>
+          {aboutFeatureTexts.map((aboutFeatureText, index) => (
+            <Box key={index}>
               <Link
                 to={aboutFeatureText.url}
                 style={{
@@ -104,8 +104,8 @@ export const Home = (testParams: any) => {
             }}
             spacing={2}
           >
-            {infoTexts.map((infoText) => (
-              <Box>
+            {infoTexts.map((infoText, index) => (
+              <Box key={index}>
                 <Alert
                   sx={{
                     backgroundColor: theme.palette.primary.light,
