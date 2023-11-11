@@ -2,6 +2,9 @@ package com.nutrifom.nutrifomapi.Recipe;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "Recipe")
 public class Recipe {
@@ -16,7 +19,13 @@ public class Recipe {
     private Double energy_kcal;
     private Integer portions;
     private Double fat;
-    private Double rating;
+    private String description;
+
+    private int uses;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings = new ArrayList<>();
+
+    private Double averageRating;
     @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
     private byte[] image;
 
@@ -86,12 +95,36 @@ public class Recipe {
         this.portions = portions;
     }
 
-    public Double getRating() {
-        return rating;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 
     public byte[] getImage() {

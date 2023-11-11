@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.nutrifom.nutrifomapi.Recipe.Recipe;
 import com.nutrifom.nutrifomapi.Recipe.RecipeRepository;
+import com.nutrifom.nutrifomapi.Recipe.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class NutritionLogService {
 
     @Autowired
     private AppUserRepository appUserRepository;
+
+    @Autowired
+    private RecipeService recipeService;
 
     public NutritionLog saveProductLog(Integer userId, Product product, LocalDate entryDate) {
         AppUser appUser = appUserRepository.findById(userId)
@@ -53,6 +57,7 @@ public class NutritionLogService {
         nutritionLog.setAppUser(appUser);
         nutritionLog.setRecipe(recipe);
         nutritionLog.setEntryDate(entryDate);
+        recipeService.incrementRecipeUses(recipeId);
 
         return nutritionLogRepository.save(nutritionLog);
     }

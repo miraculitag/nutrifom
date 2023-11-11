@@ -34,6 +34,7 @@ public class AppUser implements UserDetails {
     @Column(name = "ID")
     private int id;
 
+
     @Column(name = "Name")
     private String name;
 

@@ -13,9 +13,26 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
+     @Autowired
+    private RecipeRepository recipeRepository;
+
     @GetMapping("/get/by-tag")
     public List<Recipe> getRecipesByTag(@RequestParam String tag) {
         return recipeService.getRecipesByTag(tag);
     }
+
+    @PostMapping("/rate/{recipeId}")
+    public Recipe rateRecipe(@PathVariable Integer recipeId,
+                             @RequestParam Integer userId,
+                             @RequestBody Double score) {
+        return recipeService.rateRecipe(recipeId, userId, score);
+    }
+
+    @GetMapping("/get/by-id")
+    public Recipe getRecipeById(@RequestParam Integer recipeId) {
+        return recipeRepository.findById(recipeId).orElseThrow();
+    }
+
+
 
 }
