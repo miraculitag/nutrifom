@@ -1,10 +1,11 @@
 import React from "react";
 import { WhiteBar } from "../layout/WhiteBar";
 import Box from "@mui/material/Box"; // Importieren Sie das Material-UI-Box-Element
-import { SearchField } from "../common/SearchField";
-import { ThemeProvider } from "@mui/material/styles";
-import nutrifomTheme from "../../theme/nutrifomTheme";
-import BasicDatePicker from "../common/BasicDatePicker";
+import { BasicDatePicker } from "../common/BasicDatePicker";
+import { WeightInputField } from "../common/WeightInputField";
+import BasicLineChart from "../common/BasicLineChart";
+
+
 
 export const Weight = (testParams: any) => {
   return (
@@ -16,16 +17,23 @@ export const Weight = (testParams: any) => {
           flex: 1,
           display: "flex",
           alignItems: "top",
-          justifyContent: "center",
-          boxShadow: "2", // Hinzugefügter Schatten
+          flexDirection: "column",
+          boxShadow: '2',
         }}
       >
-        <SearchField
-          labelText="Gewicht hinzufügen"
-          placeholderText="Trage hier dein aktuelles Gewicht ein…"
-          suffixText="kg"
-          iconName="add_circle"
-        />
+        <Box sx={{
+          display: "inline-flex",
+          height: "12%",
+        }}>
+          <BasicDatePicker labelText="Datum auswählen"  />
+        </Box>
+        <Box sx={{
+          display: "inline-flex",
+          height: "12%",
+        }}>
+          <WeightInputField labelText="Gewicht hinzufügen" placeholderText="Trage hier dein aktuelles Gewicht ein…" suffixText="kg" iconName="add_circle" />
+        </Box>
+        <BasicLineChart></BasicLineChart>
       </Box>
       <WhiteBar />
     </Box>
