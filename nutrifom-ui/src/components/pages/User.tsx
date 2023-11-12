@@ -1,69 +1,80 @@
-import { Avatar, Box, IconButton } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  IconButton,
+  InputLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 export const User = (testParams: any) => {
-  const userProfilePicture = ""; //tbd
-  const realName = "Testname"; //tbd
-  const userName = "Username"; //tbd
-  const birthday = "01.01.2000"; //tbd
-  const sex = "weiblich"; //tbd
-  const height = "170cm"; //tbd
-  const email = "x@testmail.de"; //tbd
+  const testUser = {
+    id: 1,
+    name: "Username",
+    dob: "01.01.2000",
+    height: 170,
+    gender: "weiblich",
+    image: "",
+    email: "x@testmail.de",
+  };
 
-  const labels =
-    "Name:\r\nUsername:\r\n\r\nGeburtstag:\r\nGeschlecht:\r\nGröße:\r\n\r\nEmail:";
-  const values =
-    realName +
-    "\r\n" +
-    userName +
-    "\r\n\r\n" +
-    birthday +
-    "\r\n" +
-    sex +
-    "\r\n" +
-    height +
-    "\r\n\r\n" +
-    email;
+  const userData = [
+    { label: "Username", data: testUser.name },
+    { label: "E-Mail", data: testUser.email },
+    { label: "Geburtstag", data: testUser.dob },
+    { label: "Geschlecht", data: testUser.gender },
+    { label: "Größe", data: testUser.height },
+  ];
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "auto",
+        width: "80%",
+      }}
+    >
       <Box
         sx={{
           margin: "auto",
-          width: "30%",
+          width: "20%",
         }}
       >
-        <Box
-          sx={{
-            margin: "auto",
-            width: "50%",
-          }}
-        >
-          <Avatar
-            src={userProfilePicture}
-            sx={{ margin: "auto", width: "150px", height: "150px" }}
-          />
-          <IconButton sx={{ float: "right" }}>
-            <EditIcon />
-          </IconButton>
-        </Box>
-        <Box
-          sx={{
-            margin: "auto",
-            width: "100%",
-            fontSize: 20,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <pre style={{ fontFamily: "Poppins" }}>{labels}</pre>
-          <pre
-            style={{ position: "relative", left: "10%", fontFamily: "Poppins" }}
-          >
-            {values}
-          </pre>
-        </Box>
+        <Avatar
+          src={testUser.image}
+          sx={{ margin: "auto", width: "200px", height: "200px" }}
+        />
+        <IconButton sx={{ float: "right" }}>
+          <EditIcon sx={{ fontSize: "150%" }} />
+        </IconButton>
       </Box>
-    </>
+      <Box
+        sx={{
+          margin: "auto",
+          width: "35%",
+          paddingTop: "3%",
+        }}
+      >
+        <Typography sx={{ fontSize: "150%", paddingBottom: "5%" }}>
+          Profildetails
+        </Typography>
+        {userData.map((field, index) => (
+          <TextField
+            key={index}
+            label={field.label}
+            variant="standard"
+            value={field.data}
+            inputProps={{ readOnly: true }}
+            sx={{
+              paddingBottom: "5%",
+              paddingRight: index % 2 === 0 ? "5%" : "0%",
+              float: index % 2 === 0 ? "" : "right",
+            }}
+          />
+        ))}
+      </Box>
+    </Box>
   );
 };
