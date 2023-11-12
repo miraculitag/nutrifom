@@ -23,13 +23,14 @@ export const Recipes = (testParams: any) => {
   const filterHeading = "Rezeptkategorien";
   const filterOptions = ["Alle", "Aufbauen", "Definieren"];
 
+  //testdata
   const recipes = [
     {
       id: 1,
-      title: "name1",
+      title: "Rezept Name1",
       ingredients: "200g Apfel, 100g Banane, 2TL Honig",
       rating: 3,
-      clicks: 23,
+      uses: 23,
       tag: "Aufbauen",
       description:
         "Testbeschreibung des ersten Rezeptes. Zweiter Satz um Beschreibung zu verlängern. Dritter Satz um Beschreibung zu verlängern. Vierter Satz um Beschreibung zu verlängern.",
@@ -39,13 +40,14 @@ export const Recipes = (testParams: any) => {
       saturatedFat: 25,
       unsaturatedFat: 75,
       carbohydrates: 200,
+      image: "./assets/img/recipeTest.jpg",
     },
     {
       id: 2,
-      title: "name2",
+      title: "Rezept längerer Name2",
       ingredients: "75g Möhre, 150g Brokkoli, 75g Blumenkohl",
       rating: 4.5,
-      clicks: 19,
+      uses: 19,
       tag: "Definieren",
       portions: 4,
       description: "Testbeschreibung des zweiten Rezeptes",
@@ -54,6 +56,7 @@ export const Recipes = (testParams: any) => {
       saturatedFat: 25,
       unsaturatedFat: 75,
       carbohydrates: 200,
+      image: "./assets/img/recipeTest.jpg",
     },
   ];
   const [shownRecipes, setShownRecipes] = React.useState(recipes);
@@ -100,7 +103,7 @@ export const Recipes = (testParams: any) => {
       }}
     >
       <IconButton onClick={() => setOpenFilterDialog(true)}>
-        <FilterAlt />
+        <FilterAlt sx={{ fontSize: "150%" }} />
       </IconButton>
       <FilterDialog
         id="filterRecipes"
@@ -118,19 +121,27 @@ export const Recipes = (testParams: any) => {
           onChange={handleChange(recipe.id.toString())}
         >
           <AccordionSummary expandIcon={<ExpandMore />}>
-            <Box>
-              <Typography sx={{ width: "33%", flexShrink: 0 }}>
-                {recipe.title}
-              </Typography>
-              <Rating
-                size="small"
-                precision={0.1}
-                value={ratingValues[recipe.id] || recipe.rating}
-                onChange={handleRatingChange(recipe.id)}
-              />
+            <Box sx={{ display: "flex", flexDirection: "row" }}>
+              <img src={recipe.image} alt={recipe.title} width="10%" />
+              <Box sx={{ paddingLeft: "5%" }}>
+                <Typography
+                  sx={{ fontSize: "150%", width: "100%", flexShrink: 0 }}
+                >
+                  {recipe.title}
+                </Typography>
+                <Rating
+                  size="medium"
+                  precision={0.1}
+                  value={ratingValues[recipe.id] || recipe.rating}
+                  onChange={handleRatingChange(recipe.id)}
+                />
+                <Typography sx={{ color: "text.secondary" }}>
+                  {recipe.tag}
+                </Typography>
+              </Box>
             </Box>
             <Typography sx={{ color: "text.secondary" }}>
-              {recipe.tag}
+              {recipe.uses} mal nachgekocht
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
