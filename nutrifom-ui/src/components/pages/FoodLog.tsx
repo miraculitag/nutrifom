@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box"; // Importieren Sie das Material-UI-Box-Element
-import { SearchField } from "../common/SearchField";
+import { SearchField } from "../common/NutrilogSearchField";
 import { WhiteBar } from "../layout/WhiteBar";
 
 export const FoodLog = (testParams: any) => {
@@ -17,14 +17,14 @@ export const FoodLog = (testParams: any) => {
         }}>
         <Box sx={{
           display: "inline-flex",
-          height: "12%",
+          height: "9%",
         }}>
-          <SearchField labelText="Lebensmittel hinzufügen" placeholderText="Suche hier nach einem Lebensmittel…" suffixText="" iconName="add_circle" /></Box>
+          <SearchField labelText="Lebensmittel hinzufügen" placeholderText="Suche hier nach einem Lebensmittel..." placeholderTextMenge="Menge eintragen" suffixText="" iconName="add_circle" /></Box>
         <Box sx={{
           display: "inline-flex",
-          height: "12%",
+          height: "9%",
         }}>
-          <SearchField labelText="Rezept hinzufügen" placeholderText="Suche hier nach einem Rezept..." suffixText="" iconName="add_circle" /></Box>
+          <SearchField labelText="Rezept hinzufügen" placeholderText="Suche hier nach einem Rezept..." placeholderTextMenge="Portionen eintragen" suffixText="" iconName="add_circle" /></Box>
       </Box>
       <WhiteBar />
     </Box>

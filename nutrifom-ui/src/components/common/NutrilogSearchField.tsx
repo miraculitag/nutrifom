@@ -5,7 +5,7 @@ import nutrifomTheme from '../../theme/nutrifomTheme';
 
 
 // Komponente für die Suchleiste
-export const SearchField = ({ labelText, placeholderText, suffixText, iconName }: { labelText: string; placeholderText: string, suffixText:string, iconName:string }) => {
+export const SearchField = ({ labelText, placeholderText, placeholderTextMenge, suffixText, iconName }: { labelText: string; placeholderText: string, placeholderTextMenge:string, suffixText:string, iconName:string }) => {
   // Stildefinition für das Suchfeld (verwendet in einem späteren Schritt)
 
   // Zustand, um den eingegebenen Text zu speichern
@@ -52,7 +52,7 @@ export const SearchField = ({ labelText, placeholderText, suffixText, iconName }
           <Box sx={{ color: "inherit", fontSize: "inherit", width: "20%" }}><Typography>{labelText}</Typography></Box>
           <Box sx={{ width: "80%", display: 'flex', alignItems: 'center' }}>
             <TextField
-              sx={{ width: "90%", bgcolor:"White"}}
+              sx={{ width: "70%", bgcolor:"White"}}
               id="input-with-sx"
               variant="outlined"
               placeholder={placeholderText}
@@ -61,6 +61,16 @@ export const SearchField = ({ labelText, placeholderText, suffixText, iconName }
               onChange={(e) => setSearchText(e.target.value)} // Aktualisiert den Zustand bei Eingabe
               onKeyPress={handleKeyPress} // Fügt das Tastaturereignis hinzu
 
+            />
+            <TextField
+              sx={{ width: "20%", bgcolor:"White", marginLeft: '20px'}}
+              id="input-with-sx"
+              variant="outlined"
+              placeholder={placeholderTextMenge}
+              size="small"
+              value={searchText} // Zeigt den aktuellen Wert des Zustands an
+              onChange={(e) => setSearchText(e.target.value)} // Aktualisiert den Zustand bei Eingabe
+              onKeyPress={handleKeyPress} // Fügt das Tastaturereignis hinzu
             />
             <Box sx={{margin: '5px',}}><Typography>{suffixText}</Typography></Box>
             <Icon
@@ -72,8 +82,7 @@ export const SearchField = ({ labelText, placeholderText, suffixText, iconName }
               onClick={handleSearchClick} // Fügt die Klickfunktion hinzu
             >{iconName}</Icon>
           </Box>
-        </Box>
-        
+        </Box>        
       </ThemeProvider>
     </>
   );

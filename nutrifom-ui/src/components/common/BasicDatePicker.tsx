@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers';
@@ -25,39 +25,34 @@ export const BasicDatePicker = ({ labelText }: { labelText: string }) => {
     }
   ];
 
-
-
   return (
     <>
       <Box
         sx={{
-          //backgroundColor: 'background.paper', // Hintergrundfarbe aus dem Thema
-          backgroundColor: "darkgray",
+          backgroundColor: 'primary.light',
           width: '100%', // 100% der Breite
           display: 'flex', // Verwenden Sie Flexbox, um Container nebeneinander anzuordnen
           justifyContent: 'space-between', // Verteilen Sie die Container horizontal
           alignItems: 'center', // Zentrieren Sie die Elemente vertikal
-          margin: '10px', // Außenabstand
-          pl: '10px', // Linker Innenabstand
-          boxShadow: '2', // Hinzugefügter Schatten
         }}
       >
-        <Box sx={{ color: "inherit", fontSize: "inherit", width: "20%" }}><Typography>{labelText}</Typography></Box>
-        <Box sx={{ width: "80%", display: 'flex', alignItems: 'center' }}        >
+        <Box sx={{ width: "100%", display: 'flex', alignItems: 'center' }}        >
         <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de" localeText={germanLocale}>
             <DatePicker
-              sx={{ width: "20%", bgcolor: "White"}}
+              sx={{ width: "100%", bgcolor: "White"}}
               value={selectedDate}
+              label={labelText}              
               onChange={(value) => setSelectedDate(value)}
               disablePast //Vergangenehit ausschließen
               slotProps={{
                 shortcuts: {
                   items: shortcutsItems
                 },
-                textField: { size: 'small' }
+                textField: { size: 'small', variant: 'filled'}
               }}
             />
           </LocalizationProvider>
+          
         </Box>
       </Box>
     </>
