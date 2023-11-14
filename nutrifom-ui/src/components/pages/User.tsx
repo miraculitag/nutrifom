@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { FileUpload } from "@mui/icons-material";
+import FileUploadButton from "../common/FileUploadButton";
 
 export const User = (testParams: any) => {
   const theme = useTheme();
@@ -49,11 +50,9 @@ export const User = (testParams: any) => {
           src={testUser.image}
           sx={{ margin: "auto", width: "200px", height: "200px" }}
         />
-        <IconButton sx={{ float: "right" }}>
-          <FileUpload
-            sx={{ fontSize: "150%", color: theme.palette.primary.main }}
-          />
-        </IconButton>
+        <Box sx={{ float: "right" }}>
+          <FileUploadButton />
+        </Box>
       </Box>
       <Box
         sx={{
