@@ -17,11 +17,12 @@ export const Header = (testParams: any) => {
 
   return (
     <>
-      <Box
-        onClick={() => navigate("/")}
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <img src="./assets/img/nutrifomlogo.png" alt="nutrifom logo" />
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <img
+          src="./assets/img/nutrifomlogo.png"
+          alt="nutrifom logo"
+          onClick={() => navigate("/")}
+        />
       </Box>
       <IconButton
         onClick={() => navigate("/user")}

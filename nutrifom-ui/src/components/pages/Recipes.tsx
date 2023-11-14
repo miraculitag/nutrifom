@@ -7,12 +7,14 @@ import {
   IconButton,
   Rating,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ExpandMore, FilterAlt } from "@mui/icons-material";
 import FilterDialog from "../common/FilterDialog";
 import NutritionalTable from "../common/NutritionalTable";
 
 export const Recipes = (testParams: any) => {
+  const theme = useTheme();
   const [expanded, setExpanded] = React.useState<string | false>(false);
   const [ratingValues, setRatingValues] = React.useState<{
     [key: number]: number;
@@ -103,7 +105,9 @@ export const Recipes = (testParams: any) => {
       }}
     >
       <IconButton onClick={() => setOpenFilterDialog(true)}>
-        <FilterAlt sx={{ fontSize: "150%" }} />
+        <FilterAlt
+          sx={{ fontSize: "150%", color: theme.palette.primary.main }}
+        />
       </IconButton>
       <FilterDialog
         id="filterRecipes"
@@ -120,7 +124,11 @@ export const Recipes = (testParams: any) => {
           expanded={expanded === recipe.id.toString()}
           onChange={handleChange(recipe.id.toString())}
         >
-          <AccordionSummary expandIcon={<ExpandMore />}>
+          <AccordionSummary
+            expandIcon={
+              <ExpandMore sx={{ color: theme.palette.primary.main }} />
+            }
+          >
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               <img src={recipe.image} alt={recipe.title} width="10%" />
               <Box sx={{ paddingLeft: "5%" }}>

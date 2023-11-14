@@ -5,10 +5,13 @@ import {
   InputLabel,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { FileUpload } from "@mui/icons-material";
 
 export const User = (testParams: any) => {
+  const theme = useTheme();
   const testUser = {
     id: 1,
     name: "Username",
@@ -47,7 +50,9 @@ export const User = (testParams: any) => {
           sx={{ margin: "auto", width: "200px", height: "200px" }}
         />
         <IconButton sx={{ float: "right" }}>
-          <EditIcon sx={{ fontSize: "150%" }} />
+          <FileUpload
+            sx={{ fontSize: "150%", color: theme.palette.primary.main }}
+          />
         </IconButton>
       </Box>
       <Box
