@@ -7,12 +7,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { FileUpload } from "@mui/icons-material";
 import FileUploadButton from "../common/FileUploadButton";
 
 export const User = (testParams: any) => {
-  const theme = useTheme();
   const testUser = {
     id: 1,
     name: "Username",

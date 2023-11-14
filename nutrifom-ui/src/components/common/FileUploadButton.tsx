@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { IconButton, useTheme } from "@mui/material";
 import { styled } from "@mui/system";
 import { FileUpload } from "@mui/icons-material";
