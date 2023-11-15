@@ -15,11 +15,10 @@ export default function BasicButton(props: BasicButtonProps) {
       onClick={props.onButtonClick}
       sx={{
         width: "250px",
-        backgroundColor: props.isButtonClicked
-          ? "primary.secondary"
-          : "primary.main",
+        backgroundColor: theme.palette.primary.main,
         color: "white",
         "&:hover": {
+          backgroundColor: theme.palette.primary.light,
           color: "black",
         },
       }}

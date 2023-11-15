@@ -1,23 +1,29 @@
 import React from "react";
-import { Box, TextField, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  TextField,
+  Typography,
+  useTheme,
+  Tooltip,
+} from "@mui/material";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import InfoAlert from "../common/InfoAlert";
 import DropDownMenu from "../common/DropDownMenu";
 import BasicButton from "../common/BasicButton";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
-  const [isButtonDataBasedClicked, setIsButtonDataBasedClicked] =
-    React.useState(false);
-  const [isButtonFormulaClicked, setIsButtonFormulaClicked] =
-    React.useState(false);
+  const [isButtonClicked, setIsButtonClicked] = React.useState(false);
+  const [kcalRequirement, setKcalRequirement] = React.useState<number>();
 
-  const dataFor14Days = true;
+  const dataFor14Days = false;
 
   const testUser = {
     id: 1,
     name: "Username",
     weight: 70,
-    dob: "01.01.2000",
+    dob: "2000-01-01",
     goal: "Aufbauen",
     height: 170,
     gender: "weiblich",
@@ -26,6 +32,7 @@ export const Calc = (testParams: any) => {
     image: "",
     email: "x@testmail.de",
   };
+
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
     description:
@@ -47,7 +54,7 @@ export const Calc = (testParams: any) => {
   ];
   const goals = ["Aufbauen", "Definieren"];
 
-  const palAsValue = (pal: String) => {
+  const palAsValue = (pal: string) => {
     switch (pal) {
       case "nicht aktiv":
         return 1.25;
@@ -60,7 +67,7 @@ export const Calc = (testParams: any) => {
       case "sehr aktiv":
         return 2.2;
       default:
-        console.log("PAL-Kategorie nicht erhalten");
+        return 1.65; //tbd
     }
   };
 
@@ -68,12 +75,45 @@ export const Calc = (testParams: any) => {
     return wpa * 0.1;
   };
 
-  const handleButtonDataBasedClick = () => {
-    console.log("data based");
-  };
+  const handleButtonClick = () => {
+    setIsButtonClicked(true);
+    let newKcalRequirement;
+    let goalDependetPart = 0;
 
-  const handleButtonFormulaClick = () => {
-    console.log("formula");
+    if (dataFor14Days) {
+      newKcalRequirement = 2000; //tbd
+    } else {
+      const currentDate = new Date();
+      const userDob = new Date(testUser.dob); //tbd
+      const userAge = currentDate.getFullYear() - userDob.getFullYear();
+      let basalMetabolicRate;
+      if (testUser.gender === "weiblich") {
+        basalMetabolicRate =
+          65.51 +
+          9.6 * testUser.weight +
+          1.85 * testUser.height -
+          4.68 * userAge;
+      } else {
+        basalMetabolicRate =
+          66.47 +
+          13.75 * testUser.weight +
+          5 * testUser.height -
+          6.76 * userAge;
+      }
+      const physicalActivity =
+        palAsValue(testUser.pal) + wpaAsValue(testUser.wpa);
+
+      newKcalRequirement = basalMetabolicRate * physicalActivity;
+    }
+
+    if (testUser.goal === "Aufbauen") {
+      goalDependetPart = 300;
+    } else if (testUser.goal === "Definieren") {
+      goalDependetPart = -300;
+    }
+    newKcalRequirement = newKcalRequirement + goalDependetPart;
+
+    setKcalRequirement(Math.round(newKcalRequirement));
   };
 
   return (
@@ -134,19 +174,50 @@ export const Calc = (testParams: any) => {
             />
             <BasicButton
               label="Kalorienbedarf Berechnen"
-              isButtonClicked={
-                dataFor14Days
-                  ? isButtonDataBasedClicked
-                  : isButtonFormulaClicked
-              }
-              onButtonClick={
-                dataFor14Days
-                  ? handleButtonDataBasedClick
-                  : handleButtonFormulaClick
-              }
+              isButtonClicked={isButtonClicked}
+              onButtonClick={handleButtonClick}
             />
           </Box>
         </Box>
+        {isButtonClicked ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              margin: "auto",
+              justifyContent: "center",
+              paddingTop: "5%",
+            }}
+          >
+            <Typography sx={{ fontSize: "150%" }}>
+              Dein Kalorienbedarf:
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "150%",
+                fontWeight: "bold",
+                paddingLeft: "2%",
+              }}
+            >
+              {kcalRequirement} kcal
+            </Typography>
+            <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
+              <IconButton sx={{ marginLeft: "2%" }}>
+                <BookmarkBorderIcon
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.light,
+                      color: "black",
+                    },
+                  }}
+                />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        ) : (
+          ""
+        )}
+
         <Box sx={{ paddingTop: "5%" }}>
           <InfoAlert
             title={
