@@ -1,18 +1,27 @@
 import React from "react";
 import { WhiteBar } from "../layout/WhiteBar";
-
 import { BasicDatePicker } from "../common/BasicDatePicker";
-import { WeightInputField } from "../common/WeightInputField";
+import { BasicIntInputField } from "../common/BasicIntInputField";
 import BasicLineChart from "../common/BasicLineChart";
-import { Alert, Button, Box, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import JustifiedTypography from "../common/JustifiedTypography";
+import { Layout } from "../layout/Layout";
+import BasicButton from "../common/BasicButton";
+import dayjs, { Dayjs } from "dayjs";
 
 export const Weight = (testParams: any) => {
   const theme = useTheme();
-  const [currentWeight, setCurrentWeight] = React.useState("");
   const [isButtonClicked, setIsButtonClicked] = React.useState(false);
+
+
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(dayjs(new Date()));
+  const [currentWeight, setCurrentWeight] = React.useState('');
   const [hasError, setHasError] = React.useState(false);
+
+  React.useEffect(() => {
+    setHasError(currentWeight.length > 0 && parseFloat(currentWeight) < 0);
+  }, [currentWeight]);
 
   const infoText = {
     title: "Gewichtsveränderung:",
@@ -22,19 +31,22 @@ export const Weight = (testParams: any) => {
 
   const handleAddWeightClick = () => {
     const numericWeight = parseFloat(currentWeight);
+    const currentDate = selectedDate;
     if (numericWeight >= 0) {
-      console.log(`Suchbutton geklickt. Eingegebener Text: ${numericWeight}`);
-      setIsButtonClicked(true);
-      setTimeout(() => {
-        setIsButtonClicked(false);
-      }, 500);
-      setHasError(false);
-    } else {
-      setHasError(true);
-    }
+      console.log(`Suchbutton geklickt. Eingegebener Text: ${numericWeight} ${currentDate}`);
+  };
+}
+
+  const handleWeightInputChange = (value: number) => {
+    setCurrentWeight(value.toString());
+  };
+  
+  const handleDatePickerChange = (value: Dayjs | null) => {
+    setSelectedDate(value);
   };
 
   return (
+    <Layout>
     <Box style={{ display: "flex", justifyContent: "space-between" }}>
       <WhiteBar />
 
@@ -63,36 +75,32 @@ export const Weight = (testParams: any) => {
               margin: "5%", // Abstand zum Textfeld
             }}
           >
-            <BasicDatePicker labelText="Datum auswählen" />
+            <BasicDatePicker 
+                label="Datum auswählen"
+                value={selectedDate}
+                onChange={handleDatePickerChange} 
+                width="90%"/>
           </Box>
           <Box
             sx={{
               margin: "5%", // Abstand zum Textfeld
             }}
           >
-            <WeightInputField
-              labelText="Gewicht hinzufügen"
-              placeholderText="Trage hier dein aktuelles Gewicht ein…"
-              suffixText="kg"
-              iconName="add_circle"
-            />
+            <BasicIntInputField
+                label="Gewicht hinzufügen"
+                suffix="kg"
+                value={parseFloat(currentWeight) || 0}
+                onChange={handleWeightInputChange}
+                width="90%"
+                hasError={false}
+                />
           </Box>
-          <Button
-            sx={{
-              margin: "5%", // Abstand zum Textfeld
-              backgroundColor: isButtonClicked
-                ? "primary.secondary"
-                : "primary.main",
-              color: "white",
-              "&:hover": {
-                color: "black",
-              },
-            }}
-            variant="outlined"
-            onClick={handleAddWeightClick}
-          >
-            Eintrag hinzufügen
-          </Button>
+          <BasicButton
+              label="Eintrag hinzufügen"
+              width="90%"
+              isButtonClicked={isButtonClicked}
+              onButtonClick={handleAddWeightClick}
+            />
         </Box>
         <Box
           sx={{
@@ -117,5 +125,6 @@ export const Weight = (testParams: any) => {
       </Box>
       <WhiteBar />
     </Box>
+    </Layout>
   );
 };

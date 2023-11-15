@@ -9,11 +9,18 @@ import { deDE } from '@mui/x-date-pickers/locales';
 import {
   PickersShortcutsItem,
 } from '@mui/x-date-pickers/PickersShortcuts';
+import {  useTheme } from "@mui/material";
 
-// Komponente für die Suchleiste
-export const BasicDatePicker = ({ labelText }: { labelText: string }) => {
+export interface BasicDatePickerProps {
+  label: string;
+  width: string;
+  value: Dayjs | null;
+  onChange: (value: Dayjs | null) => void;
+}
 
-  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(dayjs(new Date()));
+export const BasicDatePicker = (props: BasicDatePickerProps) => {
+  const theme = useTheme();
+  
   const germanLocale = deDE.components.MuiLocalizationProvider.defaultProps.localeText;
 
   const shortcutsItems: PickersShortcutsItem<Dayjs | null>[] = [
@@ -23,36 +30,43 @@ export const BasicDatePicker = ({ labelText }: { labelText: string }) => {
         return dayjs(new Date());
       },
     }
+    
   ];
+
 
   return (
     <>
       <Box
         sx={{
           backgroundColor: 'primary.light',
-          width: '100%', // 100% der Breite
-          display: 'flex', // Verwenden Sie Flexbox, um Container nebeneinander anzuordnen
-          justifyContent: 'space-between', // Verteilen Sie die Container horizontal
-          alignItems: 'center', // Zentrieren Sie die Elemente vertikal
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center', 
         }}
       >
         <Box sx={{ width: "100%", display: 'flex', alignItems: 'center' }}        >
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de" localeText={germanLocale}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de" localeText={germanLocale}>
             <DatePicker
-              sx={{ width: "100%", bgcolor: "White"}}
-              value={selectedDate}
-              label={labelText}              
-              onChange={(value) => setSelectedDate(value)}
-              disablePast //Vergangenehit ausschließen
+              sx={{ width: "100%", bgcolor: "White" }}
+              value={props.value}
+              label={props.label}
+              onChange={props.onChange}
+              disablePast
               slotProps={{
                 shortcuts: {
                   items: shortcutsItems
                 },
-                textField: { size: 'small', variant: 'filled'}
+                textField: {
+                  size: 'small', variant: 'filled',
+                  focused: true,
+                  color: 'secondary',                  
+                },
+                openPickerButton: {
+                  color: 'primary',}
               }}
             />
           </LocalizationProvider>
-          
         </Box>
       </Box>
     </>

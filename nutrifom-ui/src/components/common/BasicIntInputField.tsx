@@ -2,23 +2,20 @@ import * as React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { Box, Icon, InputAdornment, TextField } from '@mui/material';
 import nutrifomTheme from '../../theme/nutrifomTheme';
+import { PropaneSharp } from '@mui/icons-material';
+
+export interface BasicIntInputFieldProps {
+  label: string;
+  suffix: string;
+  width: string;
+  hasError: boolean;
+  value: number;
+  onChange: (value: number) => void;
+}
 
 
 // Komponente für die Suchleiste
-export const WeightInputField = ({ labelText, placeholderText, suffixText, iconName }: { labelText: string; placeholderText: string, suffixText: string, iconName: string }) => {
-  // Stildefinition für das Suchfeld (verwendet in einem späteren Schritt)
-
-  // Zustand, um den eingegebenen Text zu speichern
-  const [currentWeight, setCurrentWeight] = React.useState('');
-  // Neuer Zustand für den Fehlerzustand
-  const [hasError, setHasError] = React.useState(false);
-
-
-  // Überprüfen Sie die Länge des aktuellen Gewichts und aktualisieren Sie den Fehlerzustand entsprechend
-  React.useEffect(() => {
-    setHasError(currentWeight.length > 0 && parseFloat(currentWeight) < 0);
-  }, [currentWeight]);
-
+export const BasicIntInputField = (props: BasicIntInputFieldProps) => {
   return (
     <>
       <ThemeProvider theme={nutrifomTheme}>
@@ -41,19 +38,20 @@ export const WeightInputField = ({ labelText, placeholderText, suffixText, iconN
               required
               variant="filled"
               size="small"
-              label={placeholderText}
-              value={currentWeight} // Zeigt den aktuellen Wert des Zustands an
-              onChange={(e) => setCurrentWeight(e.target.value)} // Aktualisiert den Zustand bei Eingabe
+              label={props.label}
+              value={props.value} // Zeigt den aktuellen Wert des Zustands an
+              onChange={(e) => props.onChange(parseFloat(e.target.value))}
+               // Aktualisiert den Zustand bei Eingabe
               InputProps={{
-                endAdornment: <InputAdornment position="end">{suffixText}</InputAdornment>,
+                endAdornment: <InputAdornment position="end">{props.suffix}</InputAdornment>,
               }}
               InputLabelProps={{
                 shrink: true,
               }}
               // Setzen Sie die error-Props basierend auf dem Fehlerzustand
-              error={hasError}
+              error={props.hasError}
               // Wenn ein Fehler auftritt, können Sie auch eine Fehlermeldung anzeigen
-              helperText={hasError ? 'Ungültiger Wert: Das Gewicht muss positiv sein.' : ''}
+              helperText={props.hasError ? 'Ungültiger Wert: Das Gewicht muss positiv sein.' : ''}
             />
           </Box>
         </Box>
