@@ -1,4 +1,3 @@
-import React from "react";
 import {
   useTheme,
   FormControl,
@@ -11,21 +10,21 @@ import {
 export interface DropDownProps {
   title: string;
   options: string[];
-  defaultValue: string;
+  value: string;
+  setValue: (value: string) => void;
 }
 
 export default function DropDownMenu(props: DropDownProps) {
   const theme = useTheme();
-  const [value, setValue] = React.useState(props.defaultValue);
 
   const handleChange = (event: SelectChangeEvent) => {
-    setValue(event.target.value);
+    props.setValue(event.target.value);
   };
 
   return (
     <FormControl variant="standard" sx={{ width: "250px" }}>
       <InputLabel>{props.title}</InputLabel>
-      <Select value={value} onChange={handleChange}>
+      <Select value={props.value} onChange={handleChange}>
         {props.options.map((option, index) => (
           <MenuItem key={index} value={option}>
             {option}

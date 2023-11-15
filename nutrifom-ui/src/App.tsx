@@ -7,7 +7,6 @@ import { FoodLog } from "./components/pages/FoodLog";
 import { Weight } from "./components/pages/Weight";
 import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
-import { Header } from "./components/layout/Header";
 import { ThemeProvider } from "@mui/material";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
 import SignIn from "./components/pages/SignIn";
@@ -24,9 +23,10 @@ export default function App() {
         <ThemeProvider theme={nutrifomTheme}>
           <Router>
             <Routes>
+              <Route path="/signin" element={<SignIn />} />
               <Route path="/" element={<Home />} />
               <Route path="/user" element={<User />} />
-              <Route path="/foodLog" element={<FoodLog />} />
+              <Route path="/foodlog" element={<FoodLog />} />
               <Route path="/weight" element={<Weight />} />
               <Route path="/calc" element={<Calc />} />
               <Route path="/recipes" element={<Recipes />} />

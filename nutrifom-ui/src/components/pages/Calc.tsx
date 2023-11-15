@@ -16,6 +16,7 @@ import { Layout } from "../layout/Layout";
 export const Calc = (testParams: any) => {
   const theme = useTheme();
   const [isButtonClicked, setIsButtonClicked] = React.useState(false);
+
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
 
   const dataFor14Days = false;
@@ -33,6 +34,9 @@ export const Calc = (testParams: any) => {
     image: "",
     email: "x@testmail.de",
   };
+
+  const [pal, setPal] = React.useState(testUser.pal);
+  const [goal, setGoal] = React.useState(testUser.goal);
 
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
@@ -140,7 +144,8 @@ export const Calc = (testParams: any) => {
             <DropDownMenu
               title={"alltägliches körperliches Aktivitätslevel"}
               options={palCatergories}
-              defaultValue={testUser.pal}
+              value={pal}
+              setValue={setPal}
             />
             <TextField
               sx={{ width: "250px" }}
@@ -165,10 +170,12 @@ export const Calc = (testParams: any) => {
           <DropDownMenu
             title={"persönliches Ziel"}
             options={goals}
-            defaultValue={testUser.goal}
+            value={goal}
+            setValue={setGoal}
           />
           <BasicButton
             label="Kalorienbedarf Berechnen"
+            width="250px"
             isButtonClicked={isButtonClicked}
             onButtonClick={handleButtonClick}
           />
