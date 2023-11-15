@@ -74,7 +74,6 @@ export const Home = (testParams: any) => {
           display: "flex",
           flexDirection: "column",
           margin: "auto",
-          width: "80%",
         }}
       >
         <Box>

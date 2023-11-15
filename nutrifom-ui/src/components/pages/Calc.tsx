@@ -19,7 +19,7 @@ export const Calc = (testParams: any) => {
 
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
 
-  const dataFor14Days = false;
+  const dataFor14Days = true;
 
   const testUser = {
     id: 1,
@@ -34,6 +34,15 @@ export const Calc = (testParams: any) => {
     image: "",
     email: "x@testmail.de",
   };
+
+  const testWeights = [
+    70.1, 71.5, 70.7, 69.8, 69.7, 68.6, 70.2, 70.6, 70.3, 69.2, 68.5, 68.7,
+    69.8, 69.6,
+  ];
+  const testKcalIntake = [
+    2334, 2302, 2274, 2256, 2354, 2296, 2315, 2294, 2312, 2284, 2296, 2354,
+    2286, 2317,
+  ];
 
   const [pal, setPal] = React.useState(testUser.pal);
   const [goal, setGoal] = React.useState(testUser.goal);
@@ -57,7 +66,7 @@ export const Calc = (testParams: any) => {
     "aktiv",
     "sehr aktiv",
   ];
-  const goals = ["Aufbauen", "Definieren"];
+  const goals = ["Aufbauen", "Definieren", "Halten"];
 
   const palAsValue = (pal: string) => {
     switch (pal) {
@@ -86,12 +95,41 @@ export const Calc = (testParams: any) => {
     let goalDependetPart = 0;
 
     if (dataFor14Days) {
-      newKcalRequirement = 2000; //tbd
+      const weightsWeek1 = testWeights.slice(0, 7);
+      const weightsWeek2 = testWeights.slice(7);
+      console.log("Woche1 Gewicht" + weightsWeek1);
+      console.log("Woche2 Gewicht" + weightsWeek2);
+
+      const avgWeightWeek1 =
+        weightsWeek1.reduce((total, current) => total + current, 0) / 7;
+      const avgWeightWeek2 =
+        weightsWeek2.reduce((total, current) => total + current, 0) / 7;
+
+      const weightDifference = avgWeightWeek2 - avgWeightWeek1;
+
+      const kcalIntakeWeek1 = testKcalIntake.slice(0, 7);
+      const kcalIntakeWeek2 = testKcalIntake.slice(7);
+
+      const avgKcalIntakeWeek1 =
+        kcalIntakeWeek1.reduce((total, current) => total + current, 0) / 7;
+
+      const avgKcalIntakeWeek2 =
+        kcalIntakeWeek2.reduce((total, current) => total + current, 0) / 7;
+
+      const avgKcalIntake = (avgKcalIntakeWeek1 + avgKcalIntakeWeek2) / 2;
+
+      const weeklyKcalDifference = weightDifference * 7000;
+      console.log(weeklyKcalDifference);
+      const dailyKcalDifference = weeklyKcalDifference / 7;
+
+      newKcalRequirement = dailyKcalDifference * -1 + avgKcalIntake; //tbd
     } else {
       const currentDate = new Date();
       const userDob = new Date(testUser.dob); //tbd
       const userAge = currentDate.getFullYear() - userDob.getFullYear();
+
       let basalMetabolicRate;
+
       if (testUser.gender === "weiblich") {
         basalMetabolicRate =
           65.51 +
