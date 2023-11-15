@@ -12,6 +12,7 @@ import {
 import { ExpandMore, FilterAlt } from "@mui/icons-material";
 import FilterDialog from "../common/FilterDialog";
 import NutritionalTable from "../common/NutritionalTable";
+import { Layout } from "../layout/Layout";
 
 export const Recipes = (testParams: any) => {
   const theme = useTheme();
@@ -98,113 +99,110 @@ export const Recipes = (testParams: any) => {
   };
 
   return (
-    <Box
-      sx={{
-        margin: "auto",
-        width: "80%",
-      }}
-    >
-      <IconButton onClick={() => setOpenFilterDialog(true)}>
-        <FilterAlt
-          sx={{ fontSize: "150%", color: theme.palette.primary.main }}
+    <Layout>
+      <Box>
+        <IconButton onClick={() => setOpenFilterDialog(true)}>
+          <FilterAlt
+            sx={{ fontSize: "150%", color: theme.palette.primary.main }}
+          />
+        </IconButton>
+        <FilterDialog
+          id="filterRecipes"
+          keepMounted
+          heading={filterHeading}
+          options={filterOptions}
+          open={openFilterDialog}
+          onClose={handleClose}
+          valueFilter={filterValue}
         />
-      </IconButton>
-      <FilterDialog
-        id="filterRecipes"
-        keepMounted
-        heading={filterHeading}
-        options={filterOptions}
-        open={openFilterDialog}
-        onClose={handleClose}
-        valueFilter={filterValue}
-      />
-      {shownRecipes.map((recipe) => (
-        <Accordion
-          key={recipe.id}
-          expanded={expanded === recipe.id.toString()}
-          onChange={handleChange(recipe.id.toString())}
-        >
-          <AccordionSummary
-            expandIcon={
-              <ExpandMore sx={{ color: theme.palette.primary.main }} />
-            }
+        {shownRecipes.map((recipe) => (
+          <Accordion
+            key={recipe.id}
+            expanded={expanded === recipe.id.toString()}
+            onChange={handleChange(recipe.id.toString())}
           >
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <img src={recipe.image} alt={recipe.title} width="10%" />
-              <Box sx={{ paddingLeft: "5%" }}>
-                <Typography
-                  sx={{ fontSize: "150%", width: "100%", flexShrink: 0 }}
-                >
-                  {recipe.title}
-                </Typography>
-                <Rating
-                  size="medium"
-                  precision={0.1}
-                  value={ratingValues[recipe.id] || recipe.rating}
-                  onChange={handleRatingChange(recipe.id)}
-                />
-                <Typography sx={{ color: "text.secondary" }}>
-                  {recipe.tag}
-                </Typography>
-              </Box>
-            </Box>
-            <Typography sx={{ color: "text.secondary" }}>
-              {recipe.uses} mal nachgekocht
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
+            <AccordionSummary
+              expandIcon={
+                <ExpandMore sx={{ color: theme.palette.primary.main }} />
+              }
             >
-              <Box sx={{ minWidth: "25%" }}>
-                <Typography>Zutaten:</Typography>
-                {recipe.ingredients.split(",").map((ingredient, index) => (
-                  <Box key={index} sx={{ marginLeft: "20px" }}>
-                    <Typography>{ingredient}</Typography>
-                  </Box>
-                ))}
-              </Box>
-              <Box sx={{ minWidth: "25%", maxWidth: "40%" }}>
-                <Typography>Beschreibung:</Typography>
-                <Box
-                  sx={{
-                    marginLeft: "20px",
-                  }}
-                >
-                  <Typography>{recipe.description}</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ minWidth: "25%" }}>
-                <Typography>Nährwerte pro Portion:</Typography>
-                <Box sx={{ paddingTop: "5%", paddingBottom: "5%" }}>
-                  <NutritionalTable
-                    energy_kcal={Math.round(
-                      recipe.energy_kcal / recipe.portions
-                    )}
-                    proteins={Math.round(recipe.proteins / recipe.portions)}
-                    saturatedFat={Math.round(
-                      recipe.saturatedFat / recipe.portions
-                    )}
-                    unsaturatedFat={Math.round(
-                      recipe.unsaturatedFat / recipe.portions
-                    )}
-                    carbohydrates={Math.round(
-                      recipe.carbohydrates / recipe.portions
-                    )}
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                <img src={recipe.image} alt={recipe.title} width="10%" />
+                <Box sx={{ paddingLeft: "5%" }}>
+                  <Typography
+                    sx={{ fontSize: "150%", width: "100%", flexShrink: 0 }}
+                  >
+                    {recipe.title}
+                  </Typography>
+                  <Rating
+                    size="medium"
+                    precision={0.1}
+                    value={ratingValues[recipe.id] || recipe.rating}
+                    onChange={handleRatingChange(recipe.id)}
                   />
+                  <Typography sx={{ color: "text.secondary" }}>
+                    {recipe.tag}
+                  </Typography>
                 </Box>
-                <Typography>
-                  Das Rezept ergibt {recipe.portions} Portionen.
-                </Typography>
               </Box>
-            </Box>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </Box>
+              <Typography sx={{ color: "text.secondary" }}>
+                {recipe.uses} mal nachgekocht
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box sx={{ minWidth: "25%" }}>
+                  <Typography>Zutaten:</Typography>
+                  {recipe.ingredients.split(",").map((ingredient, index) => (
+                    <Box key={index} sx={{ marginLeft: "20px" }}>
+                      <Typography>{ingredient}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+                <Box sx={{ minWidth: "25%", maxWidth: "40%" }}>
+                  <Typography>Beschreibung:</Typography>
+                  <Box
+                    sx={{
+                      marginLeft: "20px",
+                    }}
+                  >
+                    <Typography>{recipe.description}</Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ minWidth: "25%" }}>
+                  <Typography>Nährwerte pro Portion:</Typography>
+                  <Box sx={{ paddingTop: "5%", paddingBottom: "5%" }}>
+                    <NutritionalTable
+                      energy_kcal={Math.round(
+                        recipe.energy_kcal / recipe.portions
+                      )}
+                      proteins={Math.round(recipe.proteins / recipe.portions)}
+                      saturatedFat={Math.round(
+                        recipe.saturatedFat / recipe.portions
+                      )}
+                      unsaturatedFat={Math.round(
+                        recipe.unsaturatedFat / recipe.portions
+                      )}
+                      carbohydrates={Math.round(
+                        recipe.carbohydrates / recipe.portions
+                      )}
+                    />
+                  </Box>
+                  <Typography>
+                    Das Rezept ergibt {recipe.portions} Portionen.
+                  </Typography>
+                </Box>
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Box>
+    </Layout>
   );
 };

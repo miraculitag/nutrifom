@@ -11,6 +11,7 @@ import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import InfoAlert from "../common/InfoAlert";
 import DropDownMenu from "../common/DropDownMenu";
 import BasicButton from "../common/BasicButton";
+import { Layout } from "../layout/Layout";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
@@ -117,48 +118,17 @@ export const Calc = (testParams: any) => {
   };
 
   return (
-    <>
+    <Layout>
       <Box
         sx={{
           margin: "auto",
-          width: "80%",
+          width: "50%",
+          justifyContent: "center",
         }}
       >
-        <Box
-          sx={{
-            margin: "auto",
-            width: "50%",
-            justifyContent: "center",
-          }}
-        >
-          {dataFor14Days ? (
-            ""
-          ) : (
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "baseline",
-                justifyContent: "space-around",
-                paddingTop: "5%",
-              }}
-            >
-              <DropDownMenu
-                title={"alltägliches körperliches Aktivitätslevel"}
-                options={palCatergories}
-                defaultValue={testUser.pal}
-              />
-              <TextField
-                sx={{ width: "250px" }}
-                label="sportliche Aktivität in Stunden/Woche"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="standard"
-              />
-            </Box>
-          )}
-
+        {dataFor14Days ? (
+          ""
+        ) : (
           <Box
             sx={{
               display: "flex",
@@ -168,69 +138,93 @@ export const Calc = (testParams: any) => {
             }}
           >
             <DropDownMenu
-              title={"persönliches Ziel"}
-              options={goals}
-              defaultValue={testUser.goal}
+              title={"alltägliches körperliches Aktivitätslevel"}
+              options={palCatergories}
+              defaultValue={testUser.pal}
             />
-            <BasicButton
-              label="Kalorienbedarf Berechnen"
-              isButtonClicked={isButtonClicked}
-              onButtonClick={handleButtonClick}
-            />
-          </Box>
-        </Box>
-        {isButtonClicked ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              margin: "auto",
-              justifyContent: "center",
-              paddingTop: "5%",
-            }}
-          >
-            <Typography sx={{ fontSize: "150%" }}>
-              Dein Kalorienbedarf:
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: "150%",
-                fontWeight: "bold",
-                paddingLeft: "2%",
+            <TextField
+              sx={{ width: "250px" }}
+              label="sportliche Aktivität in Stunden/Woche"
+              type="number"
+              InputLabelProps={{
+                shrink: true,
               }}
-            >
-              {kcalRequirement} kcal
-            </Typography>
-            <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
-              <IconButton sx={{ marginLeft: "2%" }}>
-                <BookmarkBorderIcon
-                  sx={{
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.light,
-                      color: "black",
-                    },
-                  }}
-                />
-              </IconButton>
-            </Tooltip>
+              variant="standard"
+            />
           </Box>
-        ) : (
-          ""
         )}
 
-        <Box sx={{ paddingTop: "5%" }}>
-          <InfoAlert
-            title={
-              dataFor14Days ? infoTextDataBased.title : infoTextFormula.title
-            }
-            description={
-              dataFor14Days
-                ? infoTextDataBased.description
-                : infoTextFormula.description
-            }
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-around",
+            paddingTop: "5%",
+          }}
+        >
+          <DropDownMenu
+            title={"persönliches Ziel"}
+            options={goals}
+            defaultValue={testUser.goal}
+          />
+          <BasicButton
+            label="Kalorienbedarf Berechnen"
+            isButtonClicked={isButtonClicked}
+            onButtonClick={handleButtonClick}
           />
         </Box>
       </Box>
-    </>
+      {isButtonClicked ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            margin: "auto",
+            justifyContent: "center",
+            paddingTop: "5%",
+          }}
+        >
+          <Typography sx={{ fontSize: "150%" }}>
+            Dein Kalorienbedarf:
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "150%",
+              fontWeight: "bold",
+              paddingLeft: "2%",
+            }}
+          >
+            {kcalRequirement} kcal
+          </Typography>
+          <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
+            <IconButton sx={{ marginLeft: "2%" }}>
+              <BookmarkBorderIcon
+                sx={{
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.light,
+                    color: "black",
+                  },
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ) : (
+        ""
+      )}
+
+      <Box sx={{ paddingTop: "5%" }}>
+        <InfoAlert
+          title={
+            dataFor14Days ? infoTextDataBased.title : infoTextFormula.title
+          }
+          description={
+            dataFor14Days
+              ? infoTextDataBased.description
+              : infoTextFormula.description
+          }
+        />
+      </Box>
+    </Layout>
   );
 };

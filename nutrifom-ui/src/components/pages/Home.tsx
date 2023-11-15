@@ -2,6 +2,7 @@ import { Alert, Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import JustifiedTypography from "../common/JustifiedTypography";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { Layout } from "../layout/Layout";
 
 export const Home = (testParams: any) => {
   const theme = useTheme();
@@ -67,7 +68,7 @@ export const Home = (testParams: any) => {
   ];
 
   return (
-    <>
+    <Layout>
       <Box
         sx={{
           display: "flex",
@@ -171,6 +172,6 @@ export const Home = (testParams: any) => {
           </Stack>
         </Box>
       </Box>
-    </>
+    </Layout>
   );
 };

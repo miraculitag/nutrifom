@@ -8,6 +8,7 @@ import {
   useTheme,
 } from "@mui/material";
 import FileUploadButton from "../common/FileUploadButton";
+import { Layout } from "../layout/Layout";
 
 export const User = (testParams: any) => {
   const testUser = {
@@ -29,53 +30,53 @@ export const User = (testParams: any) => {
   ];
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        margin: "auto",
-        width: "80%",
-      }}
-    >
+    <Layout>
       <Box
         sx={{
-          margin: "auto",
-          width: "20%",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <Avatar
-          src={testUser.image}
-          sx={{ margin: "auto", width: "200px", height: "200px" }}
-        />
-        <Box sx={{ float: "right" }}>
-          <FileUploadButton />
+        <Box
+          sx={{
+            margin: "auto",
+            width: "20%",
+          }}
+        >
+          <Avatar
+            src={testUser.image}
+            sx={{ margin: "auto", width: "200px", height: "200px" }}
+          />
+          <Box sx={{ float: "right" }}>
+            <FileUploadButton />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            margin: "auto",
+            width: "35%",
+            paddingTop: "3%",
+          }}
+        >
+          <Typography sx={{ fontSize: "150%", paddingBottom: "5%" }}>
+            Profildetails
+          </Typography>
+          {userData.map((field, index) => (
+            <TextField
+              key={index}
+              label={field.label}
+              variant="standard"
+              value={field.data}
+              inputProps={{ readOnly: true }}
+              sx={{
+                paddingBottom: "5%",
+                paddingRight: index % 2 === 0 ? "5%" : "0%",
+                float: index % 2 === 0 ? "" : "right",
+              }}
+            />
+          ))}
         </Box>
       </Box>
-      <Box
-        sx={{
-          margin: "auto",
-          width: "35%",
-          paddingTop: "3%",
-        }}
-      >
-        <Typography sx={{ fontSize: "150%", paddingBottom: "5%" }}>
-          Profildetails
-        </Typography>
-        {userData.map((field, index) => (
-          <TextField
-            key={index}
-            label={field.label}
-            variant="standard"
-            value={field.data}
-            inputProps={{ readOnly: true }}
-            sx={{
-              paddingBottom: "5%",
-              paddingRight: index % 2 === 0 ? "5%" : "0%",
-              float: index % 2 === 0 ? "" : "right",
-            }}
-          />
-        ))}
-      </Box>
-    </Box>
+    </Layout>
   );
 };
