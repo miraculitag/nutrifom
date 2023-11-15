@@ -15,7 +15,7 @@ import { Layout } from "../layout/Layout";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
-  const [isButtonClicked, setIsButtonClicked] = React.useState(false);
+  const [isCalcButtonClicked, setIsCalcButtonClicked] = React.useState(false);
 
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
 
@@ -89,16 +89,16 @@ export const Calc = (testParams: any) => {
     return wpa * 0.1;
   };
 
-  const handleButtonClick = () => {
-    setIsButtonClicked(true);
+  const saveKcalGoalToFoodLog = () => {}; //tbd
+
+  const handleCalcButtonClick = () => {
+    setIsCalcButtonClicked(true);
     let newKcalRequirement;
     let goalDependetPart = 0;
 
     if (dataFor14Days) {
       const weightsWeek1 = testWeights.slice(0, 7);
       const weightsWeek2 = testWeights.slice(7);
-      console.log("Woche1 Gewicht" + weightsWeek1);
-      console.log("Woche2 Gewicht" + weightsWeek2);
 
       const avgWeightWeek1 =
         weightsWeek1.reduce((total, current) => total + current, 0) / 7;
@@ -119,7 +119,7 @@ export const Calc = (testParams: any) => {
       const avgKcalIntake = (avgKcalIntakeWeek1 + avgKcalIntakeWeek2) / 2;
 
       const weeklyKcalDifference = weightDifference * 7000;
-      console.log(weeklyKcalDifference);
+
       const dailyKcalDifference = weeklyKcalDifference / 7;
 
       newKcalRequirement = dailyKcalDifference * -1 + avgKcalIntake; //tbd
@@ -143,15 +143,14 @@ export const Calc = (testParams: any) => {
           5 * testUser.height -
           6.76 * userAge;
       }
-      const physicalActivity =
-        palAsValue(testUser.pal) + wpaAsValue(testUser.wpa);
+      const physicalActivity = palAsValue(pal) + wpaAsValue(testUser.wpa);
 
       newKcalRequirement = basalMetabolicRate * physicalActivity;
     }
 
-    if (testUser.goal === "Aufbauen") {
+    if (goal === "Aufbauen") {
       goalDependetPart = 300;
-    } else if (testUser.goal === "Definieren") {
+    } else if (goal === "Definieren") {
       goalDependetPart = -300;
     }
     newKcalRequirement = newKcalRequirement + goalDependetPart;
@@ -214,12 +213,12 @@ export const Calc = (testParams: any) => {
           <BasicButton
             label="Kalorienbedarf Berechnen"
             width="250px"
-            isButtonClicked={isButtonClicked}
-            onButtonClick={handleButtonClick}
+            isButtonClicked={isCalcButtonClicked}
+            onButtonClick={handleCalcButtonClick}
           />
         </Box>
       </Box>
-      {isButtonClicked ? (
+      {isCalcButtonClicked ? (
         <Box
           sx={{
             display: "flex",
@@ -242,15 +241,11 @@ export const Calc = (testParams: any) => {
             {kcalRequirement} kcal
           </Typography>
           <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
-            <IconButton sx={{ marginLeft: "2%" }}>
-              <BookmarkBorderIcon
-                sx={{
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.light,
-                    color: "black",
-                  },
-                }}
-              />
+            <IconButton
+              onClick={() => saveKcalGoalToFoodLog()}
+              sx={{ marginLeft: "2%" }}
+            >
+              <BookmarkBorderIcon sx={{ color: theme.palette.primary.main }} />
             </IconButton>
           </Tooltip>
         </Box>
