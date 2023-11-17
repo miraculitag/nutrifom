@@ -1,5 +1,4 @@
 import React from "react";
-import { WhiteBar } from "../layout/WhiteBar";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { BasicIntInputField } from "../common/BasicIntInputField";
 import BasicLineChart from "../common/BasicLineChart";
@@ -12,9 +11,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 export const Weight = (testParams: any) => {
   const theme = useTheme();
-  const [isButtonClicked, setIsButtonClicked] = React.useState(false);
-
-
+  const [isButtonClicked] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(dayjs(new Date()));
   const [currentWeight, setCurrentWeight] = React.useState('');
   const [hasError, setHasError] = React.useState(false);
@@ -34,97 +31,95 @@ export const Weight = (testParams: any) => {
     const currentDate = selectedDate;
     if (numericWeight >= 0) {
       console.log(`Suchbutton geklickt. Eingegebener Text: ${numericWeight} ${currentDate}`);
-  };
-}
+    };
+  }
 
   const handleWeightInputChange = (value: number) => {
     setCurrentWeight(value.toString());
   };
-  
+
   const handleDatePickerChange = (value: Dayjs | null) => {
     setSelectedDate(value);
   };
 
   return (
     <Layout>
-    <Box style={{ display: "flex", justifyContent: "space-between" }}>
-      <WhiteBar />
+      <Box style={{ display: "flex", justifyContent: "space-between" }}>
+        
 
-      <BasicLineChart></BasicLineChart>
-
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "top",
-          flexDirection: "column",
-          width: "30%",
-          height: "30%",
-        }}
-      >
+        <BasicLineChart></BasicLineChart>
         <Box
           sx={{
-            flex: 2,
-            backgroundColor: "primary.light",
             display: "flex",
+            alignItems: "top",
             flexDirection: "column",
-            boxShadow: "2",
+            width: "30%",
+            height: "30%",
           }}
         >
           <Box
             sx={{
-              margin: "5%", // Abstand zum Textfeld
+              flex: 2,
+              backgroundColor: "primary.light",
+              display: "flex",
+              flexDirection: "column",
+              boxShadow: "2",
             }}
           >
-            <BasicDatePicker 
+            <Box
+              sx={{
+                margin: "5%",
+              }}
+            >
+              <BasicDatePicker
                 label="Datum auswählen"
                 value={selectedDate}
-                onChange={handleDatePickerChange} 
-                width="90%"/>
-          </Box>
-          <Box
-            sx={{
-              margin: "5%", // Abstand zum Textfeld
-            }}
-          >
-            <BasicIntInputField
+                onChange={handleDatePickerChange}
+                width="100%" />
+            </Box>
+            <Box
+              sx={{
+                margin: "5%",
+              }}
+            >
+              <BasicIntInputField
                 label="Gewicht hinzufügen"
                 suffix="kg"
                 value={parseFloat(currentWeight) || 0}
                 onChange={handleWeightInputChange}
-                width="90%"
-                hasError={false}
-                />
-          </Box>
-          <BasicButton
+                width="100%"
+                hasError={hasError}
+              />
+            </Box>
+            <BasicButton
               label="Eintrag hinzufügen"
               width="90%"
               isButtonClicked={isButtonClicked}
               onButtonClick={handleAddWeightClick}
             />
-        </Box>
-        <Box
-          sx={{
-            backgroundColor: "primary.light",
-            boxShadow: "2",
-            marginTop: "10%",
-            paddingRight: "5%",
-          }}
-        >
-          <Alert
+          </Box>
+          <Box
             sx={{
-              backgroundColor: theme.palette.primary.light,
+              backgroundColor: "primary.light",
+              boxShadow: "2",
+              marginTop: "10%",
+              paddingRight: "5%",
             }}
-            icon={<InfoOutlined sx={{ color: theme.palette.primary.main }} />}
           >
-            <Typography sx={{ fontWeight: "bold" }}>
-              {infoText.title}
-            </Typography>
-            <JustifiedTypography text={infoText.description} />
-          </Alert>
+            <Alert
+              sx={{
+                backgroundColor: theme.palette.primary.light,
+              }}
+              icon={<InfoOutlined sx={{ color: theme.palette.primary.main }} />}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>
+                {infoText.title}
+              </Typography>
+              <JustifiedTypography text={infoText.description} />
+            </Alert>
+          </Box>
         </Box>
       </Box>
-      <WhiteBar />
-    </Box>
     </Layout>
   );
 };

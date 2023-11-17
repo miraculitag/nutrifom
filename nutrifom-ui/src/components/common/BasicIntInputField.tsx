@@ -1,8 +1,4 @@
-import * as React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import { Box, Icon, InputAdornment, TextField } from '@mui/material';
-import nutrifomTheme from '../../theme/nutrifomTheme';
-import { PropaneSharp } from '@mui/icons-material';
+import { Box, InputAdornment, TextField } from '@mui/material';
 
 export interface BasicIntInputFieldProps {
   label: string;
@@ -18,44 +14,26 @@ export interface BasicIntInputFieldProps {
 export const BasicIntInputField = (props: BasicIntInputFieldProps) => {
   return (
     <>
-      <ThemeProvider theme={nutrifomTheme}>
-        <Box
-          sx={{
-            //backgroundColor: 'background.paper', // Hintergrundfarbe aus dem Thema
-            backgroundColor: 'primary.light',
-            width: '100%', // 100% der Breite
-            display: 'flex', // Verwenden Sie Flexbox, um Container nebeneinander anzuordnen
-            justifyContent: 'space-between', // Verteilen Sie die Container horizontal
-            alignItems: 'center', // Zentrieren Sie die Elemente vertikal
-
-          }}
-        >
-          <Box sx={{ width: "100%", display: 'flex', alignItems: 'center' }}>
+          <Box>
             <TextField
-              sx={{ width: "100%", bgcolor: "White" }}
+              sx={{ background:"white", width:props.width}}
               id="input-with-sx"
               type="number"
               required
-              variant="filled"
-              size="small"
+              variant="standard"
               label={props.label}
-              value={props.value} // Zeigt den aktuellen Wert des Zustands an
+              value={props.value}
               onChange={(e) => props.onChange(parseFloat(e.target.value))}
-               // Aktualisiert den Zustand bei Eingabe
               InputProps={{
                 endAdornment: <InputAdornment position="end">{props.suffix}</InputAdornment>,
               }}
               InputLabelProps={{
                 shrink: true,
               }}
-              // Setzen Sie die error-Props basierend auf dem Fehlerzustand
               error={props.hasError}
-              // Wenn ein Fehler auftritt, können Sie auch eine Fehlermeldung anzeigen
-              helperText={props.hasError ? 'Ungültiger Wert: Das Gewicht muss positiv sein.' : ''}
+              helperText={props.hasError ? 'Ungültiger Wert: Der Wert muss positiv sein.' : ''}
             />
           </Box>
-        </Box>
-      </ThemeProvider>
     </>
   );
 };
