@@ -4,7 +4,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  SelectChangeEvent,
 } from "@mui/material";
 
 export interface DropDownProps {
@@ -17,14 +16,13 @@ export interface DropDownProps {
 export default function DropDownMenu(props: DropDownProps) {
   const theme = useTheme();
 
-  const handleChange = (event: SelectChangeEvent) => {
-    props.setValue(event.target.value);
-  };
-
   return (
     <FormControl variant="standard" sx={{ width: "250px" }}>
       <InputLabel>{props.title}</InputLabel>
-      <Select value={props.value} onChange={handleChange}>
+      <Select
+        value={props.value}
+        onChange={(e) => props.setValue(e.target.value)}
+      >
         {props.options.map((option, index) => (
           <MenuItem key={index} value={option}>
             {option}

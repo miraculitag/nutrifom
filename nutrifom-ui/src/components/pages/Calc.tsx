@@ -12,14 +12,16 @@ import InfoAlert from "../common/InfoAlert";
 import DropDownMenu from "../common/DropDownMenu";
 import BasicButton from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
+import { FloatInputField } from "../common/FloatInputField";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
-  const [isCalcButtonClicked, setIsCalcButtonClicked] = React.useState(false);
+  const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
+    React.useState(false);
 
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
 
-  const dataFor14Days = true;
+  const dataFor14Days = false;
 
   const testUser = {
     id: 1,
@@ -46,6 +48,8 @@ export const Calc = (testParams: any) => {
 
   const [pal, setPal] = React.useState(testUser.pal);
   const [goal, setGoal] = React.useState(testUser.goal);
+  const [wpa, setWpa] = React.useState(testUser.wpa);
+  const [wpaHasError, setWpaHasError] = React.useState(false);
 
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
@@ -91,69 +95,73 @@ export const Calc = (testParams: any) => {
 
   const saveKcalGoalToFoodLog = () => {}; //tbd
 
-  const handleCalcButtonClick = () => {
-    setIsCalcButtonClicked(true);
-    let newKcalRequirement;
-    let goalDependetPart = 0;
-
-    if (dataFor14Days) {
-      const weightsWeek1 = testWeights.slice(0, 7);
-      const weightsWeek2 = testWeights.slice(7);
-
-      const avgWeightWeek1 =
-        weightsWeek1.reduce((total, current) => total + current, 0) / 7;
-      const avgWeightWeek2 =
-        weightsWeek2.reduce((total, current) => total + current, 0) / 7;
-
-      const weightDifference = avgWeightWeek2 - avgWeightWeek1;
-
-      const kcalIntakeWeek1 = testKcalIntake.slice(0, 7);
-      const kcalIntakeWeek2 = testKcalIntake.slice(7);
-
-      const avgKcalIntakeWeek1 =
-        kcalIntakeWeek1.reduce((total, current) => total + current, 0) / 7;
-
-      const avgKcalIntakeWeek2 =
-        kcalIntakeWeek2.reduce((total, current) => total + current, 0) / 7;
-
-      const avgKcalIntake = (avgKcalIntakeWeek1 + avgKcalIntakeWeek2) / 2;
-
-      const weeklyKcalDifference = weightDifference * 7000;
-
-      const dailyKcalDifference = weeklyKcalDifference / 7;
-
-      newKcalRequirement = dailyKcalDifference * -1 + avgKcalIntake; //tbd
-    } else {
-      const currentDate = new Date();
-      const userDob = new Date(testUser.dob); //tbd
-      const userAge = currentDate.getFullYear() - userDob.getFullYear();
-
-      let basalMetabolicRate;
-
-      if (testUser.gender === "weiblich") {
-        basalMetabolicRate =
-          65.51 +
-          9.6 * testUser.weight +
-          1.85 * testUser.height -
-          4.68 * userAge;
-      } else {
-        basalMetabolicRate =
-          66.47 +
-          13.75 * testUser.weight +
-          5 * testUser.height -
-          6.76 * userAge;
-      }
-      const physicalActivity = palAsValue(pal) + wpaAsValue(testUser.wpa);
-
-      newKcalRequirement = basalMetabolicRate * physicalActivity;
-    }
-
+  const calcGoalDependentPart = (goal: string) => {
     if (goal === "Aufbauen") {
-      goalDependetPart = 300;
+      return 300;
     } else if (goal === "Definieren") {
-      goalDependetPart = -300;
+      return -300;
+    } else {
+      return 0;
     }
-    newKcalRequirement = newKcalRequirement + goalDependetPart;
+  };
+
+  const calcKcalMethodA = () => {
+    const weightsWeek1 = testWeights.slice(0, 7);
+    const weightsWeek2 = testWeights.slice(7);
+
+    const avgWeightWeek1 =
+      weightsWeek1.reduce((total, current) => total + current, 0) / 7;
+    const avgWeightWeek2 =
+      weightsWeek2.reduce((total, current) => total + current, 0) / 7;
+
+    const weightDifference = avgWeightWeek2 - avgWeightWeek1;
+
+    const kcalIntakeWeek1 = testKcalIntake.slice(0, 7);
+    const kcalIntakeWeek2 = testKcalIntake.slice(7);
+
+    const avgKcalIntakeWeek1 =
+      kcalIntakeWeek1.reduce((total, current) => total + current, 0) / 7;
+
+    const avgKcalIntakeWeek2 =
+      kcalIntakeWeek2.reduce((total, current) => total + current, 0) / 7;
+
+    const avgKcalIntake = (avgKcalIntakeWeek1 + avgKcalIntakeWeek2) / 2;
+
+    const weeklyKcalDifference = weightDifference * 7000;
+
+    const dailyKcalDifference = weeklyKcalDifference / 7;
+
+    return dailyKcalDifference * -1 + avgKcalIntake; //tbd
+  };
+
+  const calcKcalMethodB = () => {
+    setWpaHasError(false);
+
+    const currentDate = new Date();
+    const userDob = new Date(testUser.dob); //tbd
+    const userAge = currentDate.getFullYear() - userDob.getFullYear();
+
+    let basalMetabolicRate;
+
+    if (testUser.gender === "weiblich") {
+      basalMetabolicRate =
+        65.51 + 9.6 * testUser.weight + 1.85 * testUser.height - 4.68 * userAge;
+    } else {
+      basalMetabolicRate =
+        66.47 + 13.75 * testUser.weight + 5 * testUser.height - 6.76 * userAge;
+    }
+    const physicalActivity = palAsValue(pal) + wpaAsValue(wpa);
+
+    return basalMetabolicRate * physicalActivity;
+  };
+
+  const calcKcal = () => {
+    setIsCalcKcalButtonClicked(true);
+    let newKcalRequirement;
+
+    dataFor14Days
+      ? (newKcalRequirement = calcKcalMethodA() + calcGoalDependentPart(goal))
+      : (newKcalRequirement = calcKcalMethodB() + calcGoalDependentPart(goal));
 
     setKcalRequirement(Math.round(newKcalRequirement));
   };
@@ -184,14 +192,15 @@ export const Calc = (testParams: any) => {
               value={pal}
               setValue={setPal}
             />
-            <TextField
-              sx={{ width: "250px" }}
-              label="sportliche Aktivität in Stunden/Woche"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="standard"
+            <FloatInputField
+              label={"sportliche Aktivität in Stunden/Woche"}
+              suffix={"h/w"}
+              width={"250px"}
+              value={wpa}
+              setValue={setWpa}
+              hasError={wpaHasError}
+              setHasError={setWpaHasError}
+              errorText={"Die sportliche Akivität kann nicht negativ sein."}
             />
           </Box>
         )}
@@ -213,12 +222,18 @@ export const Calc = (testParams: any) => {
           <BasicButton
             label="Kalorienbedarf Berechnen"
             width="250px"
-            isButtonClicked={isCalcButtonClicked}
-            onButtonClick={handleCalcButtonClick}
+            isButtonClicked={isCalcKcalButtonClicked}
+            onButtonClick={
+              dataFor14Days
+                ? () => calcKcal()
+                : () => {
+                    wpa < 0 ? setWpaHasError(true) : calcKcal();
+                  }
+            }
           />
         </Box>
       </Box>
-      {isCalcButtonClicked ? (
+      {isCalcKcalButtonClicked ? (
         <Box
           sx={{
             display: "flex",

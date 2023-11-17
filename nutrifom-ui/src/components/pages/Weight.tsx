@@ -1,6 +1,6 @@
 import React from "react";
 import { BasicDatePicker } from "../common/BasicDatePicker";
-import { BasicIntInputField } from "../common/BasicIntInputField";
+import { FloatInputField } from "../common/FloatInputField";
 import BasicLineChart from "../common/BasicLineChart";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
@@ -12,13 +12,11 @@ import dayjs, { Dayjs } from "dayjs";
 export const Weight = (testParams: any) => {
   const theme = useTheme();
   const [isButtonClicked] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(dayjs(new Date()));
-  const [currentWeight, setCurrentWeight] = React.useState('');
-  const [hasError, setHasError] = React.useState(false);
-
-  React.useEffect(() => {
-    setHasError(currentWeight.length > 0 && parseFloat(currentWeight) < 0);
-  }, [currentWeight]);
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
+    dayjs(new Date())
+  );
+  const [currentWeight, setCurrentWeight] = React.useState<number>(0);
+  const [weightHasError, setWeightHasError] = React.useState(false);
 
   const infoText = {
     title: "Gewichtsveränderung:",
@@ -27,15 +25,13 @@ export const Weight = (testParams: any) => {
   };
 
   const handleAddWeightClick = () => {
-    const numericWeight = parseFloat(currentWeight);
+    setWeightHasError(false);
     const currentDate = selectedDate;
-    if (numericWeight >= 0) {
-      console.log(`Suchbutton geklickt. Eingegebener Text: ${numericWeight} ${currentDate}`);
-    };
-  }
-
-  const handleWeightInputChange = (value: number) => {
-    setCurrentWeight(value.toString());
+    if (currentWeight >= 0) {
+      console.log(
+        `Suchbutton geklickt. Eingegebener Text: ${currentWeight} ${currentDate}`
+      );
+    }
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {
@@ -45,8 +41,6 @@ export const Weight = (testParams: any) => {
   return (
     <Layout>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        
-
         <BasicLineChart></BasicLineChart>
         <Box
           sx={{
@@ -75,27 +69,34 @@ export const Weight = (testParams: any) => {
                 label="Datum auswählen"
                 value={selectedDate}
                 onChange={handleDatePickerChange}
-                width="100%" />
+                width="100%"
+              />
             </Box>
             <Box
               sx={{
                 margin: "5%",
               }}
             >
-              <BasicIntInputField
+              <FloatInputField
                 label="Gewicht hinzufügen"
                 suffix="kg"
-                value={parseFloat(currentWeight) || 0}
-                onChange={handleWeightInputChange}
+                value={currentWeight}
+                setValue={setCurrentWeight}
+                hasError={weightHasError}
+                setHasError={setWeightHasError}
+                errorText="Dein Gewicht kann nicht negativ oder 0 sein."
                 width="100%"
-                hasError={hasError}
               />
             </Box>
             <BasicButton
               label="Eintrag hinzufügen"
               width="90%"
               isButtonClicked={isButtonClicked}
-              onButtonClick={handleAddWeightClick}
+              onButtonClick={(e) => {
+                currentWeight <= 0
+                  ? setWeightHasError(true)
+                  : handleAddWeightClick();
+              }}
             />
           </Box>
           <Box

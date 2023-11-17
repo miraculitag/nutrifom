@@ -4,7 +4,7 @@ export interface BasicButtonProps {
   label: string;
   width: string;
   isButtonClicked: boolean;
-  onButtonClick: () => void;
+  onButtonClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export default function BasicButton(props: BasicButtonProps) {
@@ -13,7 +13,7 @@ export default function BasicButton(props: BasicButtonProps) {
   return (
     <Button
       variant="outlined"
-      onClick={props.onButtonClick}
+      onClick={(e) => props.onButtonClick(e)}
       sx={{
         width: props.width,
         backgroundColor: theme.palette.primary.main,
