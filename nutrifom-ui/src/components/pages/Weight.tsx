@@ -47,17 +47,15 @@ export const Weight = (testParams: any) => {
             display: "flex",
             alignItems: "top",
             flexDirection: "column",
-            width: "30%",
+            width: "35%",
             height: "30%",
           }}
         >
           <Box
             sx={{
               flex: 2,
-              backgroundColor: "primary.light",
               display: "flex",
               flexDirection: "column",
-              boxShadow: "2",
             }}
           >
             <Box

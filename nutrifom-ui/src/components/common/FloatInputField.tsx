@@ -21,6 +21,7 @@ export const FloatInputField = (props: FloatInputFieldProps) => {
       value={props.value}
       sx={{
         width: props.width,
+        background: "white"
       }}
       onChange={(e) => {
         props.setValue(parseFloat(e.target.value));
