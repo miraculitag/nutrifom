@@ -51,4 +51,13 @@ public class WeightTrackerController {
         weightTrackerService.addWeightEntry(appUser, weight, entryDate);
         return new ResponseEntity<>("Weight entry added successfully", HttpStatus.OK);
     }
+
+    @GetMapping("/last14DaysHistory")
+    public ResponseEntity<List<Integer>> getLast14DaysWeightHistory(@RequestParam Integer userId) {
+        if (!appUserRepository.existsById(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Integer> weightHistoryForLast14Days = weightTrackerService.getWeightHistoryForLast14Days(userId);
+        return new ResponseEntity<>(weightHistoryForLast14Days, HttpStatus.OK);
+    }
 }

@@ -1,6 +1,7 @@
 package com.nutrifom.nutrifomapi.WeightTracker;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +34,24 @@ public class WeightTrackerService {
 
     public List<WeightEntry> getWeightHistory(AppUser appUser) {
         return weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUser.getId());
+    }
+
+    public List<Integer> getWeightHistoryForLast14Days(Integer appUserId) {
+        List<WeightEntry> entries = weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUserId);
+
+        LocalDate startDate = LocalDate.now().minusDays(13);
+        List<Integer> last14DaysWeights = new ArrayList<>();
+
+        for (int i = 0; i < 14; i++) {
+            LocalDate dateToCheck = startDate.plusDays(i);
+            WeightEntry entryForDate = entries.stream()
+                    .filter(e -> e.getEntryDate().equals(dateToCheck))
+                    .findFirst()
+                    .orElse(null);
+
+            last14DaysWeights.add(entryForDate != null ? entryForDate.getWeight() : 0);
+        }
+
+        return last14DaysWeights;
     }
 }
