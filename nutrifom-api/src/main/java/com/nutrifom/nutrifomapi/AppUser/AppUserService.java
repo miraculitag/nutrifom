@@ -64,7 +64,7 @@ public class AppUserService {
         return new ResponseEntity<>("Updated PAL: " + updatedPal + " for " + email, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> updateAppUserWpa(String email, String updatedWpa) {
+    public ResponseEntity<String> updateAppUserWpa(String email, double updatedWpa) {
         Optional<AppUser> existingAppUserOptional = appUserRepository.findByEmail(email);
 
         if (!existingAppUserOptional.isPresent()) {

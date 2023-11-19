@@ -16,7 +16,7 @@ public class RegisterRequest {
     private LocalDate dob;
     private Integer height;
     private Character gender;
-    private String wpa;
+    private double wpa;
     private String pal;
     private int weight;
     private String goal;

@@ -63,7 +63,7 @@ public class AppUserController {
     }
 
     @PutMapping("/put/wpa")
-    public ResponseEntity<String> updateWpa(@RequestParam String wpa, @RequestParam String email) {
+    public ResponseEntity<String> updateWpa(@RequestParam double wpa, @RequestParam String email) {
         return appUserService.updateAppUserWpa(email, wpa);
     }
 
