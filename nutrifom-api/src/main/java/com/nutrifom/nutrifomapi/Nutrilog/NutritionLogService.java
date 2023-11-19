@@ -1,6 +1,8 @@
 package com.nutrifom.nutrifomapi.Nutrilog;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.nutrifom.nutrifomapi.Recipe.Recipe;
@@ -66,5 +68,24 @@ public class NutritionLogService {
 
     public List<NutritionLog> getNutritionLogs(Integer appUserId, LocalDate entryDate) {
         return nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, entryDate);
+    }
+
+    public List<Double> getCaloriesHistoryForLast14Days(Integer appUserId) {
+        LocalDate startDate = LocalDate.now().minusDays(13);
+        List<Double> caloriesHistory = new ArrayList<>();
+
+        for (int i = 0; i < 14; i++) {
+            LocalDate dateToCheck = startDate.plusDays(i);
+            List<NutritionLog> logsForDay = nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, dateToCheck);
+
+            double dailyCalories = logsForDay.stream()
+                    .mapToDouble(log -> log.getEnergy_kcal_serving() * log.getServing_quantity())
+                    .sum();
+
+            caloriesHistory.add(dailyCalories);
+        }
+
+        Collections.reverse(caloriesHistory);
+        return caloriesHistory;
     }
 }

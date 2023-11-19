@@ -3,6 +3,7 @@ package com.nutrifom.nutrifomapi.Nutrilog;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
 import com.nutrifom.nutrifomapi.Recipe.Recipe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -25,6 +26,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class NutritionLogController {
     @Autowired
     private NutritionLogService nutritionLogService;
+
+    @Autowired
+    private AppUserRepository appUserRepository;
 
     @PostMapping("/save/product")
     public ResponseEntity<String> saveProductLog(
@@ -58,5 +62,14 @@ public class NutritionLogController {
             @RequestParam Integer appUserId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
         return ResponseEntity.ok(nutritionLogService.getNutritionLogs(appUserId, entryDate));
+    }
+
+    @GetMapping("/last14DaysCalories")
+    public ResponseEntity<List<Double>> getLast14DaysCaloriesHistory(@RequestParam Integer userId) {
+        if (!appUserRepository.existsById(userId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Double> caloriesHistoryForLast14Days = nutritionLogService.getCaloriesHistoryForLast14Days(userId);
+        return new ResponseEntity<>(caloriesHistoryForLast14Days, HttpStatus.OK);
     }
 }
