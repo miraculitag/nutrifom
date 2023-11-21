@@ -1,10 +1,11 @@
-import { Alert, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import JustifiedTypography from "./JustifiedTypography";
 
 export interface InfoAlertProps {
   title: string;
   description: string;
+  table?: JSX.Element;
 }
 
 export default function InfoAlert(props: InfoAlertProps) {
@@ -19,6 +20,7 @@ export default function InfoAlert(props: InfoAlertProps) {
     >
       <Typography sx={{ fontWeight: "bold" }}>{props.title}</Typography>
       <JustifiedTypography text={props.description} />
+      {props.table && <Box>{props.table}</Box>}
     </Alert>
   );
 }

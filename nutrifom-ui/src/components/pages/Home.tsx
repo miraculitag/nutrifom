@@ -9,7 +9,7 @@ export const Home = (testParams: any) => {
   const aboutNutrifom =
     'Die nutrifom GmbH stellt ihre Kunden in den Vordergrund. Seit 2023 schafft die nutrifom GmbH neue Lösungen zur Unterstützung bei einer gesunden Ernährung. "nutrifom" die Webanwendung stellt hierbei das Erreichen deiner individuellen Ziele in den Fokus. Hier findest du eine Übersicht und eine Vorstellung der enthaltenen Features und außerdem einige hilfreiche Tipps für eine gesunde Ernährung. Falls du Hilfe benötigen solltest, kontaktiere uns gerne über das Kontaktfeld. Dieses findest du am unteren Seitenrand.';
 
-  const aboutNutrifomFoodLog =
+  const aboutNutrifomNutrilog =
     "Das Nutriprotokoll dient der Protokollierung deiner Ernährung. Sowohl Speisen als auch Getränke kannst du hier eintragen. Auswählen kannst du hierbei aus einer großen Datenbank an Nahrungsmitteln. Auch Rezepte, welche du in unserem Rezeptebereich entdeckt und nachgekocht hast, kannst du hier portionsweise eintragen. Deine tägliche Kalorienbilanz wird übersichtlich dargestellt, wobei du auch die Zusammensetzung deiner Ernährung einsehen kannst.";
 
   const aboutNutrifomWeight =
@@ -36,9 +36,9 @@ export const Home = (testParams: any) => {
   const aboutFeatureTexts = [
     {
       title: "Nutriprotokoll",
-      url: "/foodlog",
-      description: aboutNutrifomFoodLog,
-      image: "./assets/img/foodlog.jpg",
+      url: "/nutrilog",
+      description: aboutNutrifomNutrilog,
+      image: "./assets/img/nutrilog.jpg",
     },
     {
       title: "Gewicht",

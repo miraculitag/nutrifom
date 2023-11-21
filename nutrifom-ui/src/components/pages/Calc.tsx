@@ -2,10 +2,10 @@ import React from "react";
 import {
   Box,
   IconButton,
-  TextField,
   Typography,
   useTheme,
   Tooltip,
+  Stack,
 } from "@mui/material";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import InfoAlert from "../common/InfoAlert";
@@ -13,6 +13,7 @@ import DropDownMenu from "../common/DropDownMenu";
 import BasicButton from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { FloatInputField } from "../common/FloatInputField";
+import PalTable from "../common/PalTable";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
@@ -50,6 +51,7 @@ export const Calc = (testParams: any) => {
   const [goal, setGoal] = React.useState(testUser.goal);
   const [wpa, setWpa] = React.useState(testUser.wpa);
   const [wpaHasError, setWpaHasError] = React.useState(false);
+  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
 
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
@@ -188,14 +190,18 @@ export const Calc = (testParams: any) => {
           >
             <DropDownMenu
               title={"alltägliches körperliches Aktivitätslevel"}
+              width={"42%"}
               options={palCatergories}
               value={pal}
               setValue={setPal}
+              infoIcon={true}
+              isInfoIconClicked={isPalInfoIconClicked}
+              setIsInfoIconClicked={setIsPalInfoIconClicked}
             />
             <FloatInputField
               label={"sportliche Aktivität in Stunden/Woche"}
               suffix={"h/w"}
-              width={"250px"}
+              width={"42%"}
               value={wpa}
               setValue={setWpa}
               hasError={wpaHasError}
@@ -215,13 +221,14 @@ export const Calc = (testParams: any) => {
         >
           <DropDownMenu
             title={"persönliches Ziel"}
+            width={"42%"}
             options={goals}
             value={goal}
             setValue={setGoal}
           />
           <BasicButton
             label="Kalorienbedarf Berechnen"
-            width="250px"
+            width="42%"
             isButtonClicked={isCalcKcalButtonClicked}
             onButtonClick={
               dataFor14Days
@@ -267,8 +274,19 @@ export const Calc = (testParams: any) => {
       ) : (
         ""
       )}
-
-      <Box sx={{ paddingTop: "5%" }}>
+      <Stack
+        sx={{
+          paddingTop: "5%",
+        }}
+        spacing={2}
+      >
+        {isPalInfoIconClicked && (
+          <InfoAlert
+            title={"Kategorien des körperlichen Aktivitätslevels:"}
+            description={""}
+            table={<PalTable />}
+          />
+        )}
         <InfoAlert
           title={
             dataFor14Days ? infoTextDataBased.title : infoTextFormula.title
@@ -279,7 +297,7 @@ export const Calc = (testParams: any) => {
               : infoTextFormula.description
           }
         />
-      </Box>
+      </Stack>
     </Layout>
   );
 };
