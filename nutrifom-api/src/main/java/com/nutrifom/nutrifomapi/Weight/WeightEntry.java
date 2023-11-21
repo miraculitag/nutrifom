@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.WeightTracker;
+package com.nutrifom.nutrifomapi.Weight;
 
 import java.time.LocalDate;
 
@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "WeightTracker")
+@Table(name = "Weight")
 public class WeightEntry {
 
     @Id
@@ -29,7 +29,7 @@ public class WeightEntry {
     private AppUser appUser;
 
     @Column(nullable = false)
-    private int weight;
+    private double weight;
 
     @Column(name = "entry_date", nullable = false)
     private LocalDate entryDate;
@@ -50,11 +50,11 @@ public class WeightEntry {
         this.appUser = appUser;
     }
 
-    public int getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 

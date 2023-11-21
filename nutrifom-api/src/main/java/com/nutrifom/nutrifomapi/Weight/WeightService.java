@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.WeightTracker;
+package com.nutrifom.nutrifomapi.Weight;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class WeightTrackerService {
+public class WeightService {
     @Autowired
     private WeightEntryRepository weightEntryRepository;
 
@@ -36,11 +36,11 @@ public class WeightTrackerService {
         return weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUser.getId());
     }
 
-    public List<Integer> getWeightHistoryForLast14Days(Integer appUserId) {
+    public List<Double> getWeightHistoryForLast14Days(Integer appUserId) {
         List<WeightEntry> entries = weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUserId);
 
         LocalDate startDate = LocalDate.now().minusDays(13);
-        List<Integer> last14DaysWeights = new ArrayList<>();
+        List<Double> last14DaysWeights = new ArrayList<>();
 
         for (int i = 0; i < 14; i++) {
             LocalDate dateToCheck = startDate.plusDays(i);

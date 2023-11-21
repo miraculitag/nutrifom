@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/recipes")
+@RequestMapping("api/recipe")
 @SecurityRequirement(name = "bearerAuth")
 public class RecipeController {
     @Autowired
@@ -16,20 +16,20 @@ public class RecipeController {
      @Autowired
     private RecipeRepository recipeRepository;
 
-    @GetMapping("/get/by-tag")
-    public List<Recipe> getRecipesByTag(@RequestParam String tag) {
+    @GetMapping("tag/{tag}")
+    public List<Recipe> getRecipesByTag(@PathVariable String tag) {
         return recipeService.getRecipesByTag(tag);
     }
 
-    @PostMapping("/rate/{recipeId}")
+    @PostMapping("{recipeId}/rate")
     public Recipe rateRecipe(@PathVariable Integer recipeId,
                              @RequestParam Integer userId,
                              @RequestBody Double score) {
         return recipeService.rateRecipe(recipeId, userId, score);
     }
 
-    @GetMapping("/get/by-id")
-    public Recipe getRecipeById(@RequestParam Integer recipeId) {
+    @GetMapping("{recipeId}")
+    public Recipe getRecipeById(@PathVariable Integer recipeId) {
         return recipeRepository.findById(recipeId).orElseThrow();
     }
 

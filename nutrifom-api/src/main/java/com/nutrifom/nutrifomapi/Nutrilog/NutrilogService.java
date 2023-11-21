@@ -16,9 +16,9 @@ import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
 import com.nutrifom.nutrifomapi.OpenFoodFacts.Product;
 
 @Service
-public class NutritionLogService {
+public class NutrilogService {
     @Autowired
-    private NutritionLogRepository nutritionLogRepository;
+    private NutrilogRepository nutrilogRepository;
 
     @Autowired
     private RecipeRepository recipeRepository;
@@ -29,45 +29,45 @@ public class NutritionLogService {
     @Autowired
     private RecipeService recipeService;
 
-    public NutritionLog saveProductLog(Integer userId, Product product, LocalDate entryDate) {
+    public Nutrilog saveProductLog(Integer userId, Product product, LocalDate entryDate) {
         AppUser appUser = appUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
-        NutritionLog nutritionLog = new NutritionLog();
-        nutritionLog.setAppUser(appUser);
-        nutritionLog.setCode(product.getCode());
-        nutritionLog.setProductName(product.getProductName());
-        nutritionLog.setProduct_quantity(product.getProduct_quantity());
-        nutritionLog.setServing_quantity(product.getServing_quantity());
-        nutritionLog.setProteins_serving(product.getProteins_serving());
-        nutritionLog.setCarbohydrates_serving(product.getCarbohydrates_serving());
-        nutritionLog.setEnergy_kcal_serving(product.getEnergy_kcal_serving());
-        nutritionLog.setFat_serving(product.getFat_serving());
-        nutritionLog.setSaturated_fat_serving(product.getSaturated_fat_serving());
-        nutritionLog.setEntryDate(entryDate);
+        Nutrilog nutrilog = new Nutrilog();
+        nutrilog.setAppUser(appUser);
+        nutrilog.setCode(product.getCode());
+        nutrilog.setProductName(product.getProductName());
+        nutrilog.setProduct_quantity(product.getProduct_quantity());
+        nutrilog.setServing_quantity(product.getServing_quantity());
+        nutrilog.setProteins_serving(product.getProteins_serving());
+        nutrilog.setCarbohydrates_serving(product.getCarbohydrates_serving());
+        nutrilog.setEnergy_kcal_serving(product.getEnergy_kcal_serving());
+        nutrilog.setFat_serving(product.getFat_serving());
+        nutrilog.setSaturated_fat_serving(product.getSaturated_fat_serving());
+        nutrilog.setEntryDate(entryDate);
 
-        return nutritionLogRepository.save(nutritionLog);
+        return nutrilogRepository.save(nutrilog);
     }
 
-    public NutritionLog saveRecipeLog(Integer userId, Integer recipeId, LocalDate entryDate) {
+    public Nutrilog saveRecipeLog(Integer userId, Integer recipeId, LocalDate entryDate) {
         AppUser appUser = appUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalStateException("Recipe not found"));
 
-        NutritionLog nutritionLog = new NutritionLog();
-        nutritionLog.setAppUser(appUser);
-        nutritionLog.setRecipe(recipe);
-        nutritionLog.setEntryDate(entryDate);
+        Nutrilog nutrilog = new Nutrilog();
+        nutrilog.setAppUser(appUser);
+        nutrilog.setRecipe(recipe);
+        nutrilog.setEntryDate(entryDate);
         recipeService.incrementRecipeUses(recipeId);
 
-        return nutritionLogRepository.save(nutritionLog);
+        return nutrilogRepository.save(nutrilog);
     }
 
 
 
-    public List<NutritionLog> getNutritionLogs(Integer appUserId, LocalDate entryDate) {
-        return nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, entryDate);
+    public List<Nutrilog> getNutritionLogs(Integer appUserId, LocalDate entryDate) {
+        return nutrilogRepository.findByAppUserIdAndEntryDate(appUserId, entryDate);
     }
 
     public List<Double> getCaloriesHistoryForLast14Days(Integer appUserId) {
@@ -76,7 +76,7 @@ public class NutritionLogService {
 
         for (int i = 0; i < 14; i++) {
             LocalDate dateToCheck = startDate.plusDays(i);
-            List<NutritionLog> logsForDay = nutritionLogRepository.findByAppUserIdAndEntryDate(appUserId, dateToCheck);
+            List<Nutrilog> logsForDay = nutrilogRepository.findByAppUserIdAndEntryDate(appUserId, dateToCheck);
 
             double dailyCalories = logsForDay.stream()
                     .mapToDouble(log -> log.getEnergy_kcal_serving() * log.getServing_quantity())
