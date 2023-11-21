@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.WeightTracker;
+package com.nutrifom.nutrifomapi.Weight;
 
 import java.util.List;
 

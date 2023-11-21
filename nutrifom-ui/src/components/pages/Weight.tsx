@@ -40,29 +40,26 @@ export const Weight = (testParams: any) => {
 
   return (
     <Layout>
-      <Box style={{ display: "flex", justifyContent: "space-between" }}>
+      <Box style={{ display: "flex", justifyContent: "space-between", height:"100%",width:"100%" }}>
         <BasicLineChart></BasicLineChart>
         <Box
           sx={{
             display: "flex",
             alignItems: "top",
             flexDirection: "column",
-            width: "30%",
+            width: "35%",
             height: "30%",
           }}
         >
           <Box
             sx={{
               flex: 2,
-              backgroundColor: "primary.light",
               display: "flex",
               flexDirection: "column",
-              boxShadow: "2",
             }}
           >
             <Box
               sx={{
-                margin: "5%",
               }}
             >
               <BasicDatePicker
@@ -74,7 +71,8 @@ export const Weight = (testParams: any) => {
             </Box>
             <Box
               sx={{
-                margin: "5%",
+                marginTop: "5%",
+                marginBottom: "5%",
               }}
             >
               <FloatInputField
@@ -90,7 +88,7 @@ export const Weight = (testParams: any) => {
             </Box>
             <BasicButton
               label="Eintrag hinzufügen"
-              width="90%"
+              width="100%"
               isButtonClicked={isButtonClicked}
               onButtonClick={(e) => {
                 currentWeight <= 0

@@ -16,7 +16,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Nutrilog")
-public class NutritionLog {
+public class Nutrilog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
