@@ -1,23 +1,29 @@
 import React from "react";
 import nutrifomTheme from "./theme/nutrifomTheme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home } from "./components/Home";
-import { User } from "./components/User";
-import { FoodLog } from "./components/FoodLog";
-import { Weight } from "./components/Weight";
-import { Calc } from "./components/Calc";
-import { Recipes } from "./components/Recipes";
-import { Header } from "./components/Header";
-import { ThemeProvider, Typography } from "@mui/material";
+import { Home } from "./components/pages/Home";
+import { User } from "./components/pages/User";
+import { FoodLog } from "./components/pages/FoodLog";
+import { Weight } from "./components/pages/Weight";
+import { Calc } from "./components/pages/Calc";
+import { Recipes } from "./components/pages/Recipes";
+import { ThemeProvider } from "@mui/material";
+import { AuthProvider, RequireAuth } from "react-auth-kit";
+import SignIn from "./components/pages/SignIn";
 
 export default function App() {
   return (
     <>
-    <ThemeProvider theme={nutrifomTheme}>
-        <Typography> 
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={true}
+      >
+        <ThemeProvider theme={nutrifomTheme}>
           <Router>
-            <Header />
             <Routes>
+              <Route path="/signin" element={<SignIn />} />
               <Route path="/" element={<Home />} />
               <Route path="/user" element={<User />} />
               <Route path="/foodlog" element={<FoodLog />} />
@@ -26,8 +32,8 @@ export default function App() {
               <Route path="/recipes" element={<Recipes />} />
             </Routes>
           </Router>
-        </Typography>
-      </ThemeProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </>
   );
 }

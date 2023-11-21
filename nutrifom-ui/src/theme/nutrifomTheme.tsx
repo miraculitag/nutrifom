@@ -1,5 +1,5 @@
-import { createTheme, rgbToHex } from "@mui/material";
-import { green, purple } from "@mui/material/colors";
+import { createTheme } from "@mui/material";
+import { purple } from "@mui/material/colors";
 
 const nutrifomTheme = {
   typography: {
@@ -9,7 +9,7 @@ const nutrifomTheme = {
   palette: {
     primary: {
       main: "#33cc33",
-      light: "#A9D18E",
+      light: "#eff8ef",
     },
     secondary: {
       main: purple[100],
