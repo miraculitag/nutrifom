@@ -27,7 +27,7 @@ export const FoodLog = (testParams: any) => {
   const [portionAmountHasError, setPortionAmountHasError] =
     React.useState(false);
 
-  const kcal = React.useState<number>(2200);
+  const [kcal, setkcal] = React.useState<number>(2200);
 
   const recipe = {
     id: 1,
