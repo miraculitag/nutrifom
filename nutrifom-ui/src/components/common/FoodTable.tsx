@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,34 +8,37 @@ import {
   Paper,
 } from "@mui/material";
 
+
 export interface FoodTableProps {
-  food: string;
-  value: string;
-  einheit: string;
+  foods: Food[];
+  onSelectRow: (value: number) => void;
 }
 
-export default function FoodTable(props: FoodTableProps) {
-  function createData(name: string, value: string, einheit:string) {
-    return { name, value, einheit };
-  }
+export interface Food {
+  name: string;
+  amount: number;
+  unit: string;
+}
 
-  const rows = [
-    createData(props.food, props.value, props.einheit),
-  ];
+
+export default function FoodTable(props: FoodTableProps) {
+  const { foods } = props;
+  const [selectedRow, setSelectedRow] = useState<number | null>(null);
+
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.value}</TableCell>
-              <TableCell align="right">{row.einheit}</TableCell>
+          {foods.map((food, index) => (
+            <TableRow key={index}
+            onClick={() => {
+              setSelectedRow(index);
+              props.onSelectRow(index);
+            }}
+            selected={index === selectedRow}
+            sx={{ cursor: "pointer" }}>
+              <TableCell>{food.name}{` [${food.unit}]`}</TableCell>
+              <TableCell >{food.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>

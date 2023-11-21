@@ -22,7 +22,6 @@ export const BasicFoodField = (props: BasicFoodFieldProps) => {
       variant="standard"
       label={props.label}
       value={props.value}
-      focused
       sx={{
         background: "white",
         width: props.width
