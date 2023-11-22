@@ -11,7 +11,6 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export const Header = (testParams: any) => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const userProfilePicture = ""; //tbd
 
