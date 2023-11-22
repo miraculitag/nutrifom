@@ -4,8 +4,13 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
+import com.nutrifom.nutrifomapi.AppUser.AppUser;
+import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,9 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+
+    @Autowired
+    private AppUserRepository appUserRepository;
 
     private static final String SECRET_KEY = "hEv1rkpkVVU0cpNgS0h4qtt+Yy3o3vBJNE4S59iIszhkxB8Xh8DbLcgkxcu1nGT2";
 
@@ -31,7 +39,15 @@ public class JwtService {
     }
 
     public String generateJwt(UserDetails userDetails) {
-        return generateJwt(new HashMap<>(), userDetails);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("sub", userDetails.getUsername()); // Benutzername (E-Mail)
+
+        // Hier rufen Sie die Benutzer-ID ab und fügen sie dem Claim hinzu
+        Optional<AppUser> user = appUserRepository.findByEmail(userDetails.getUsername());
+        Integer userId = user.get().getId();
+        claims.put("appUserId", userId);
+
+        return generateJwt(claims, userDetails);
     }
 
     public String generateJwt(Map<String, Object> extraClaims, UserDetails userDetails) {
