@@ -5,11 +5,11 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import BasicButton from "../common/BasicButton";
 import NutritionalTable from "../common/NutritionalTable";
-import FoodTable from "../common/FoodTable";
+import FoodTable, { FoodItem } from "../common/FoodTable";
 import BasicPie from "../common/BasicPieChart";
 
 export const FoodLog = (testParams: any) => {
-  //const theme = useTheme();
+  const theme = useTheme();
 
   const [isButtonClicked] = React.useState(false);
   const [SearchTextFood, setSearchTextFood] = React.useState<string>("");
@@ -27,31 +27,67 @@ export const FoodLog = (testParams: any) => {
   const [portionAmountHasError, setPortionAmountHasError] =
     React.useState(false);
 
-  const kcal = React.useState<number>(2200);
+  const [kcal, setkcal] = React.useState<number>(2200);
 
-  const recipe = {
-    id: 1,
-    title: "Rezept Name1",
-    ingredients: "200g Apfel, 100g Banane, 2TL Honig",
-    rating: 3,
-    uses: 23,
-    tag: "Aufbauen",
-    description:
-      "Testbeschreibung des ersten Rezeptes. Zweiter Satz um Beschreibung zu verlängern. Dritter Satz um Beschreibung zu verlängern. Vierter Satz um Beschreibung zu verlängern.",
-    portions: 2,
-    energy_kcal: 2300,
-    proteins: 150,
-    saturatedFat: 25,
-    unsaturatedFat: 75,
-    carbohydrates: 200,
-    image: "./assets/img/recipeTest.jpg",
-  };
+  const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
+  const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
 
-  const Foods = [
-    { name: "Apple", amount: 1, unit: "g" },
-    { name: "Banana", amount: 2, unit: "kg" },
-    { name: "Carrot", amount: 150, unit: "ml" },
-    // Add more test data as needed
+  const foodData = [
+    {
+      id: 1,
+      foodName: "Chicken Breast",
+      amount: 150,
+      unit: "g",
+      energy_kcal_per_unit: 165,
+      proteins: 31,
+      saturatedFat: 1.6,
+      unsaturatedFat: 1.2,
+      carbohydrates: 0,
+    },
+    {
+      id: 2,
+      foodName: "Brown Rice",
+      amount: 100,
+      unit: "g",
+      energy_kcal_per_unit: 111,
+      proteins: 2.6,
+      saturatedFat: 0.3,
+      unsaturatedFat: 0.9,
+      carbohydrates: 23.5,
+    },
+    {
+      id: 3,
+      foodName: "Broccoli",
+      amount: 200,
+      unit: "g",
+      energy_kcal_per_unit: 62,
+      proteins: 4,
+      saturatedFat: 0.1,
+      unsaturatedFat: 0.6,
+      carbohydrates: 12,
+    },
+    {
+      id: 4,
+      foodName: "Water",
+      amount: 250,
+      unit: "ml",
+      energy_kcal_per_unit: 0,
+      proteins: 0,
+      saturatedFat: 0,
+      unsaturatedFat: 0,
+      carbohydrates: 0,
+    },
+    {
+      id: 5,
+      foodName: "Orange Juice",
+      amount: 200,
+      unit: "ml",
+      energy_kcal_per_unit: 88,
+      proteins: 1,
+      saturatedFat: 0,
+      unsaturatedFat: 0,
+      carbohydrates: 21,
+    },
   ];
 
   const handleChangeSearchFoodTextAmount = () => {
@@ -66,11 +102,40 @@ export const FoodLog = (testParams: any) => {
     console.log(`Suchbutton geklickt. Eingegebener Text: ${searchTextRecepie}`);
   };
 
-  const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
+  const getTotalNutritionalValues = () => {
+    return foodData.reduce(
+      (acc, food) => {
+        acc.energy_kcal_per_unit +=
+          food.energy_kcal_per_unit * (food.amount / 100);
+        acc.proteins += food.proteins * (food.amount / 100);
+        acc.saturatedFat += food.saturatedFat * (food.amount / 100);
+        acc.unsaturatedFat += food.unsaturatedFat * (food.amount / 100);
+        acc.carbohydrates += food.carbohydrates * (food.amount / 100);
+        return acc;
+      },
+      {
+        id: 0,
+        foodName: "Total",
+        amount: 0,
+        unit: "g",
+        energy_kcal_per_unit: 0,
+        proteins: 0,
+        saturatedFat: 0,
+        unsaturatedFat: 0,
+        carbohydrates: 0,
+      }
+    );
+  };
 
   const handleRowClick = (index: number) => {
-    setSelectedRow(index === selectedRow ? null : index);
-    console.log(`Rezept: ${index}`);
+    setSelectedRow((prevIndex) => (prevIndex === index ? null : index));
+    setSelectedFood((prevFood) => {
+      if (prevFood && prevFood.id === foodData[index].id) {
+        return null;
+      } else {
+        return foodData[index];
+      }
+    });
   };
 
   return (
@@ -78,23 +143,21 @@ export const FoodLog = (testParams: any) => {
       <Box
         sx={{
           display: "flex",
-          marginTop: "5%",
         }}
       >
-        <Box sx={{ width: "70%", marginRight: "5%" }}>
+        <Box sx={{ marginRight: "5%", width: "70%" }}>
           <Box
             sx={{
               alignItems: "top",
               justifyContent: "space-between",
               display: "flex",
               flex: 1,
-              height: "45%",
             }}
           >
             <Box
               sx={{
-                width: "50%",
                 marginRight: "10%",
+                width: "50%",
               }}
             >
               <Box sx={{ marginBottom: "5%" }}>
@@ -187,52 +250,47 @@ export const FoodLog = (testParams: any) => {
               />
             </Box>
           </Box>
-
-          <Box
-            sx={{
-              width: "100%",
-              marginRight: "5%",
-              height: "70%",
-            }}
-          >
+          <Box>
             <Typography>Lebenmittel & Rezepte</Typography>
-            <FoodTable foods={Foods} onSelectRow={handleRowClick} />
+            <FoodTable foods={foodData} onSelectRow={handleRowClick} />
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            width: "30%",
-          }}
-        >
-          <Box
-            sx={{
-              height: "45%",
-            }}
-          >
-            <BasicPie kcal={kcal}></BasicPie>
-          </Box>
-
-          <Box
-            sx={{
-              height: "70%",
-              marginRight: "5%",
-            }}
-          >
-            <Typography>Nährwerte</Typography>
-            <NutritionalTable
-              energy_kcal={Math.round(recipe.energy_kcal / recipe.portions)}
-              proteins={Math.round(recipe.proteins / recipe.portions)}
-              saturatedFat={Math.round(recipe.saturatedFat / recipe.portions)}
-              unsaturatedFat={Math.round(
-                recipe.unsaturatedFat / recipe.portions
+        <Box >
+            <BasicPie
+              totalKcal={2200}
+              consumedKcal={Math.round(
+                getTotalNutritionalValues().energy_kcal_per_unit
               )}
-              carbohydrates={Math.round(recipe.carbohydrates / recipe.portions)}
             />
+            <Typography>Nährwerte</Typography>
+            {selectedFood ? (
+              <NutritionalTable
+                energy_kcal={Math.round(selectedFood.energy_kcal_per_unit)}
+                proteins={Math.round(selectedFood.proteins)}
+                saturatedFat={Math.round(selectedFood.saturatedFat)}
+                unsaturatedFat={Math.round(selectedFood.unsaturatedFat)}
+                carbohydrates={Math.round(selectedFood.carbohydrates)}
+              />
+            ) : (
+              <NutritionalTable
+                energy_kcal={Math.round(
+                  getTotalNutritionalValues().energy_kcal_per_unit
+                )}
+                proteins={Math.round(getTotalNutritionalValues().proteins)}
+                saturatedFat={Math.round(
+                  getTotalNutritionalValues().saturatedFat
+                )}
+                unsaturatedFat={Math.round(
+                  getTotalNutritionalValues().unsaturatedFat
+                )}
+                carbohydrates={Math.round(
+                  getTotalNutritionalValues().carbohydrates
+                )}
+              />
+            )}
           </Box>
         </Box>
-
-      </Box>
     </Layout>
   );
 };
