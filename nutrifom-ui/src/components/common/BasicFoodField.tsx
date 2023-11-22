@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
+import * as React from "react";
+import { useTheme } from "@mui/material/styles";
 import { TextField } from "@mui/material";
 
 export interface BasicFoodFieldProps {
@@ -8,11 +8,9 @@ export interface BasicFoodFieldProps {
   buttonText: string;
   setValue: (value: string) => void;
   hasError: boolean;
-  setHasError: (value: boolean) => void;
   errorText: string;
-  width:string;
+  width: string;
 }
-
 
 export const BasicFoodField = (props: BasicFoodFieldProps) => {
   const theme = useTheme();
@@ -24,15 +22,16 @@ export const BasicFoodField = (props: BasicFoodFieldProps) => {
       value={props.value}
       sx={{
         background: "white",
-        width: props.width
+        width: props.width,
       }}
       onChange={(event) => {
-        props.setValue((event.target.value));
-      } }
+        props.setValue(event.target.value);
+      }}
       InputLabelProps={{
         shrink: true,
       }}
       error={props.hasError}
-      helperText={props.hasError && props.errorText} />
+      helperText={props.hasError && props.errorText}
+    />
   );
 };

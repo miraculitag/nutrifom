@@ -16,13 +16,20 @@ export interface DropDownProps {
   infoIcon?: boolean;
   isInfoIconClicked?: boolean;
   setIsInfoIconClicked?: (isInfoIconClicked: boolean) => void;
+  required: boolean;
+  hasError?: boolean;
+  errorText?: string;
 }
 
 export default function DropDownMenu(props: DropDownProps) {
   const theme = useTheme();
 
   return (
-    <FormControl variant="standard" sx={{ width: props.width }}>
+    <FormControl
+      variant="standard"
+      required={props.required}
+      sx={{ width: props.width }}
+    >
       {props.infoIcon && (
         <InfoOutlined
           sx={{
@@ -41,6 +48,7 @@ export default function DropDownMenu(props: DropDownProps) {
       <InputLabel>{props.title}</InputLabel>
       <Select
         value={props.value}
+        error={props.hasError}
         onChange={(e) => props.setValue(e.target.value)}
       >
         {props.options.map((option, index) => (

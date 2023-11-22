@@ -6,8 +6,8 @@ export interface FloatInputFieldProps {
   width: string;
   value: number;
   setValue: (value: number) => void;
+  required: boolean;
   hasError: boolean;
-  setHasError: (value: boolean) => void;
   errorText: string;
 }
 
@@ -15,13 +15,13 @@ export const FloatInputField = (props: FloatInputFieldProps) => {
   return (
     <TextField
       type="number"
-      required
+      required={props.required}
       variant="standard"
       label={props.label}
       value={props.value}
       sx={{
         width: props.width,
-        background: "white"
+        background: "white",
       }}
       onChange={(e) => {
         props.setValue(parseFloat(e.target.value));
