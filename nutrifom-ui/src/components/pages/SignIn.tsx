@@ -96,6 +96,53 @@ export default function SignIn() {
   const handleGoogleSignInButtonClick = () => {};
   const handleGoogleSignUpButtonClick = () => {};
 
+  const handleFieldErrorsBeforeSignIn = () => {
+    if (email === "") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+    }
+    if (password === "") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+    }
+  };
+
+  const handleFieldErrorsBeforeSignUp = () => {
+    if (name === "") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.NAME]);
+    }
+    if (
+      dob === null ||
+      dob.isSame(dayjs(new Date()), "day") ||
+      dob.isAfter(dayjs(new Date()), "day")
+    ) {
+      setFieldErrors((error) => [...error, fieldErrorEnum.DOB]);
+    }
+    if (height <= 0) {
+      setFieldErrors((error) => [...error, fieldErrorEnum.HEIGHT]);
+    }
+    if (weight <= 0) {
+      setFieldErrors((error) => [...error, fieldErrorEnum.WEIGHT]);
+    }
+
+    if (gender === "Bitte wählen") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.GENDER]);
+    }
+    if (goal === "Bitte wählen") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.GOAL]);
+    }
+    if (pal === "Bitte wählen") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.PAL]);
+    }
+    if (wpa < 0) {
+      setFieldErrors((error) => [...error, fieldErrorEnum.WPA]);
+    }
+    if (email === "") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+    }
+    if (password === "") {
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+    }
+  };
+
   return (
     <Container sx={{ width: "30%", marginTop: "5%" }}>
       <Box
@@ -253,18 +300,7 @@ export default function SignIn() {
                   ? () => {
                       setFieldErrors([]);
                       if (email === "" || password === "") {
-                        if (email === "") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.EMAIL,
-                          ]);
-                        }
-                        if (password === "") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.PASSWORD,
-                          ]);
-                        }
+                        handleFieldErrorsBeforeSignIn();
                       } else {
                         handleSignInButtonClick();
                       }
@@ -285,71 +321,7 @@ export default function SignIn() {
                         email === "" ||
                         password === ""
                       ) {
-                        if (name === "") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.NAME,
-                          ]);
-                        }
-                        if (
-                          dob === null ||
-                          dob.isSame(dayjs(new Date()), "day") ||
-                          dob.isAfter(dayjs(new Date()), "day")
-                        ) {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.DOB,
-                          ]);
-                        }
-                        if (height <= 0) {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.HEIGHT,
-                          ]);
-                        }
-                        if (weight <= 0) {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.WEIGHT,
-                          ]);
-                        }
-
-                        if (gender === "Bitte wählen") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.GENDER,
-                          ]);
-                        }
-                        if (goal === "Bitte wählen") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.GOAL,
-                          ]);
-                        }
-                        if (pal === "Bitte wählen") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.PAL,
-                          ]);
-                        }
-                        if (wpa < 0) {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.WPA,
-                          ]);
-                        }
-                        if (email === "") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.EMAIL,
-                          ]);
-                        }
-                        if (password === "") {
-                          setFieldErrors((error) => [
-                            ...error,
-                            fieldErrorEnum.PASSWORD,
-                          ]);
-                        }
+                        handleFieldErrorsBeforeSignUp();
                       } else {
                         handleSignUpButtonClick();
                       }

@@ -1,5 +1,4 @@
 import React from "react";
-import { BasicFoodField } from "../common/BasicFoodField";
 import { Layout } from "../layout/Layout";
 import { Box, Typography, useTheme } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
@@ -7,6 +6,7 @@ import BasicButton from "../common/BasicButton";
 import NutritionalTable from "../common/NutritionalTable";
 import FoodTable, { FoodItem } from "../common/FoodTable";
 import BasicPie from "../common/BasicPieChart";
+import { TextInputField } from "../common/TextInputField";
 
 export const FoodLog = (testParams: any) => {
   const theme = useTheme();
@@ -161,15 +161,14 @@ export const FoodLog = (testParams: any) => {
               }}
             >
               <Box sx={{ marginBottom: "5%" }}>
-                <BasicFoodField
+                <TextInputField
                   label="Suche hier nach einem Lebensmittel..."
                   value={SearchTextFood}
-                  buttonText="Eintrag hinzufügen"
                   setValue={setSearchTextFood}
                   hasError={FoodSearchHasError}
-                  setHasError={setFoodSearchHasError}
                   errorText="Du hast kein Lebensmittel eingegeben."
                   width="100%"
+                  required={false}
                 />
               </Box>
               <Box sx={{ marginBottom: "5%" }}>
@@ -179,9 +178,9 @@ export const FoodLog = (testParams: any) => {
                   value={currentFoodAmount}
                   setValue={setCurrentFoodAmount}
                   hasError={foodAmountHasError}
-                  setHasError={setFoodAmountHasError}
                   errorText="Die Menge kann nicht negativ oder 0 sein."
                   width="100%"
+                  required={false}
                 />
               </Box>
               <BasicButton
@@ -208,15 +207,14 @@ export const FoodLog = (testParams: any) => {
               }}
             >
               <Box sx={{ marginBottom: "5%" }}>
-                <BasicFoodField
+                <TextInputField
                   label="Suche hier nach einem Rezept..."
                   value={searchTextRecepie}
-                  buttonText="Eintrag hinzufügen"
                   setValue={setSearchTextRecepie}
                   hasError={recepieSearchHasError}
-                  setHasError={setRecepieSearchHasError}
                   errorText="Du hast kein Rezept ausgewählt."
                   width="100%"
+                  required={false}
                 />
               </Box>
               <Box sx={{ marginBottom: "5%" }}>
@@ -226,9 +224,9 @@ export const FoodLog = (testParams: any) => {
                   value={currentPortionAmount}
                   setValue={setCurrentPortionAmount}
                   hasError={portionAmountHasError}
-                  setHasError={setPortionAmountHasError}
                   errorText="Die Portionen kann nicht negativ oder 0 sein."
                   width="100%"
+                  required={false}
                 />
               </Box>
               <BasicButton
@@ -256,41 +254,41 @@ export const FoodLog = (testParams: any) => {
           </Box>
         </Box>
 
-        <Box >
-            <BasicPie
-              totalKcal={2200}
-              consumedKcal={Math.round(
+        <Box>
+          <BasicPie
+            totalKcal={2200}
+            consumedKcal={Math.round(
+              getTotalNutritionalValues().energy_kcal_per_unit
+            )}
+          />
+          <Typography>Nährwerte</Typography>
+          {selectedFood ? (
+            <NutritionalTable
+              energy_kcal={Math.round(selectedFood.energy_kcal_per_unit)}
+              proteins={Math.round(selectedFood.proteins)}
+              saturatedFat={Math.round(selectedFood.saturatedFat)}
+              unsaturatedFat={Math.round(selectedFood.unsaturatedFat)}
+              carbohydrates={Math.round(selectedFood.carbohydrates)}
+            />
+          ) : (
+            <NutritionalTable
+              energy_kcal={Math.round(
                 getTotalNutritionalValues().energy_kcal_per_unit
               )}
+              proteins={Math.round(getTotalNutritionalValues().proteins)}
+              saturatedFat={Math.round(
+                getTotalNutritionalValues().saturatedFat
+              )}
+              unsaturatedFat={Math.round(
+                getTotalNutritionalValues().unsaturatedFat
+              )}
+              carbohydrates={Math.round(
+                getTotalNutritionalValues().carbohydrates
+              )}
             />
-            <Typography>Nährwerte</Typography>
-            {selectedFood ? (
-              <NutritionalTable
-                energy_kcal={Math.round(selectedFood.energy_kcal_per_unit)}
-                proteins={Math.round(selectedFood.proteins)}
-                saturatedFat={Math.round(selectedFood.saturatedFat)}
-                unsaturatedFat={Math.round(selectedFood.unsaturatedFat)}
-                carbohydrates={Math.round(selectedFood.carbohydrates)}
-              />
-            ) : (
-              <NutritionalTable
-                energy_kcal={Math.round(
-                  getTotalNutritionalValues().energy_kcal_per_unit
-                )}
-                proteins={Math.round(getTotalNutritionalValues().proteins)}
-                saturatedFat={Math.round(
-                  getTotalNutritionalValues().saturatedFat
-                )}
-                unsaturatedFat={Math.round(
-                  getTotalNutritionalValues().unsaturatedFat
-                )}
-                carbohydrates={Math.round(
-                  getTotalNutritionalValues().carbohydrates
-                )}
-              />
-            )}
-          </Box>
+          )}
         </Box>
+      </Box>
     </Layout>
   );
 };
