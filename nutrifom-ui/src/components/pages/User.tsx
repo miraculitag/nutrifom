@@ -39,7 +39,7 @@ export const User = (testParams: any) => {
     { label: "E-Mail", data: testUser.email },
     { label: "Geburtstag", data: testUser.dob },
     { label: "Geschlecht", data: testUser.gender },
-    { label: "Größe", data: testUser.height },
+    { label: "Größe", data: testUser.height + " cm" },
   ];
 
   return (
