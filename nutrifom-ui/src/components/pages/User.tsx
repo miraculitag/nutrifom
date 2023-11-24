@@ -9,8 +9,21 @@ import {
 } from "@mui/material";
 import FileUploadButton from "../common/FileUploadButton";
 import { Layout } from "../layout/Layout";
+import { AppUser } from "../../types";
+import React from "react";
+import { getAppUser } from "../../api";
 
 export const User = (testParams: any) => {
+  const [user, setUser] = React.useState<AppUser>();
+
+  /*const getUser = () => {
+    getAppUser(1243).then((response) => {
+      setUser(response.data);
+    });
+  };
+  getUser();*/
+
+  //const testUser: AppUser | undefined = user;
   const testUser = {
     id: 1,
     name: "Username",
@@ -26,7 +39,7 @@ export const User = (testParams: any) => {
     { label: "E-Mail", data: testUser.email },
     { label: "Geburtstag", data: testUser.dob },
     { label: "Geschlecht", data: testUser.gender },
-    { label: "Größe", data: testUser.height },
+    { label: "Größe", data: testUser.height + " cm" },
   ];
 
   return (
@@ -44,7 +57,7 @@ export const User = (testParams: any) => {
           }}
         >
           <Avatar
-            src={testUser.image}
+            src={""}
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>

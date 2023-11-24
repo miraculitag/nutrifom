@@ -24,9 +24,9 @@ export default function NutritionalTable(props: NutritionalTableProps) {
     createData("Energie [kcal]:", props.energy_kcal),
     createData("Eiweiß [g]:", props.proteins),
     createData("Fett [g]:", props.saturatedFat + props.unsaturatedFat),
-    createData("davon gesättigte Fettsäuren [g]", props.saturatedFat),
-    createData("davon ungesättigte Fettsäuren [g]", props.unsaturatedFat),
-    createData("Kohlenhydrate [g]", props.carbohydrates),
+    createData("davon gesättigte Fettsäuren [g]:", props.saturatedFat),
+    createData("davon ungesättigte Fettsäuren [g]:", props.unsaturatedFat),
+    createData("Kohlenhydrate [g]:", props.carbohydrates),
   ];
   return (
     <TableContainer component={Paper}>
