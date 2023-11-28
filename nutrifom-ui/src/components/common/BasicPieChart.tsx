@@ -46,11 +46,11 @@ export default function BasicPie(props: BasicPieChartProps) {
     <>
       <PieChart
        margin={{left: 60}}
-       height={200}
+
         series={[
           {
             data,
-            innerRadius: 60,
+            innerRadius: 70,
           },
         ]}
         colors={[theme.palette.primary.main, "lightgrey"]}

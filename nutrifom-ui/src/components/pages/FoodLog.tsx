@@ -6,6 +6,9 @@ import BasicButton from "../common/BasicButton";
 import NutritionalTable from "../common/NutritionalTable";
 import FoodTable, { FoodItem } from "../common/FoodTable";
 import BasicPie from "../common/BasicPieChart";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import dayjs, { Dayjs } from "dayjs";
 import { TextInputField } from "../common/TextInputField";
 
 export const FoodLog = (testParams: any) => {
@@ -27,10 +30,13 @@ export const FoodLog = (testParams: any) => {
   const [portionAmountHasError, setPortionAmountHasError] =
     React.useState(false);
 
-  const [kcal, setkcal] = React.useState<number>(2200);
-
   const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
+
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
+    dayjs(new Date())
+  );
+  const sevenDaysAgo = dayjs().subtract(7, "day");
 
   const foodData = [
     {
@@ -138,130 +144,170 @@ export const FoodLog = (testParams: any) => {
     });
   };
 
+  const handleChangeDateMinusOne = () => {
+    if (selectedDate) {
+      const daysDifference = dayjs().diff(selectedDate, "day");
+      if (daysDifference < 7) {
+        const newDate = selectedDate.subtract(1, "day");
+        setSelectedDate(newDate);
+      }
+    }
+  };
+
+  const handleChangeDatePlusOne = () => {
+    if (selectedDate) {
+      const newDate = selectedDate.add(1, "day");
+      setSelectedDate(newDate);
+    }
+  };
+
   return (
     <Layout>
+
       <Box
         sx={{
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateAreas: `"Food Recepie PieChart"
+        "Foodlog Foodlog Nutrition"`,
+        columnGap: 5,
+        rowGap: 8,
         }}
       >
-        <Box sx={{ marginRight: "5%", width: "70%" }}>
-          <Box
-            sx={{
-              alignItems: "top",
-              justifyContent: "space-between",
-              display: "flex",
-              flex: 1,
+        <Box sx={{ gridArea: "Food" }}>
+          <Box sx={{ marginBottom: "5%" }}>
+          <TextInputField
+              label="Suche hier nach einem Lebensmittel..."
+              value={SearchTextFood}
+              setValue={setSearchTextFood}
+              hasError={FoodSearchHasError}
+              errorText="Du hast kein Lebensmittel eingegeben."
+              width="100%" 
+              required={false}            />
+          </Box>
+          <Box sx={{ marginBottom: "5%" }}>
+          <FloatInputField
+              label="Menge eintragen"
+              suffix="Gramm"
+              value={currentFoodAmount}
+              setValue={setCurrentFoodAmount}
+              hasError={foodAmountHasError}
+              errorText="Die Menge kann nicht negativ oder 0 sein."
+              width="100%" 
+              required={false}            />
+          </Box>
+          <BasicButton
+            label="Lebensmittel hinzufügen"
+            width="100%"
+            isButtonClicked={isButtonClicked}
+            onButtonClick={(e) => {
+              if (currentFoodAmount <= 0 || SearchTextFood === "") {
+                if (currentFoodAmount <= 0) {
+                  setFoodAmountHasError(true);
+                }
+                if (SearchTextFood === "") {
+                  setFoodSearchHasError(true);
+                }
+              } else {
+                handleChangeSearchFoodTextAmount();
+              }
             }}
-          >
-            <Box
-              sx={{
-                marginRight: "10%",
-                width: "50%",
-              }}
-            >
-              <Box sx={{ marginBottom: "5%" }}>
-                <TextInputField
-                  label="Suche hier nach einem Lebensmittel..."
-                  value={SearchTextFood}
-                  setValue={setSearchTextFood}
-                  hasError={FoodSearchHasError}
-                  errorText="Du hast kein Lebensmittel eingegeben."
-                  width="100%"
-                  required={false}
-                />
-              </Box>
-              <Box sx={{ marginBottom: "5%" }}>
-                <FloatInputField
-                  label="Menge eintragen"
-                  suffix="Gramm"
-                  value={currentFoodAmount}
-                  setValue={setCurrentFoodAmount}
-                  hasError={foodAmountHasError}
-                  errorText="Die Menge kann nicht negativ oder 0 sein."
-                  width="100%"
-                  required={false}
-                />
-              </Box>
-              <BasicButton
-                label="Lebensmittel hinzufügen"
-                width="100%"
-                isButtonClicked={isButtonClicked}
-                onButtonClick={(e) => {
-                  if (currentFoodAmount <= 0 || SearchTextFood === "") {
-                    if (currentFoodAmount <= 0) {
-                      setFoodAmountHasError(true);
-                    }
-                    if (SearchTextFood === "") {
-                      setFoodSearchHasError(true);
-                    }
-                  } else {
-                    handleChangeSearchFoodTextAmount();
-                  }
-                }}
-              />
-            </Box>
-            <Box
-              sx={{
-                width: "50%",
-              }}
-            >
-              <Box sx={{ marginBottom: "5%" }}>
-                <TextInputField
-                  label="Suche hier nach einem Rezept..."
-                  value={searchTextRecepie}
-                  setValue={setSearchTextRecepie}
-                  hasError={recepieSearchHasError}
-                  errorText="Du hast kein Rezept ausgewählt."
-                  width="100%"
-                  required={false}
-                />
-              </Box>
-              <Box sx={{ marginBottom: "5%" }}>
-                <FloatInputField
-                  label="Portionen eintragen"
-                  suffix="Portion(en)"
-                  value={currentPortionAmount}
-                  setValue={setCurrentPortionAmount}
-                  hasError={portionAmountHasError}
-                  errorText="Die Portionen kann nicht negativ oder 0 sein."
-                  width="100%"
-                  required={false}
-                />
-              </Box>
-              <BasicButton
-                label="Rezept hinzufügen"
-                width="100%"
-                isButtonClicked={isButtonClicked}
-                onButtonClick={(e) => {
-                  if (currentPortionAmount <= 0 || searchTextRecepie === "") {
-                    if (currentPortionAmount <= 0) {
-                      setPortionAmountHasError(true);
-                    }
-                    if (searchTextRecepie === "") {
-                      setRecepieSearchHasError(true);
-                    }
-                  } else {
-                    handleChangeSearchPortionRecepieText();
-                  }
-                }}
-              />
-            </Box>
-          </Box>
-          <Box>
-            <Typography>Lebenmittel & Rezepte</Typography>
-            <FoodTable foods={foodData} onSelectRow={handleRowClick} />
-          </Box>
+          />
         </Box>
 
-        <Box>
+        <Box sx={{ gridArea: "Recepie" }}>
+          <Box sx={{ marginBottom: "5%" }}>
+          <TextInputField
+              label="Suche hier nach einem Rezept..."
+              value={searchTextRecepie}
+              setValue={setSearchTextRecepie}
+              hasError={recepieSearchHasError}
+              errorText="Du hast kein Rezept ausgewählt."
+              width="100%" 
+              required={false}            />
+          </Box>
+          <Box sx={{ marginBottom: "5%" }}>
+          <FloatInputField
+              label="Portionen eintragen"
+              suffix="Portion(en)"
+              value={currentPortionAmount}
+              setValue={setCurrentPortionAmount}
+              hasError={portionAmountHasError}
+              errorText="Die Portionen kann nicht negativ oder 0 sein."
+              width="100%" 
+              required={false}            />
+          </Box>
+          <BasicButton
+            label="Rezept hinzufügen"
+            width="100%"
+            isButtonClicked={isButtonClicked}
+            onButtonClick={(e) => {
+              if (currentPortionAmount <= 0 || searchTextRecepie === "") {
+                if (currentPortionAmount <= 0) {
+                  setPortionAmountHasError(true);
+                }
+                if (searchTextRecepie === "") {
+                  setRecepieSearchHasError(true);
+                }
+              } else {
+                handleChangeSearchPortionRecepieText();
+              }
+            }}
+          />
+        </Box>
+
+        <Box sx={{ gridArea: "PieChart", height:"100%" }}>
           <BasicPie
             totalKcal={2200}
             consumedKcal={Math.round(
               getTotalNutritionalValues().energy_kcal_per_unit
             )}
           />
-          <Typography>Nährwerte</Typography>
+        </Box>
+
+        <Box sx={{ gridArea: "Foodlog" }}>
+          <Box sx={{ display: "flex", marginBottom:"2%"}}>
+            <Typography>Lebenmittel & Rezepte</Typography>
+            {selectedDate &&
+            !dayjs(selectedDate).isSame(sevenDaysAgo, "day") ? (
+              <ArrowBackIosNewIcon
+                sx={{
+                  marginLeft: "1%",
+                  marginRight: "1%",
+                  background: theme.palette.primary.main,
+                  color: "white",
+                }}
+                onClick={handleChangeDateMinusOne}
+              />
+            ) : (
+              <ArrowBackIosNewIcon
+                sx={{
+                  marginLeft: "1%",
+                  marginRight: "1%",
+                  color: "white",
+                }}
+              />
+            )}
+
+            <Typography>{selectedDate?.format("DD.MM.YYYY")}</Typography>
+            {selectedDate && !dayjs(selectedDate).isSame(dayjs(), "day") && (
+              <ArrowForwardIosIcon
+                sx={{
+                  background: theme.palette.primary.main,
+                  color: "white",
+                  marginLeft: "1%",
+                }}
+                onClick={handleChangeDatePlusOne}
+              ></ArrowForwardIosIcon>
+            )}
+          </Box>
+          <FoodTable foods={foodData} onSelectRow={handleRowClick} />
+        </Box>
+
+        <Box sx={{ gridArea: "Nutrition" }}>
+          <Box sx={{ marginBottom: "2%" }}>
+            <Typography>Nährwerte</Typography>
+          </Box>
           {selectedFood ? (
             <NutritionalTable
               energy_kcal={Math.round(selectedFood.energy_kcal_per_unit)}
@@ -289,6 +335,7 @@ export const FoodLog = (testParams: any) => {
           )}
         </Box>
       </Box>
+
     </Layout>
   );
 };
