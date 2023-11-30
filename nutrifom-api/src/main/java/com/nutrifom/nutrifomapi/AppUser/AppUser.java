@@ -51,7 +51,7 @@ public class AppUser implements UserDetails {
     private Integer height;
 
     @Column(name = "Gender")
-    private Character gender;
+    private String gender;
 
     @Column(name = "PAL")
     private String pal;
