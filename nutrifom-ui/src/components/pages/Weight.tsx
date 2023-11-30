@@ -40,7 +40,14 @@ export const Weight = (testParams: any) => {
 
   return (
     <Layout>
-      <Box style={{ display: "flex", justifyContent: "space-between", height:"100%",width:"100%" }}>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          height: "100%",
+          width: "100%",
+        }}
+      >
         <BasicLineChart></BasicLineChart>
         <Box
           sx={{
@@ -58,15 +65,13 @@ export const Weight = (testParams: any) => {
               flexDirection: "column",
             }}
           >
-            <Box
-              sx={{
-              }}
-            >
+            <Box>
               <BasicDatePicker
                 label="Datum auswählen"
                 value={selectedDate}
                 onChange={handleDatePickerChange}
                 width="100%"
+                required={false}
               />
             </Box>
             <Box
@@ -81,9 +86,9 @@ export const Weight = (testParams: any) => {
                 value={currentWeight}
                 setValue={setCurrentWeight}
                 hasError={weightHasError}
-                setHasError={setWeightHasError}
                 errorText="Dein Gewicht kann nicht negativ oder 0 sein."
                 width="100%"
+                required={true}
               />
             </Box>
             <BasicButton

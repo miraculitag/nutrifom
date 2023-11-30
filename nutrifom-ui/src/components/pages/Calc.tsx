@@ -197,6 +197,7 @@ export const Calc = (testParams: any) => {
               infoIcon={true}
               isInfoIconClicked={isPalInfoIconClicked}
               setIsInfoIconClicked={setIsPalInfoIconClicked}
+              required={false}
             />
             <FloatInputField
               label={"sportliche Aktivität in Stunden/Woche"}
@@ -205,8 +206,8 @@ export const Calc = (testParams: any) => {
               value={wpa}
               setValue={setWpa}
               hasError={wpaHasError}
-              setHasError={setWpaHasError}
               errorText={"Die sportliche Akivität kann nicht negativ sein."}
+              required={false}
             />
           </Box>
         )}
@@ -225,6 +226,7 @@ export const Calc = (testParams: any) => {
             options={goals}
             value={goal}
             setValue={setGoal}
+            required={false}
           />
           <BasicButton
             label="Kalorienbedarf Berechnen"
@@ -277,6 +279,8 @@ export const Calc = (testParams: any) => {
       <Stack
         sx={{
           paddingTop: "5%",
+          width: "60%",
+          margin: "auto",
         }}
         spacing={2}
       >
