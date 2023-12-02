@@ -112,8 +112,13 @@ export const SignIn = () => {
   const handleGoogleSignInButtonClick = () => {};
   const handleGoogleSignUpButtonClick = () => {};
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleFieldErrorsBeforeSignIn = () => {
-    if (email === "") {
+    if (!validateEmail(email)) {
       setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
     }
     if (password === "") {
@@ -151,7 +156,7 @@ export const SignIn = () => {
     if (wpa < 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.WPA]);
     }
-    if (email === "") {
+    if (!validateEmail(email)) {
       setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
     }
     if (password === "") {
@@ -290,7 +295,7 @@ export const SignIn = () => {
               autoComplete="email"
               autoFocus={onSignInPage && true}
               hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
-              errorText={"Pflichtfeld muss ausgefüllt werden."}
+              errorText={"Gib eine gültige E-Mail-Adresse an."}
             />
             <TextInputField
               label="Passwort"
@@ -315,7 +320,7 @@ export const SignIn = () => {
                 onSignInPage
                   ? () => {
                       setFieldErrors([]);
-                      if (email === "" || password === "") {
+                      if (!validateEmail(email) || password === "") {
                         handleFieldErrorsBeforeSignIn();
                       } else {
                         handleSignInButtonClick();
@@ -334,7 +339,7 @@ export const SignIn = () => {
                         goal === "Bitte wählen" ||
                         pal === "Bitte wählen" ||
                         wpa < 0 ||
-                        email === "" ||
+                        !validateEmail(email) ||
                         password === ""
                       ) {
                         handleFieldErrorsBeforeSignUp();
