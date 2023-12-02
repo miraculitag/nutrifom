@@ -15,7 +15,7 @@ public class RegisterRequest {
     private String name;
     private LocalDate dob;
     private Integer height;
-    private Character gender;
+    private String gender;
     private double wpa;
     private String pal;
     private int weight;
