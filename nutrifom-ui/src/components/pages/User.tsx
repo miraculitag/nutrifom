@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Grid,
   IconButton,
   InputLabel,
   TextField,
@@ -74,20 +75,25 @@ export const User = (testParams: any) => {
           <Typography sx={{ fontSize: "150%", paddingBottom: "5%" }}>
             Profildetails
           </Typography>
-          {userData.map((field, index) => (
-            <TextField
-              key={index}
-              label={field.label}
-              variant="standard"
-              value={field.data}
-              inputProps={{ readOnly: true }}
-              sx={{
-                paddingBottom: "5%",
-                paddingRight: index % 2 === 0 ? "5%" : "0%",
-                float: index % 2 === 0 ? "" : "right",
-              }}
-            />
-          ))}
+          <Box
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            <Grid container spacing={2}>
+              {userData.map((field, index) => (
+                <Grid item xs={6} key={index}>
+                  <TextField
+                    label={field.label}
+                    variant="standard"
+                    value={field.data}
+                    inputProps={{ readOnly: true }}
+                    sx={{ paddingBottom: "5%" }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
         </Box>
       </Box>
     </Layout>

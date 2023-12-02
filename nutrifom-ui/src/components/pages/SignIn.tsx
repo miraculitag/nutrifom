@@ -382,7 +382,7 @@ export const SignIn = () => {
               }}
             >
               <Typography>
-                {onSignInPage ? "Noch keinen Account" : ""}
+                {onSignInPage ? "Noch keinen Account?" : ""}
               </Typography>
               <Link
                 onClick={() => setOnSignInPage(!onSignInPage)}
