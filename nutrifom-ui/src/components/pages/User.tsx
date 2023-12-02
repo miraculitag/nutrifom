@@ -17,7 +17,7 @@ export const User = (testParams: any) => {
   const [user, setUser] = React.useState<AppUser>();
 
   /*const getUser = () => {
-    getAppUser(1243).then((response) => {
+    getAppUser(userId, userToken).then((response) => {
       setUser(response.data);
     });
   };

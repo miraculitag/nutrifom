@@ -8,8 +8,8 @@ import { Weight } from "./components/pages/Weight";
 import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
 import { ThemeProvider } from "@mui/material";
-import { AuthProvider, RequireAuth } from "react-auth-kit";
-import SignIn from "./components/pages/SignIn";
+import { AuthProvider } from "react-auth-kit";
+import { SignIn } from "./components/pages/SignIn";
 
 export default function App() {
   return (

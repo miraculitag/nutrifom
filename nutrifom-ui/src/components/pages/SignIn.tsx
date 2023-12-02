@@ -1,6 +1,6 @@
 import * as React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useSignIn } from "react-auth-kit";
+import { useIsAuthenticated, useSignIn } from "react-auth-kit";
 import {
   Button,
   Avatar,
@@ -21,8 +21,9 @@ import PalTable from "../common/PalTable";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { fieldErrorEnum } from "../../types";
+import { useNavigate } from "react-router-dom";
 
-export default function SignIn() {
+export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
   const [isSignInButtonClicked, setIsSignInButtonClicked] =
     React.useState(false);
@@ -59,24 +60,37 @@ export default function SignIn() {
     React.useState(false);*/ //tdb
 
   const signIn = useSignIn(); //tbd
+  const navigate = useNavigate();
+  /*const isAuthenticated = useIsAuthenticated();
+
+  React.useEffect(() => {
+    console.log("isAuthenticated" + isAuthenticated());
+    if (isAuthenticated()) {
+      navigate("/");
+    }
+  }, []);*/
 
   const handleSignInButtonClick = () => {
-    /* authenticateAppUser({ email: email, password: password }).then(
+    authenticateAppUser({ email: email, password: password }).then(
       (response) => {
+        console.log(response);
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: Infinity,
+          expiresIn: 3600,
         });
+        navigate("/");
       }
-    );*/
+    );
   };
 
   const handleSignUpButtonClick = () => {
-    /*registerAppUser({
+    const formattedDob = dob!.format("YYYY-MM-DD");
+    console.log(dob!.isValid());
+    registerAppUser({
       name: name,
       weight: weight,
-      dob: dob,
+      dob: formattedDob,
       goal: goal,
       height: height,
       gender: gender,
@@ -85,12 +99,14 @@ export default function SignIn() {
       email: email,
       password: password,
     }).then((response) => {
+      console.log(response);
       signIn({
         token: response.data.token,
         tokenType: "Bearer",
-        expiresIn: Infinity,
+        expiresIn: 3600,
       });
-    });*/
+      navigate("/");
+    });
   };
 
   const handleGoogleSignInButtonClick = () => {};
@@ -377,4 +393,4 @@ export default function SignIn() {
       </Box>
     </Container>
   );
-}
+};

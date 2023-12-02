@@ -145,7 +145,13 @@ export const Recipes = (testParams: any) => {
                   </Typography>
                 </Box>
               </Box>
-              <Typography sx={{ color: "text.secondary" }}>
+              <Typography
+                sx={{
+                  color: "text.secondary",
+                  marginLeft: "auto",
+                  paddingRight: "5%",
+                }}
+              >
                 {recipe.uses} mal nachgekocht
               </Typography>
             </AccordionSummary>

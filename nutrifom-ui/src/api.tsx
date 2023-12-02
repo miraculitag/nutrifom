@@ -2,9 +2,7 @@ import axios from "axios";
 import { AuthenticateRequest, RegisterRequest } from "./types";
 
 export const axiosInstance = axios.create({
-  maxBodyLength: Infinity,
-  maxContentLength: Infinity,
-  timeout: 60000,
+  timeout: 20000,
   baseURL: "https://nutrifom-api.azurewebsites.net",
 });
 
@@ -13,19 +11,19 @@ const addAuth = (token: string) => {
 };
 
 export const deleteAppUser = async (userId: number, token: string) =>
-  await axiosInstance.delete("/api/appUser/${userId}", {
+  await axiosInstance.delete(`/api/appUser/${userId}`, {
     ...addAuth(token),
     params: { userId: userId },
   });
 
 export const getAppUser = async (userId: number, token: string) =>
-  await axiosInstance.get("/api/appUser/${userId}", {
+  await axiosInstance.get(`/api/appUser/${userId}`, {
     ...addAuth(token),
     params: { userId: userId },
   });
 
 export const getAppUserImage = async (userId: number, token: string) => {
-  await axiosInstance.get("/api/appUser/${userId}/image", {
+  await axiosInstance.get(`/api/appUser/${userId}/image`, {
     ...addAuth(token),
     params: { userId: userId },
   });
@@ -36,7 +34,7 @@ export const putAppUserWpa = async (
   wpa: number,
   token: string
 ) => {
-  await axiosInstance.get("/api/appUser/${userId }/wpa", {
+  await axiosInstance.get(`/api/appUser/${userId}/wpa`, {
     ...addAuth(token),
     params: { userId: userId, wpa: wpa },
   });
@@ -47,7 +45,7 @@ export const putAppUserWeight = async (
   weight: number,
   token: string
 ) => {
-  await axiosInstance.get("/api/appUser/${userId}weight", {
+  await axiosInstance.get(`/api/appUser/${userId}weight`, {
     ...addAuth(token),
     params: { userId: userId, weight: weight },
   });
@@ -58,14 +56,14 @@ export const putAppUserPal = async (
   pal: string,
   token: string
 ) => {
-  await axiosInstance.get("/api/appUser/${userId}/pal", {
+  await axiosInstance.get(`/api/appUser/${userId}/pal`, {
     ...addAuth(token),
     params: { userId: userId, pal: pal },
   });
 };
 
 export const putAppUserImage = async (userId: number, token: string) => {
-  await axiosInstance.get("/api/appUser/${userId}/image", {
+  await axiosInstance.get(`/api/appUser/${userId}/image`, {
     ...addAuth(token),
     params: { userId: userId },
   });
@@ -76,7 +74,7 @@ export const putAppUserGoals = async (
   goal: string,
   token: string
 ) => {
-  await axiosInstance.get("/api/appUser/${userId}/goal", {
+  await axiosInstance.get(`/api/appUser/${userId}/goal`, {
     ...addAuth(token),
     params: { userId: userId, goal: goal },
   });
@@ -101,7 +99,7 @@ export const rateRecipes = async (
   userId: number,
   token: string
 ) => {
-  await axiosInstance.get("/api/recipes/rate/${recipeId}", {
+  await axiosInstance.get(`/api/recipes/rate/${recipeId}`, {
     ...addAuth(token),
     params: { recipeId: recipeId, userId: userId },
   });
@@ -119,13 +117,8 @@ export const getWeightsLast14DaysHistory = async (
 //tbd
 
 export const registerAppUser = async (registerRequest: RegisterRequest) =>
-  await axiosInstance.post("/api/auth/register", {
-    data: registerRequest,
-  });
+  await axiosInstance.post("/api/auth/register", registerRequest);
 
 export const authenticateAppUser = async (
   authenticateRequest: AuthenticateRequest
-) =>
-  await axiosInstance.post("/api/auth/authenticate", {
-    data: authenticateRequest,
-  });
+) => await axiosInstance.post("/api/auth/authenticate", authenticateRequest);
