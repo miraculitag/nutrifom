@@ -15,6 +15,7 @@ export default function InfoAlert(props: InfoAlertProps) {
     <Alert
       sx={{
         backgroundColor: theme.palette.primary.light,
+        paddingRight: "25px",
       }}
       icon={<InfoOutlined sx={{ color: theme.palette.primary.main }} />}
     >
