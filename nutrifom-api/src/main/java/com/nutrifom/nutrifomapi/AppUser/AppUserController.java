@@ -1,7 +1,9 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
+import java.security.Principal;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,25 +20,30 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 public class AppUserController {
     private final AppUserService appUserService;
 
+    private final JwtService jwtService;
+
     @Autowired
-    public AppUserController(AppUserService appUserService) {
+    public AppUserController(AppUserService appUserService, JwtService jwtService) {
         this.appUserService = appUserService;
+        this.jwtService = jwtService;
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<AppUser> getUserById(@PathVariable Integer userId) {
-        Optional<AppUser> user = appUserService.getAppUserById(userId);
-        if (user.isPresent()) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @GetMapping("/user")
+    public ResponseEntity<AppUser> getUser(Principal principal) {
+        // Extrahieren Sie die UserID aus dem JWT.
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 
-    @GetMapping("/{userId}/image")
-    public ResponseEntity<byte[]> getAppUserImage(@PathVariable Integer userId) {
+    @GetMapping("/image")
+    public ResponseEntity<byte[]> getAppUserImage(Principal principal) {
         try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            int userId = user.get().getId();
             byte[] imageData = appUserService.getAppUserImage(userId);
 
             HttpHeaders headers = new HttpHeaders();
@@ -48,29 +55,44 @@ public class AppUserController {
         }
     }
 
-    @PutMapping("/{userId}/goal")
-    public ResponseEntity<String> updateGoal(@PathVariable Integer userId, @RequestParam String goal) {
+    @PutMapping("/goal")
+    public ResponseEntity<String> updateGoal(Principal principal, @RequestParam String goal) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         return appUserService.updateAppUserGoal(userId, goal);
     }
 
-    @PutMapping("/{userId}/weight")
-    public ResponseEntity<String> updateWeight(@PathVariable Integer userId, @RequestParam int weight) {
+    @PutMapping("/weight")
+    public ResponseEntity<String> updateWeight(Principal principal, @RequestParam int weight) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         return appUserService.updateAppUserWeight(userId, weight);
     }
 
-    @PutMapping("/{userId}/pal")
-    public ResponseEntity<String> updatePal(@PathVariable Integer userId, @RequestParam String pal) {
+    @PutMapping("/pal")
+    public ResponseEntity<String> updatePal(Principal principal, @RequestParam String pal) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         return appUserService.updateAppUserPal(userId, pal);
     }
 
-    @PutMapping("/{userId}/wpa")
-    public ResponseEntity<String> updateWpa(@PathVariable Integer userId, @RequestParam double wpa) {
+    @PutMapping("/wpa")
+    public ResponseEntity<String> updateWpa(Principal principal, @RequestParam double wpa) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         return appUserService.updateAppUserWpa(userId, wpa);
     }
 
-    @PutMapping("/{userId}/image")
-    public ResponseEntity<?> updateAppUserImage(@PathVariable Integer userId, @RequestParam MultipartFile image) {
+    @PutMapping("/image")
+    public ResponseEntity<?> updateAppUserImage(Principal principal, @RequestParam MultipartFile image) {
         try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            int userId = user.get().getId();
             HttpStatus status = appUserService.updateAppUserImage(userId, image);
             return new ResponseEntity<>(status);
         } catch (IllegalStateException e) {
@@ -78,9 +100,12 @@ public class AppUserController {
         }
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteAppUser(@PathVariable Integer userId) {
+    @DeleteMapping("/user")
+    public ResponseEntity<String> deleteAppUser(Principal principal) {
         try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            int userId = user.get().getId();
             appUserService.deleteAppUser(userId);
             return new ResponseEntity<>("User with id " + userId + " deleted successfully.", HttpStatus.OK);
         } catch (IllegalStateException e) {

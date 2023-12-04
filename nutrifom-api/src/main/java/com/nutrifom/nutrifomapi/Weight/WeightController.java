@@ -1,8 +1,11 @@
 package com.nutrifom.nutrifomapi.Weight;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -25,8 +28,14 @@ public class WeightController {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    @GetMapping("{userId}/history")
-    public ResponseEntity<List<WeightEntry>> getWeightHistory(@PathVariable Integer userId) {
+    @Autowired
+    private JwtService jwtService;
+
+    @GetMapping("/history")
+    public ResponseEntity<List<WeightEntry>> getWeightHistory(Principal principal) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         AppUser appUser = appUserRepository.findById(userId).orElse(null);
         if (appUser == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,21 +44,43 @@ public class WeightController {
         return new ResponseEntity<>(weightHistory, HttpStatus.OK);
     }
 
-    @PostMapping("{userId}/entry")
-    public ResponseEntity<String> addWeightEntry(
-            @PathVariable Integer userId,
+    @PostMapping("/entry")
+    public ResponseEntity<?> addWeightEntry(
+            Principal principal,
             @RequestParam Integer weight,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
-        AppUser appUser = appUserRepository.findById(userId).orElse(null);
-        if (appUser == null) {
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
+
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: User not found in token.");
         }
-        weightService.addWeightEntry(appUser, weight, entryDate);
-        return new ResponseEntity<>("Weight entry added successfully", HttpStatus.OK);
+
+        int userId = userOptional.get().getId();
+        Optional<AppUser> appUserOptional = appUserRepository.findById(userId);
+
+        if (!appUserOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found in database.");
+        }
+
+        try {
+            weightService.addWeightEntry(appUserOptional.get(), weight, entryDate);
+            return ResponseEntity.ok("Weight entry added successfully");
+        } catch (Exception e) {
+            // Loggen Sie die Ausnahme und senden Sie eine allgemeine Fehlermeldung zurück.
+            // Abhängig von Ihrer Logging-Strategie
+            // Log.error("Error adding weight entry", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
-    @GetMapping("{userId}/last14Days")
-    public ResponseEntity<List<Double>> getLast14DaysWeightHistory(@PathVariable Integer userId) {
+
+    @GetMapping("/last14Days")
+    public ResponseEntity<List<Double>> getLast14DaysWeightHistory(Principal principal) {
+        String username = principal.getName(); // Hier ist die E-Mail-Adresse
+        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+        int userId = user.get().getId();
         if (!appUserRepository.existsById(userId)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
