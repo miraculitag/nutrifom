@@ -1,23 +1,22 @@
-import { LineChart } from '@mui/x-charts/LineChart';
-import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
-import 'dayjs/locale/de';
-import { useTheme } from '@mui/material';
+import { LineChart } from "@mui/x-charts/LineChart";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/de";
+import { useTheme } from "@mui/material";
 
 dayjs.extend(localizedFormat);
 
 export default function BasicLineChart() {
   const theme = useTheme();
   const customize = {
-    height:540,
+    height: 540,
     legend: { hidden: true },
     margin: { top: 5 },
   };
 
   const dateArray = Array.from({ length: 15 }, (_, index) => {
-    return dayjs().subtract(index, 'day').toDate();
+    return dayjs().subtract(index, "day").toDate();
   }).reverse();
-
 
   const dateWeight = [
     { date: dateArray[0], value: 65 },
@@ -37,33 +36,32 @@ export default function BasicLineChart() {
     { date: dateArray[14], value: 66 },
   ];
 
-
-
   return (
-    <><LineChart
-    sx={{
-      '.MuiMarkElement-root:not(.MuiMarkElement-highlighted)': {
-        fill: theme.palette.primary.light,
-      },
-    }}
+    <>
+      <LineChart
+        sx={{
+          ".MuiMarkElement-root:not(.MuiMarkElement-highlighted)": {
+            fill: theme.palette.primary.light,
+          },
+        }}
         xAxis={[
           {
-            dataKey: 'date',
-            valueFormatter: (date) => dayjs(date).format('DD.MM'),
-            scaleType:'point'
+            dataKey: "date",
+            valueFormatter: (date) => dayjs(date).format("DD.MM"),
+            scaleType: "point",
           },
         ]}
+        yAxis={[{ min: 61, max: 71 }]}
         series={[
           {
-            dataKey:'value',
-            valueFormatter: (value) => (value == null ? '?' : value.toString()),
-            color: "#33cc33"
+            dataKey: "value",
+            valueFormatter: (value) => (value == null ? "0" : value.toString()),
+            color: "#33cc33",
           },
         ]}
         dataset={dateWeight}
-        
-        {...customize} /></>
-
-    
+        {...customize}
+      />
+    </>
   );
 }

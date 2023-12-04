@@ -16,7 +16,7 @@ const StyledText = styled("text")(({ theme }) => ({
 
 function PieCenterLabel({ children }: { children: React.ReactNode }) {
   const { width, height, left, top } = useDrawingArea();
-  const lineHeight = 20; // adjust as needed
+  const lineHeight = 20;
   const textLines = React.Children.toArray(children);
 
   return (
@@ -36,10 +36,25 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
 
 export default function BasicPie(props: BasicPieChartProps) {
   const theme = useTheme();
-  const remainingKcal = props.totalKcal - props.consumedKcal;
+  let remainingKcal = 0;
+  let overConsumedKcal = 0;
+  let overConsumedRemainigKcal = props.totalKcal
+  if(props.totalKcal >= props.consumedKcal){
+    remainingKcal = props.totalKcal - props.consumedKcal;
+  }
+  else{    
+    overConsumedKcal = props.consumedKcal - props.totalKcal;
+    overConsumedRemainigKcal = props.totalKcal - overConsumedKcal;
+  }
+
+  const overconsumedData = [
+    {value: overConsumedKcal, color: "red"},
+    {value: overConsumedRemainigKcal, color: "white"}
+  ];
+
   const data = [
-    { value: props.consumedKcal, label: "Consumed" },
-    { value: remainingKcal, label: "Remaining" },
+    { value: props.consumedKcal, label: "Verzehrt", color:theme.palette.primary.main },
+    { value: remainingKcal, label: "Verbleibend" , color: "lightgrey"},
   ];
 
   return (
@@ -50,18 +65,19 @@ export default function BasicPie(props: BasicPieChartProps) {
         series={[
           {
             data,
-            innerRadius: 70,
+            outerRadius: 70,
+            innerRadius: 50,
           },
+          {data: overconsumedData, innerRadius: 70},
         ]}
-        colors={[theme.palette.primary.main, "lightgrey"]}
         sx={{
           position: "absolute",
         }}
+
         slotProps={{
           legend: {
             hidden: true,
-          },          
-        }}
+          }}}
       >
         <PieCenterLabel>
           {[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}

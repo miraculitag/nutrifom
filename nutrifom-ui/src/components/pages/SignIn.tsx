@@ -1,6 +1,6 @@
 import * as React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useSignIn } from "react-auth-kit";
+import { useIsAuthenticated, useSignIn } from "react-auth-kit";
 import {
   Button,
   Avatar,
@@ -21,8 +21,9 @@ import PalTable from "../common/PalTable";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { fieldErrorEnum } from "../../types";
+import { useNavigate } from "react-router-dom";
 
-export default function SignIn() {
+export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
   const [isSignInButtonClicked, setIsSignInButtonClicked] =
     React.useState(false);
@@ -59,24 +60,37 @@ export default function SignIn() {
     React.useState(false);*/ //tdb
 
   const signIn = useSignIn(); //tbd
+  const navigate = useNavigate();
+  /*const isAuthenticated = useIsAuthenticated();
+
+  React.useEffect(() => {
+    console.log("isAuthenticated" + isAuthenticated());
+    if (isAuthenticated()) {
+      navigate("/");
+    }
+  }, []);*/
 
   const handleSignInButtonClick = () => {
-    /* authenticateAppUser({ email: email, password: password }).then(
+    authenticateAppUser({ email: email, password: password }).then(
       (response) => {
+        console.log(response);
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: Infinity,
+          expiresIn: 3600,
         });
+        navigate("/");
       }
-    );*/
+    );
   };
 
   const handleSignUpButtonClick = () => {
-    /*registerAppUser({
+    const formattedDob = dob!.format("YYYY-MM-DD");
+    console.log(dob!.isValid());
+    registerAppUser({
       name: name,
       weight: weight,
-      dob: dob,
+      dob: formattedDob,
       goal: goal,
       height: height,
       gender: gender,
@@ -85,19 +99,26 @@ export default function SignIn() {
       email: email,
       password: password,
     }).then((response) => {
+      console.log(response);
       signIn({
         token: response.data.token,
         tokenType: "Bearer",
-        expiresIn: Infinity,
+        expiresIn: 3600,
       });
-    });*/
+      navigate("/");
+    });
   };
 
   const handleGoogleSignInButtonClick = () => {};
   const handleGoogleSignUpButtonClick = () => {};
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleFieldErrorsBeforeSignIn = () => {
-    if (email === "") {
+    if (!validateEmail(email)) {
       setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
     }
     if (password === "") {
@@ -135,7 +156,7 @@ export default function SignIn() {
     if (wpa < 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.WPA]);
     }
-    if (email === "") {
+    if (!validateEmail(email)) {
       setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
     }
     if (password === "") {
@@ -274,7 +295,7 @@ export default function SignIn() {
               autoComplete="email"
               autoFocus={onSignInPage && true}
               hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
-              errorText={"Pflichtfeld muss ausgefüllt werden."}
+              errorText={"Gib eine gültige E-Mail-Adresse an."}
             />
             <TextInputField
               label="Passwort"
@@ -299,7 +320,7 @@ export default function SignIn() {
                 onSignInPage
                   ? () => {
                       setFieldErrors([]);
-                      if (email === "" || password === "") {
+                      if (!validateEmail(email) || password === "") {
                         handleFieldErrorsBeforeSignIn();
                       } else {
                         handleSignInButtonClick();
@@ -318,7 +339,7 @@ export default function SignIn() {
                         goal === "Bitte wählen" ||
                         pal === "Bitte wählen" ||
                         wpa < 0 ||
-                        email === "" ||
+                        !validateEmail(email) ||
                         password === ""
                       ) {
                         handleFieldErrorsBeforeSignUp();
@@ -361,7 +382,7 @@ export default function SignIn() {
               }}
             >
               <Typography>
-                {onSignInPage ? "Noch keinen Account" : ""}
+                {onSignInPage ? "Noch keinen Account?" : ""}
               </Typography>
               <Link
                 onClick={() => setOnSignInPage(!onSignInPage)}
@@ -377,4 +398,4 @@ export default function SignIn() {
       </Box>
     </Container>
   );
-}
+};

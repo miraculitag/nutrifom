@@ -15,6 +15,8 @@ export const Weight = (testParams: any) => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
+  const [dateHasError, setDateHasError] = React.useState(false);
+
   const [currentWeight, setCurrentWeight] = React.useState<number>(0);
   const [weightHasError, setWeightHasError] = React.useState(false);
 
@@ -26,6 +28,7 @@ export const Weight = (testParams: any) => {
 
   const handleAddWeightClick = () => {
     setWeightHasError(false);
+    setDateHasError(false);
     const currentDate = selectedDate;
     if (currentWeight >= 0) {
       console.log(
@@ -72,6 +75,8 @@ export const Weight = (testParams: any) => {
                 onChange={handleDatePickerChange}
                 width="100%"
                 required={false}
+                hasError={dateHasError}
+                errorText="Du muss ein Datum auswählen."
               />
             </Box>
             <Box
@@ -96,9 +101,23 @@ export const Weight = (testParams: any) => {
               width="100%"
               isButtonClicked={isButtonClicked}
               onButtonClick={(e) => {
-                currentWeight <= 0
-                  ? setWeightHasError(true)
-                  : handleAddWeightClick();
+                if (currentWeight <= 0 || selectedDate === null) {
+                  if (currentWeight <= 0) {
+                    setWeightHasError(true);
+                  }
+                  else
+                  {
+                    setWeightHasError(false);
+                  }
+                  if (selectedDate === null) {
+                    setDateHasError(true);
+                  }
+                  else{
+                    setDateHasError(false);
+                  }
+                } else {
+                  handleAddWeightClick();
+                }
               }}
             />
           </Box>

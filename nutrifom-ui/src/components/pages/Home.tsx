@@ -156,6 +156,7 @@ export const Home = (testParams: any) => {
                 <Alert
                   sx={{
                     backgroundColor: theme.palette.primary.light,
+                    paddingRight: "25px",
                   }}
                   icon={
                     <TaskAltIcon sx={{ color: theme.palette.primary.main }} />

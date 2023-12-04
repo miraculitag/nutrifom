@@ -9,7 +9,7 @@ import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
 import { ThemeProvider } from "@mui/material";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
-import SignIn from "./components/pages/SignIn";
+import { SignIn } from "./components/pages/SignIn";
 
 export default function App() {
   return (
@@ -24,12 +24,54 @@ export default function App() {
           <Router>
             <Routes>
               <Route path="/signin" element={<SignIn />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/user" element={<User />} />
-              <Route path="/foodlog" element={<FoodLog />} />
-              <Route path="/weight" element={<Weight />} />
-              <Route path="/calc" element={<Calc />} />
-              <Route path="/recipes" element={<Recipes />} />
+              <Route
+                path="/"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <Home />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/user"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <User />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/foodlog"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <FoodLog />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/weight"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <Weight />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/calc"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <Calc />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/recipes"
+                element={
+                  <RequireAuth loginPath="/signin">
+                    <Recipes />
+                  </RequireAuth>
+                }
+              />
             </Routes>
           </Router>
         </ThemeProvider>
