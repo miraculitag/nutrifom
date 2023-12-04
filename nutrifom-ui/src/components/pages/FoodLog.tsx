@@ -77,7 +77,7 @@ export const FoodLog = (testParams: any) => {
       foodName: "Water",
       amount: 250,
       unit: "ml",
-      energy_kcal_per_unit: 0,
+      energy_kcal_per_unit: 700,
       proteins: 0,
       saturatedFat: 0,
       unsaturatedFat: 0,
@@ -205,7 +205,14 @@ export const FoodLog = (testParams: any) => {
                 if (currentFoodAmount <= 0) {
                   setFoodAmountHasError(true);
                 }
+                else{
+                  setFoodAmountHasError(false);
+                }
                 if (SearchTextFood === "") {
+                  setFoodSearchHasError(true);
+                }
+                else
+                {
                   setFoodSearchHasError(true);
                 }
               } else {
@@ -246,8 +253,15 @@ export const FoodLog = (testParams: any) => {
                 if (currentPortionAmount <= 0) {
                   setPortionAmountHasError(true);
                 }
+                else
+                {
+                  setPortionAmountHasError(false);
+                }
                 if (searchTextRecepie === "") {
                   setRecepieSearchHasError(true);
+                }
+                else{
+                  setRecepieSearchHasError(false);
                 }
               } else {
                 handleChangeSearchPortionRecepieText();
