@@ -36,6 +36,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Hinzugefügter Schritt, um in das Verzeichnis nutrifom-ui zu wechseln
+    - name: Change directory
+      run: cd nutrifom-ui
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
