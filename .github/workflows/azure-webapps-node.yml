@@ -19,14 +19,12 @@ jobs:
 
     - name: Build React App
       run: |
-        cd nutrifom-ui
         npm install
         npm run build
 
     - name: 'Deploy to Azure App Service'
       uses: azure/webapps-deploy@v2
       with:
-        app-name: 'IhrAppServiceName' # Setzen Sie hier den Namen Ihres Azure App Service ein
-        slot-name: 'production' # Optional: Wenn Sie einen bestimmten Slot verwenden
+        app-name: 'nutrifom-ui' # Setzen Sie hier den Namen Ihres Azure App Service ein
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Setzen Sie Ihr Azure Publish-Profil als Geheimnis in den GitHub Secrets
-        package: nutrifom-ui/build
+        package: ./nutrifom-ui
