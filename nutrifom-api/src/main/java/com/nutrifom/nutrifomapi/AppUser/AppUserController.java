@@ -37,7 +37,6 @@ public class AppUserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
     @GetMapping("/image")
     public ResponseEntity<byte[]> getAppUserImage(Principal principal) {
         try {
