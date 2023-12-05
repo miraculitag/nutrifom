@@ -119,5 +119,4 @@ public class AppUserService {
         }
         appUserRepository.deleteById(foundUser.get().getId());
     }
-
 }
