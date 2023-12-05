@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'Name Ihres Azure App Service'
           slot-name: 'production' # Optional, wenn Sie Deployment Slots verwenden
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_API }}
           package: '*.jar'
