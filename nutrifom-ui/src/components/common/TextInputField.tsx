@@ -1,4 +1,4 @@
-import { InputAdornment, TextField, Typography } from "@mui/material";
+import { TextField } from "@mui/material";
 
 export interface TextInputFieldProps {
   label: string;

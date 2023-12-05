@@ -1,33 +1,32 @@
-import * as React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useIsAuthenticated, useSignIn } from "react-auth-kit";
 import {
-  Button,
   Avatar,
-  TextField,
-  Link,
   Box,
-  Typography,
+  Button,
   Container,
+  Link,
   Stack,
+  Typography,
 } from "@mui/material";
-import BasicButton from "../common/BasicButton";
+import dayjs, { Dayjs } from "dayjs";
+import * as React from "react";
+import { useSignIn } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 import { authenticateAppUser, registerAppUser } from "../../api";
-import { FloatInputField } from "../common/FloatInputField";
-import { TextInputField } from "../common/TextInputField";
+import { fieldErrorEnum } from "../../types";
+import BasicButton from "../common/BasicButton";
+import { BasicDatePicker } from "../common/BasicDatePicker";
 import DropDownMenu from "../common/DropDownMenu";
+import { FloatInputField } from "../common/FloatInputField";
 import InfoAlert from "../common/InfoAlert";
 import PalTable from "../common/PalTable";
-import { BasicDatePicker } from "../common/BasicDatePicker";
-import dayjs, { Dayjs } from "dayjs";
-import { fieldErrorEnum } from "../../types";
-import { useNavigate } from "react-router-dom";
+import { TextInputField } from "../common/TextInputField";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
-  const [isSignInButtonClicked, setIsSignInButtonClicked] =
+  const [isSignInButtonClicked,] =
     React.useState(false);
-  const [isSignUpButtonClicked, setIsSignUpButtonClicked] =
+  const [isSignUpButtonClicked] =
     React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");

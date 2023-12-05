@@ -5,16 +5,12 @@ import {
   Button,
   IconButton,
   Toolbar,
-  useTheme,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
-import { getAppUser, registerAppUser } from "../../api";
-import { useAuthHeader } from "react-auth-kit";
 
 export const Header = (testParams: any) => {
   const navigate = useNavigate();
-  const auth = useAuthHeader();
   const userProfilePicture = ""; //tbd
 
   return (

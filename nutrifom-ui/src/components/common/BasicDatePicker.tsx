@@ -1,11 +1,10 @@
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { PickersShortcutsItem } from "@mui/x-date-pickers/PickersShortcuts";
+import { deDE } from "@mui/x-date-pickers/locales";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/de";
-import { deDE } from "@mui/x-date-pickers/locales";
-import { PickersShortcutsItem } from "@mui/x-date-pickers/PickersShortcuts";
-import { useTheme } from "@mui/material";
 
 export interface BasicDatePickerProps {
   label: string;
@@ -19,7 +18,6 @@ export interface BasicDatePickerProps {
 }
 
 export const BasicDatePicker = (props: BasicDatePickerProps) => {
-  const theme = useTheme();
 
   const germanLocale =
     deDE.components.MuiLocalizationProvider.defaultProps.localeText;

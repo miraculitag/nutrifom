@@ -2,20 +2,17 @@ import {
   Avatar,
   Box,
   Grid,
-  IconButton,
-  InputLabel,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import FileUploadButton from "../common/FileUploadButton";
 import { Layout } from "../layout/Layout";
-import { AppUser } from "../../types";
-import React from "react";
-import { getAppUser } from "../../api";
+//import { AppUser } from "../../types";
+//import { getAppUser } from "../../api";
 
 export const User = (testParams: any) => {
-  const [user, setUser] = React.useState<AppUser>();
+  //const [user, setUser] = React.useState<AppUser>();
+
 
   /*const getUser = () => {
     getAppUser(userId, userToken).then((response) => {

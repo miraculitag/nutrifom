@@ -1,15 +1,15 @@
-import React from "react";
-import { Layout } from "../layout/Layout";
-import { Box, Typography, useTheme } from "@mui/material";
-import { FloatInputField } from "../common/FloatInputField";
-import BasicButton from "../common/BasicButton";
-import NutritionalTable from "../common/NutritionalTable";
-import FoodTable, { FoodItem } from "../common/FoodTable";
-import BasicPie from "../common/BasicPieChart";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
+import React from "react";
+import BasicButton from "../common/BasicButton";
+import BasicPie from "../common/BasicPieChart";
+import { FloatInputField } from "../common/FloatInputField";
+import FoodTable, { FoodItem } from "../common/FoodTable";
+import NutritionalTable from "../common/NutritionalTable";
 import { TextInputField } from "../common/TextInputField";
+import { Layout } from "../layout/Layout";
 
 export const FoodLog = (testParams: any) => {
   const theme = useTheme();
@@ -31,6 +31,7 @@ export const FoodLog = (testParams: any) => {
     React.useState(false);
 
   const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
 
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
