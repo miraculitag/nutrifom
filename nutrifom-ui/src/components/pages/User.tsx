@@ -1,43 +1,28 @@
-import {
-  Avatar,
-  Box,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React from "react";
+import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
 import FileUploadButton from "../common/FileUploadButton";
 import { Layout } from "../layout/Layout";
-//import { AppUser } from "../../types";
-//import { getAppUser } from "../../api";
+import { AppUser } from "../../types";
+import { getAppUser } from "../../api";
+import { useAuthHeader } from "react-auth-kit";
 
 export const User = (testParams: any) => {
-  //const [user, setUser] = React.useState<AppUser>();
+  const [user, setUser] = React.useState<AppUser>();
 
+  const auth = useAuthHeader();
 
-  /*const getUser = () => {
-    getAppUser(userId, userToken).then((response) => {
+  React.useEffect(() => {
+    getAppUser(auth()).then((response) => {
       setUser(response.data);
     });
-  };
-  getUser();*/
-
-  //const testUser: AppUser | undefined = user;
-  const testUser = {
-    id: 1,
-    name: "Username",
-    dob: "01.01.2000",
-    height: 170,
-    gender: "weiblich",
-    image: "",
-    email: "x@testmail.de",
-  };
+  }, []);
 
   const userData = [
-    { label: "Username", data: testUser.name },
-    { label: "E-Mail", data: testUser.email },
-    { label: "Geburtstag", data: testUser.dob },
-    { label: "Geschlecht", data: testUser.gender },
-    { label: "Größe", data: testUser.height + " cm" },
+    { label: "Username", data: user?.name },
+    { label: "E-Mail", data: user?.email },
+    { label: "Geburtstag", data: user?.dob },
+    { label: "Geschlecht", data: user?.gender },
+    { label: "Größe", data: user?.height + " cm" },
   ];
 
   return (
@@ -83,8 +68,9 @@ export const User = (testParams: any) => {
                   <TextField
                     label={field.label}
                     variant="standard"
-                    value={field.data}
+                    value={field.data || ""}
                     inputProps={{ readOnly: true }}
+                    InputLabelProps={{ shrink: true }}
                     sx={{ paddingBottom: "5%" }}
                   />
                 </Grid>
