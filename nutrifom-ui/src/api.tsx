@@ -27,34 +27,34 @@ export const getAppUser = async (token: string) =>
   });
 
 export const putAppUserWpa = async (wpa: number, token: string) => {
-  await axiosInstance.put("/api/appUser/wpa", {
+  await axiosInstance.put("/api/appUser/wpa", null, {
     ...addAuth(token),
     params: { wpa: wpa },
   });
 };
 
 export const putAppUserWeight = async (weight: number, token: string) => {
-  await axiosInstance.put("/api/appUser/weight", {
+  await axiosInstance.put("/api/appUser/weight", null, {
     ...addAuth(token),
     params: { weight: weight },
   });
 };
 
 export const putAppUserPal = async (pal: string, token: string) => {
-  await axiosInstance.put("/api/appUser/pal", {
+  await axiosInstance.put("/api/appUser/pal", null, {
     ...addAuth(token),
     params: { pal: pal },
   });
 };
 
 export const putAppUserImage = async (token: string) => {
-  await axiosInstance.put("/api/appUser/image", {
+  await axiosInstance.put("/api/appUser/image", null, {
     ...addAuth(token),
   });
 };
 
 export const putAppUserGoal = async (goal: string, token: string) => {
-  await axiosInstance.put(`/api/appUser/goal`, {
+  await axiosInstance.put(`/api/appUser/goal`, null, {
     ...addAuth(token),
     params: { goal: goal },
   });

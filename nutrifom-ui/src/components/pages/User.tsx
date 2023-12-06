@@ -5,6 +5,7 @@ import { Layout } from "../layout/Layout";
 import { AppUser } from "../../types";
 import { getAppUser } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
+import dayjs from "dayjs";
 
 export const User = (testParams: any) => {
   const [user, setUser] = React.useState<AppUser>();
@@ -20,7 +21,7 @@ export const User = (testParams: any) => {
   const userData = [
     { label: "Username", data: user?.name },
     { label: "E-Mail", data: user?.email },
-    { label: "Geburtstag", data: user?.dob },
+    { label: "Geburtstag", data: dayjs(user?.dob).format("DD.MM.YYYY") },
     { label: "Geschlecht", data: user?.gender },
     { label: "Größe", data: user?.height + " cm" },
   ];

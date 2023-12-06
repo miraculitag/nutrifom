@@ -14,29 +14,34 @@ import BasicButton from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { FloatInputField } from "../common/FloatInputField";
 import PalTable from "../common/PalTable";
+import {
+  getAppUser,
+  putAppUserGoal,
+  putAppUserPal,
+  putAppUserWpa,
+} from "../../api";
+import { useAuthHeader } from "react-auth-kit";
+import { AppUser } from "../../types";
 
 export const Calc = (testParams: any) => {
   const theme = useTheme();
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
     React.useState(false);
-
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
+  const [user, setUser] = React.useState<AppUser>();
+
+  const auth = useAuthHeader();
+
+  React.useEffect(() => {
+    getAppUser(auth()).then((response) => {
+      setUser(response.data);
+      setPal(response.data.pal);
+      setGoal(response.data.goal);
+      setWpa(response.data.wpa);
+    });
+  }, []);
 
   const dataFor14Days = false;
-
-  const testUser = {
-    id: 1,
-    name: "Username",
-    weight: 70,
-    dob: "2000-01-01",
-    goal: "Aufbauen",
-    height: 170,
-    gender: "weiblich",
-    pal: "eher nicht aktiv",
-    wpa: 2.5,
-    image: "",
-    email: "x@testmail.de",
-  };
 
   const testWeights = [
     70.1, 71.5, 70.7, 69.8, 69.7, 68.6, 70.2, 70.6, 70.3, 69.2, 68.5, 68.7,
@@ -47,9 +52,9 @@ export const Calc = (testParams: any) => {
     2286, 2317,
   ];
 
-  const [pal, setPal] = React.useState(testUser.pal);
-  const [goal, setGoal] = React.useState(testUser.goal);
-  const [wpa, setWpa] = React.useState(testUser.wpa);
+  const [pal, setPal] = React.useState("");
+  const [goal, setGoal] = React.useState("");
+  const [wpa, setWpa] = React.useState(0);
   const [wpaHasError, setWpaHasError] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
 
@@ -95,7 +100,7 @@ export const Calc = (testParams: any) => {
     return wpa * 0.1;
   };
 
-  const saveKcalGoalToFoodLog = () => {}; //tbd
+  const saveKcalGoalToNutrilog = () => {}; //tbd
 
   const calcGoalDependentPart = (goal: string) => {
     if (goal === "Aufbauen") {
@@ -108,6 +113,8 @@ export const Calc = (testParams: any) => {
   };
 
   const calcKcalMethodA = () => {
+    putAppUserGoal(goal, auth());
+
     const weightsWeek1 = testWeights.slice(0, 7);
     const weightsWeek2 = testWeights.slice(7);
 
@@ -137,21 +144,28 @@ export const Calc = (testParams: any) => {
   };
 
   const calcKcalMethodB = () => {
+    if (!user) {
+      return 0;
+    }
     setWpaHasError(false);
+    putAppUserPal(pal, auth());
+    putAppUserWpa(wpa, auth());
+    putAppUserGoal(goal, auth());
 
     const currentDate = new Date();
-    const userDob = new Date(testUser.dob); //tbd
+    const userDob = new Date(user.dob); //tbd
     const userAge = currentDate.getFullYear() - userDob.getFullYear();
 
     let basalMetabolicRate;
 
-    if (testUser.gender === "weiblich") {
+    if (user.gender === "weiblich") {
       basalMetabolicRate =
-        65.51 + 9.6 * testUser.weight + 1.85 * testUser.height - 4.68 * userAge;
+        65.51 + 9.6 * user.weight + 1.85 * user.height - 4.68 * userAge;
     } else {
       basalMetabolicRate =
-        66.47 + 13.75 * testUser.weight + 5 * testUser.height - 6.76 * userAge;
+        66.47 + 13.75 * user.weight + 5 * user.height - 6.76 * userAge;
     }
+
     const physicalActivity = palAsValue(pal) + wpaAsValue(wpa);
 
     return basalMetabolicRate * physicalActivity;
@@ -266,7 +280,7 @@ export const Calc = (testParams: any) => {
           </Typography>
           <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
             <IconButton
-              onClick={() => saveKcalGoalToFoodLog()}
+              onClick={() => saveKcalGoalToNutrilog()}
               sx={{ marginLeft: "2%" }}
             >
               <BookmarkBorderIcon sx={{ color: theme.palette.primary.main }} />
