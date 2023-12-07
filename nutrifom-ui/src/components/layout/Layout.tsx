@@ -7,7 +7,7 @@ export const Layout = (props: any) => {
     <>
       <Header />
       <Box sx={{ margin: "auto", width: "80%" }}>{props.children}</Box>
-      <Footer/>
+      <Footer />
     </>
   );
 };

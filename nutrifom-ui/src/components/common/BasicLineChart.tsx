@@ -36,6 +36,11 @@ export default function BasicLineChart() {
     { date: dateArray[14], value: 66 },
   ];
 
+
+  const sortedValues = dateWeight.map(item => item.value).sort((a, b) => a - b);
+  const minValue = sortedValues[0] - 1;
+  const maxValue = sortedValues[sortedValues.length - 1] + 1;
+
   return (
     <>
       <LineChart
@@ -51,12 +56,15 @@ export default function BasicLineChart() {
             scaleType: "point",
           },
         ]}
-        yAxis={[{ min: 61, max: 71 }]}
+        yAxis={[{ 
+          min: minValue, 
+          max: maxValue 
+        }]}
         series={[
           {
             dataKey: "value",
             valueFormatter: (value) => (value == null ? "0" : value.toString()),
-            color: "#33cc33",
+            color: theme.palette.primary.main,
           },
         ]}
         dataset={dateWeight}
