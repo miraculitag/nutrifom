@@ -4,6 +4,6 @@ interface JustifiedTypographyProps {
   text: string;
 }
 
-export default function JustifiedTypography(props: JustifiedTypographyProps) {
+export const JustifiedTypography = (props: JustifiedTypographyProps) => {
   return <Typography sx={{ textAlign: "justify" }}>{props.text}</Typography>;
-}
+};

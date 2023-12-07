@@ -4,9 +4,9 @@ import { FloatInputField } from "../common/FloatInputField";
 import BasicLineChart from "../partials/BasicLineChart";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import JustifiedTypography from "../common/JustifiedTypography";
+import { JustifiedTypography } from "../common/JustifiedTypography";
 import { Layout } from "../layout/Layout";
-import BasicButton from "../common/BasicButton";
+import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
 
 export const Weight = (testParams: any) => {

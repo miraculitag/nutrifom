@@ -1,16 +1,16 @@
 import React from "react";
+import { FileUpload } from "@mui/icons-material";
 import { IconButton, useTheme } from "@mui/material";
 import { styled } from "@mui/system";
-import { FileUpload } from "@mui/icons-material";
 import { useAuthHeader } from "react-auth-kit";
 import { putAppUserImage } from "../../api";
-//import axios from "axios"; tbd
 
 export default function ImageUploadButton() {
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
   const theme = useTheme();
   const auth = useAuthHeader();
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const StyledInput = styled("input")({
     display: "none",
   });
@@ -23,9 +23,15 @@ export default function ImageUploadButton() {
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files && event.target.files[0];
-    /*if (image) {
-      putAppUserImage(file, auth()); 
-    }*/
+    if (image) {
+      /*
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        putAppUserImage(base64String, auth());
+      };*/
+    }
   };
 
   return (

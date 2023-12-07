@@ -15,7 +15,7 @@ export interface NutritionalTableProps {
   carbohydrates: number;
 }
 
-export default function NutritionalTable(props: NutritionalTableProps) {
+export const NutritionalTable = (props: NutritionalTableProps) => {
   function createData(name: string, value: number) {
     return { name, value };
   }
@@ -47,4 +47,4 @@ export default function NutritionalTable(props: NutritionalTableProps) {
       </Table>
     </TableContainer>
   );
-}
+};

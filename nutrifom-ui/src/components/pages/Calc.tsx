@@ -1,4 +1,6 @@
 import React from "react";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import { useAuthHeader } from "react-auth-kit";
 import {
   Box,
   IconButton,
@@ -7,30 +9,26 @@ import {
   Tooltip,
   Stack,
 } from "@mui/material";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import InfoAlert from "../common/InfoAlert";
-import DropDownMenu from "../common/DropDownMenu";
-import BasicButton from "../common/BasicButton";
+import { InfoAlert } from "../common/InfoAlert";
+import { DropDownMenu } from "../common/DropDownMenu";
+import { BasicButton } from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { FloatInputField } from "../common/FloatInputField";
-import PalTable from "../common/PalTable";
+import { PalTable } from "../common/PalTable";
 import {
   getAppUser,
   putAppUserGoal,
   putAppUserPal,
   putAppUserWpa,
 } from "../../api";
-import { useAuthHeader } from "react-auth-kit";
+
 import { AppUser } from "../../types";
 
-export const Calc = (testParams: any) => {
-  const theme = useTheme();
+export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
     React.useState(false);
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
   const [user, setUser] = React.useState<AppUser>();
-
-  const auth = useAuthHeader();
 
   React.useEffect(() => {
     getAppUser(auth()).then((response) => {
@@ -41,13 +39,17 @@ export const Calc = (testParams: any) => {
     });
   }, []);
 
-  const dataFor14Days = false;
+  const theme = useTheme();
+  const auth = useAuthHeader();
+  const dataFor14Days = false; //tbd
 
   const testWeights = [
+    //tbd
     70.1, 71.5, 70.7, 69.8, 69.7, 68.6, 70.2, 70.6, 70.3, 69.2, 68.5, 68.7,
     69.8, 69.6,
   ];
   const testKcalIntake = [
+    //tbd
     2334, 2302, 2274, 2256, 2354, 2296, 2315, 2294, 2312, 2284, 2296, 2354,
     2286, 2317,
   ];
