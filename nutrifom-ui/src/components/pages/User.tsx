@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
-import FileUploadButton from "../common/FileUploadButton";
+import ImageUploadButton from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
 import { AppUser } from "../../types";
 import { getAppUser } from "../../api";
@@ -45,7 +45,7 @@ export const User = (testParams: any) => {
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>
-            <FileUploadButton />
+            <ImageUploadButton />
           </Box>
         </Box>
         <Box

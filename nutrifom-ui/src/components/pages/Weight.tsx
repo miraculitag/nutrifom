@@ -1,7 +1,7 @@
 import React from "react";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { FloatInputField } from "../common/FloatInputField";
-import BasicLineChart from "../common/BasicLineChart";
+import BasicLineChart from "../partials/BasicLineChart";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import JustifiedTypography from "../common/JustifiedTypography";
@@ -104,15 +104,12 @@ export const Weight = (testParams: any) => {
                 if (currentWeight <= 0 || selectedDate === null) {
                   if (currentWeight <= 0) {
                     setWeightHasError(true);
-                  }
-                  else
-                  {
+                  } else {
                     setWeightHasError(false);
                   }
                   if (selectedDate === null) {
                     setDateHasError(true);
-                  }
-                  else{
+                  } else {
                     setDateHasError(false);
                   }
                 } else {
