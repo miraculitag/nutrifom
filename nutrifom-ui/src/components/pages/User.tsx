@@ -1,22 +1,22 @@
 import React from "react";
 import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
-import FileUploadButton from "../common/FileUploadButton";
-import { Layout } from "../layout/Layout";
-import { AppUser } from "../../types";
-import { getAppUser } from "../../api";
-import { useAuthHeader } from "react-auth-kit";
 import dayjs from "dayjs";
+import { useAuthHeader } from "react-auth-kit";
+import ImageUploadButton from "../partials/ImageUploadButton";
+import { Layout } from "../layout/Layout";
+import { getAppUser } from "../../api";
+import { AppUser } from "../../types";
 
-export const User = (testParams: any) => {
+export const User = () => {
   const [user, setUser] = React.useState<AppUser>();
-
-  const auth = useAuthHeader();
 
   React.useEffect(() => {
     getAppUser(auth()).then((response) => {
       setUser(response.data);
     });
   }, []);
+
+  const auth = useAuthHeader();
 
   const userData = [
     { label: "Username", data: user?.name },
@@ -45,7 +45,7 @@ export const User = (testParams: any) => {
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>
-            <FileUploadButton />
+            <ImageUploadButton />
           </Box>
         </Box>
         <Box

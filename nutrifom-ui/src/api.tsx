@@ -15,124 +15,115 @@ export const deleteAppUser = async (token: string) =>
     ...addAuth(token),
   });
 
-export const getAppUserImage = async (token: string) => {
+export const getAppUserImage = async (token: string) =>
   await axiosInstance.get("/api/appUser/image", {
     ...addAuth(token),
   });
-};
 
 export const getAppUser = async (token: string) =>
   await axiosInstance.get("/api/appUser/user", {
     ...addAuth(token),
   });
 
-export const putAppUserWpa = async (wpa: number, token: string) => {
+export const putAppUserWpa = async (wpa: number, token: string) =>
   await axiosInstance.put("/api/appUser/wpa", null, {
     ...addAuth(token),
     params: { wpa: wpa },
   });
-};
 
-export const putAppUserWeight = async (weight: number, token: string) => {
+export const putAppUserWeight = async (weight: number, token: string) =>
   await axiosInstance.put("/api/appUser/weight", null, {
     ...addAuth(token),
     params: { weight: weight },
   });
-};
 
-export const putAppUserPal = async (pal: string, token: string) => {
+export const putAppUserPal = async (pal: string, token: string) =>
   await axiosInstance.put("/api/appUser/pal", null, {
     ...addAuth(token),
     params: { pal: pal },
   });
-};
 
-export const putAppUserImage = async (token: string) => {
+export const putAppUserImage = async (image: string, token: string) =>
   await axiosInstance.put("/api/appUser/image", null, {
     ...addAuth(token),
+    params: { image: image },
   });
-};
 
-export const putAppUserGoal = async (goal: string, token: string) => {
+export const putAppUserGoal = async (goal: string, token: string) =>
   await axiosInstance.put(`/api/appUser/goal`, null, {
     ...addAuth(token),
     params: { goal: goal },
   });
-};
 
-export const getWeightLast14Days = async (token: string) => {
+export const getWeightLast14Days = async (token: string) =>
   await axiosInstance.get("/api/weight/last14Days", {
     ...addAuth(token),
   });
-};
 
-export const getWeightHistory = async (token: string) => {
+export const getWeightHistory = async (token: string) =>
   await axiosInstance.get("/api/weight/history", {
     ...addAuth(token),
   });
-};
 
 export const addWeightEntry = async (
   weight: number,
   entryDate: string,
   token: string
-) => {
+) =>
   await axiosInstance.post("/api/weight/entry", {
     ...addAuth(token),
     params: { weight: weight, entryDate: entryDate },
   });
-};
 
-export const getRecipeById = async (recipeId: number, token: string) => {
+export const getRecipes = async (token: string) =>
+  await axiosInstance.get("/api/recipes", {
+    ...addAuth(token),
+  });
+
+export const getRecipeById = async (recipeId: number, token: string) =>
   await axiosInstance.get(`/api/recipe/${recipeId}`, {
     ...addAuth(token),
     params: { recipeId: recipeId },
   });
-};
 
-export const getRecipeByTag = async (tag: string, token: string) => {
+export const getRecipeByTag = async (tag: string, token: string) =>
   await axiosInstance.get(`/api/recipe/tag/${tag}`, {
     ...addAuth(token),
     params: { tag: tag },
   });
-};
 
 //tbd
-export const rateRecipe = async (recipeId: number, token: string) => {
+export const rateRecipe = async (
+  recipeId: number,
+  ratingValue: number,
+  token: string
+) =>
   await axiosInstance.post(`/api/recipe/${recipeId}/rate`, {
     ...addAuth(token),
-    params: { recipeId: recipeId },
+    params: { recipeId: recipeId, ratingValue: ratingValue },
   });
-};
 
-export const getNutrilog = async (entryDate: string, token: string) => {
+export const getNutrilog = async (entryDate: string, token: string) =>
   await axiosInstance.get("/api/nutrilog", {
     ...addAuth(token),
     params: { entryDate: entryDate },
   });
-};
 
-export const getNutrilogLast14DaysCalories = async (token: string) => {
+export const getNutrilogLast14DaysCalories = async (token: string) =>
   await axiosInstance.get("/api/nutrilog/last14DaysCaloies", {
     ...addAuth(token),
   });
-};
 
-export const addRecipeToNutrilog = async (token: string) => {
+export const addRecipeToNutrilog = async (token: string) =>
   await axiosInstance.post("/api/nutrilog/recipe", {
     ...addAuth(token),
   });
-};
 
-export const addProductToNutrilog = async (
-  entryDate: string,
-  token: string
-) => {
+export const addProductToNutrilog = async (entryDate: string, token: string) =>
   await axiosInstance.post("/api/nutrilog/product", {
     ...addAuth(token),
     params: { entryDate: entryDate },
   });
-};
 
 export const registerAppUser = async (registerRequest: RegisterRequest) =>
   await axiosInstance.post("/api/auth/register", registerRequest);

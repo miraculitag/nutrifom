@@ -1,3 +1,4 @@
+import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import {
   Avatar,
@@ -9,30 +10,28 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import * as React from "react";
 import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
+import { BasicButton } from "../common/BasicButton";
+import { BasicDatePicker } from "../common/BasicDatePicker";
+import { DropDownMenu } from "../common/DropDownMenu";
+import { FloatInputField } from "../common/FloatInputField";
+import { InfoAlert } from "../common/InfoAlert";
+import { PalTable } from "../common/PalTable";
+import { TextInputField } from "../common/TextInputField";
 import { authenticateAppUser, registerAppUser } from "../../api";
 import { fieldErrorEnum } from "../../types";
-import BasicButton from "../common/BasicButton";
-import { BasicDatePicker } from "../common/BasicDatePicker";
-import DropDownMenu from "../common/DropDownMenu";
-import { FloatInputField } from "../common/FloatInputField";
-import InfoAlert from "../common/InfoAlert";
-import PalTable from "../common/PalTable";
-import { TextInputField } from "../common/TextInputField";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
   const [isSignInButtonClicked, setSignInButtonClicked] = React.useState(false);
   const [isSignUpButtonClicked, setSignUpButtonClicked] = React.useState(false);
+  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
 
   const [emailSignIn, setEmailSignIn] = React.useState("");
   const [emailSignUp, setEmailSignUp] = React.useState("");
-
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
-
   const [name, setName] = React.useState("");
   const [weight, setWeight] = React.useState(0);
   const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
@@ -44,8 +43,8 @@ export const SignIn = () => {
 
   const [fieldErrors, setFieldErrors] = React.useState<fieldErrorEnum[]>([]);
 
-  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
-
+  const signIn = useSignIn();
+  const navigate = useNavigate();
   const palCatergories = [
     "Bitte wählen",
     "nicht aktiv",
@@ -61,8 +60,6 @@ export const SignIn = () => {
   const [isGoogleSignUpButtonClicked, setIsGoogleSignUpButtonClicked] =
     React.useState(false);*/ //tdb
 
-  const signIn = useSignIn(); //tbd
-  const navigate = useNavigate();
   /*const isAuthenticated = useIsAuthenticated();
 
   React.useEffect(() => {
@@ -73,7 +70,6 @@ export const SignIn = () => {
   }, []);*/
 
   const handleSignInButtonClick = () => {
-    console.log("TEST");
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
       .then((response) => {
         console.log(response);
@@ -86,6 +82,7 @@ export const SignIn = () => {
       })
       .catch((error) => {
         if (error.response.status === 403) {
+          //tbd
           setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
           setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
         }

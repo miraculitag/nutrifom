@@ -6,10 +6,10 @@ import {
   TableRow,
 } from "@mui/material";
 
-export default function PalTable() {
-  function createData(name: string, value: string) {
+export const PalTable = () => {
+  const createData = (name: string, value: string) => {
     return { name, value };
-  }
+  };
 
   const rows = [
     createData(
@@ -47,4 +47,4 @@ export default function PalTable() {
       </Table>
     </TableContainer>
   );
-}
+};

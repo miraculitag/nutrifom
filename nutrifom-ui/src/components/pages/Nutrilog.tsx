@@ -1,13 +1,13 @@
+import React from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import React from "react";
-import BasicButton from "../common/BasicButton";
-import BasicPie from "../common/BasicPieChart";
+import { BasicButton } from "../common/BasicButton";
+import BasicPie from "../partials/BasicPieChart";
 import { FloatInputField } from "../common/FloatInputField";
-import FoodTable, { FoodItem } from "../common/FoodTable";
-import NutritionalTable from "../common/NutritionalTable";
+import FoodTable, { FoodItem } from "../partials/FoodTable";
+import { NutritionalTable } from "../common/NutritionalTable";
 import { TextInputField } from "../common/TextInputField";
 import { Layout } from "../layout/Layout";
 
