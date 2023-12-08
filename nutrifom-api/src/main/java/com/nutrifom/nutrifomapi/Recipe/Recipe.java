@@ -19,6 +19,7 @@ public class Recipe {
     private Double energy_kcal;
     private Integer portions;
     private Double fat;
+    private Double saturated_fat;
     private String description;
 
     private int uses;
@@ -141,5 +142,13 @@ public class Recipe {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Double getSaturated_fat() {
+        return saturated_fat;
+    }
+
+    public void setSaturated_fat(Double saturated_fat) {
+        this.saturated_fat = saturated_fat;
     }
 }
