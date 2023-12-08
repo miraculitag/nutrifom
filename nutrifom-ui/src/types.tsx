@@ -1,15 +1,7 @@
-export type AppUser = {
-  id: number;
-  name: string;
-  weight: number;
-  dob: string;
-  goal: string;
-  height: number;
-  gender: string;
-  pal: string;
-  wpa: number;
-  image: string[];
+export type AuthenticateRequest = {
   email: string;
+  password: string;
+  googleIDToken?: string;
 };
 
 export type RegisterRequest = {
@@ -23,14 +15,55 @@ export type RegisterRequest = {
   wpa: number;
   email: string;
   password: string;
-  image?: string[];
+  image?: string;
   googleIDToken?: string;
 };
 
-export type AuthenticateRequest = {
+export type ImageRequest = {
+  image: string;
+};
+export type WeightRequest = {
+  weight: number;
+  entryDate: string;
+};
+
+export type RateRecipeRequest = {
+  recipeId: number;
+  score: number;
+};
+
+export type AddRecipeRequest = {
+  recipeId: number;
+  entryDate: string;
+};
+
+export type AddProductRequest = {
+  product: {
+    code: string;
+    productName: string;
+    product_quantity: number;
+    serving_quantity: number;
+    proteins_serving: number;
+    carbohydrates_serving: number;
+    energy_kcal_serving: number;
+    saturated_fat_serving: number;
+    unsaturated_fat_serving: number;
+  };
+  entryDate: string;
+};
+
+export type AppUser = {
+  id: number;
+  name: string;
+  weight: number;
+  dob: string;
+  goal: string;
+  height: number;
+  gender: string;
+  pal: string;
+  wpa: number;
+  image: string;
   email: string;
-  password: string;
-  googleIDToken?: string;
 };
 
 export type Recipe = {

@@ -24,13 +24,7 @@ export default function ImageUploadButton() {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const image = event.target.files && event.target.files[0];
     if (image) {
-      /*
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        putAppUserImage(base64String, auth());
-      };*/
+      putAppUserImage(image, auth()); //tbd
     }
   };
 

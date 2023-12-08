@@ -72,7 +72,6 @@ export const SignIn = () => {
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
       .then((response) => {
-        console.log(response);
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
@@ -91,7 +90,6 @@ export const SignIn = () => {
 
   const handleSignUpButtonClick = () => {
     const formattedDob = dob!.format("YYYY-MM-DD");
-    console.log(dob!.isValid());
     registerAppUser({
       name: name,
       weight: weight,
@@ -104,7 +102,6 @@ export const SignIn = () => {
       email: emailSignUp,
       password: passwordSignUp,
     }).then((response) => {
-      console.log(response);
       signIn({
         token: response.data.token,
         tokenType: "Bearer",

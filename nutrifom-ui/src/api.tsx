@@ -1,5 +1,13 @@
 import axios from "axios";
-import { AuthenticateRequest, RegisterRequest } from "./types";
+import {
+  AuthenticateRequest,
+  RegisterRequest,
+  ImageRequest,
+  WeightRequest,
+  RateRecipeRequest,
+  AddRecipeRequest,
+  AddProductRequest,
+} from "./types";
 
 export const axiosInstance = axios.create({
   timeout: 20000,
@@ -7,7 +15,9 @@ export const axiosInstance = axios.create({
 });
 
 const addAuth = (token: string) => {
-  return { headers: { Authorization: token } };
+  return {
+    headers: { Authorization: token },
+  };
 };
 
 export const deleteAppUser = async (token: string) =>
@@ -43,11 +53,18 @@ export const putAppUserPal = async (pal: string, token: string) =>
     params: { pal: pal },
   });
 
-export const putAppUserImage = async (image: string, token: string) =>
-  await axiosInstance.put("/api/appUser/image", null, {
+export const putAppUserImage = async (image: File, token: string) => {
+  //tbd
+  const formData = new FormData();
+  formData.append("image", image);
+
+  return await axiosInstance.put("/api/appUser/image", formData, {
     ...addAuth(token),
-    params: { image: image },
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
+};
 
 export const putAppUserGoal = async (goal: string, token: string) =>
   await axiosInstance.put(`/api/appUser/goal`, null, {
@@ -66,41 +83,24 @@ export const getWeightHistory = async (token: string) =>
   });
 
 export const addWeightEntry = async (
-  weight: number,
-  entryDate: string,
+  weightRequestBody: WeightRequest,
   token: string
 ) =>
-  await axiosInstance.post("/api/weight/entry", {
+  await axiosInstance.post("/api/weight/entry", weightRequestBody, {
     ...addAuth(token),
-    params: { weight: weight, entryDate: entryDate },
   });
 
 export const getRecipes = async (token: string) =>
-  await axiosInstance.get("/api/recipes", {
+  await axiosInstance.get("/api/recipe/all", {
     ...addAuth(token),
   });
 
-export const getRecipeById = async (recipeId: number, token: string) =>
-  await axiosInstance.get(`/api/recipe/${recipeId}`, {
-    ...addAuth(token),
-    params: { recipeId: recipeId },
-  });
-
-export const getRecipeByTag = async (tag: string, token: string) =>
-  await axiosInstance.get(`/api/recipe/tag/${tag}`, {
-    ...addAuth(token),
-    params: { tag: tag },
-  });
-
-//tbd
 export const rateRecipe = async (
-  recipeId: number,
-  ratingValue: number,
+  rateRecipeRequestBody: RateRecipeRequest,
   token: string
 ) =>
-  await axiosInstance.post(`/api/recipe/${recipeId}/rate`, {
+  await axiosInstance.post(`/api/recipe/rate`, rateRecipeRequestBody, {
     ...addAuth(token),
-    params: { recipeId: recipeId, ratingValue: ratingValue },
   });
 
 export const getNutrilog = async (entryDate: string, token: string) =>
@@ -109,20 +109,31 @@ export const getNutrilog = async (entryDate: string, token: string) =>
     params: { entryDate: entryDate },
   });
 
-export const getNutrilogLast14DaysCalories = async (token: string) =>
-  await axiosInstance.get("/api/nutrilog/last14DaysCaloies", {
+export const getKcalLast14Days = async (token: string) =>
+  await axiosInstance.get("/api/nutrilog/last14DaysCalories", {
     ...addAuth(token),
   });
 
-export const addRecipeToNutrilog = async (token: string) =>
-  await axiosInstance.post("/api/nutrilog/recipe", {
+export const addRecipeToNutrilog = async (
+  addRecipeRequest: AddRecipeRequest,
+  token: string
+) =>
+  await axiosInstance.post("/api/nutrilog/recipe", addRecipeRequest, {
     ...addAuth(token),
   });
 
-export const addProductToNutrilog = async (entryDate: string, token: string) =>
-  await axiosInstance.post("/api/nutrilog/product", {
+export const addProductToNutrilog = async (
+  addProductRequest: AddProductRequest,
+  token: string
+) =>
+  await axiosInstance.post("/api/nutrilog/product", addProductRequest, {
     ...addAuth(token),
-    params: { entryDate: entryDate },
+  });
+
+export const searchOFF = async (searchTerm: string, token: string) =>
+  await axiosInstance.get("/api/nutrilog", {
+    ...addAuth(token),
+    params: { searchTerm: searchTerm },
   });
 
 export const registerAppUser = async (registerRequest: RegisterRequest) =>

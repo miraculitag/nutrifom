@@ -17,6 +17,8 @@ import { FloatInputField } from "../common/FloatInputField";
 import { PalTable } from "../common/PalTable";
 import {
   getAppUser,
+  getKcalLast14Days,
+  getWeightLast14Days,
   putAppUserGoal,
   putAppUserPal,
   putAppUserWpa,
@@ -29,8 +31,18 @@ export const Calc = () => {
     React.useState(false);
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
   const [user, setUser] = React.useState<AppUser>();
+  const [weightFor14Days, setWeightFor14Days] = React.useState<number[]>([]);
+  const [kcalFor14Days, setKcalFor14Days] = React.useState<number[]>([]);
+  const [dataFor14Days, setDataFor14Days] = React.useState(false);
+  const [pal, setPal] = React.useState("");
+  const [goal, setGoal] = React.useState("");
+  const [wpa, setWpa] = React.useState(0);
+  const [wpaHasError, setWpaHasError] = React.useState(false);
+  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
 
   React.useEffect(() => {
+    checkDataSuffiency();
+
     getAppUser(auth()).then((response) => {
       setUser(response.data);
       setPal(response.data.pal);
@@ -41,24 +53,22 @@ export const Calc = () => {
 
   const theme = useTheme();
   const auth = useAuthHeader();
-  const dataFor14Days = false; //tbd
 
-  const testWeights = [
-    //tbd
-    70.1, 71.5, 70.7, 69.8, 69.7, 68.6, 70.2, 70.6, 70.3, 69.2, 68.5, 68.7,
-    69.8, 69.6,
-  ];
-  const testKcalIntake = [
-    //tbd
-    2334, 2302, 2274, 2256, 2354, 2296, 2315, 2294, 2312, 2284, 2296, 2354,
-    2286, 2317,
-  ];
+  const checkDataSuffiency = async () => {
+    const weightResponse = await getWeightLast14Days(auth());
 
-  const [pal, setPal] = React.useState("");
-  const [goal, setGoal] = React.useState("");
-  const [wpa, setWpa] = React.useState(0);
-  const [wpaHasError, setWpaHasError] = React.useState(false);
-  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
+    const kcalResponse = await getKcalLast14Days(auth());
+
+    const weightData = weightResponse.data;
+    const kcalData = kcalResponse.data;
+
+    setWeightFor14Days(weightResponse.data);
+    setKcalFor14Days(kcalResponse.data);
+
+    if (!weightData.includes(0) && !kcalData.includes(0)) {
+      setDataFor14Days(true);
+    }
+  };
 
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
@@ -117,8 +127,8 @@ export const Calc = () => {
   const calcKcalMethodA = () => {
     putAppUserGoal(goal, auth());
 
-    const weightsWeek1 = testWeights.slice(0, 7);
-    const weightsWeek2 = testWeights.slice(7);
+    const weightsWeek1 = weightFor14Days.slice(0, 7);
+    const weightsWeek2 = weightFor14Days.slice(7);
 
     const avgWeightWeek1 =
       weightsWeek1.reduce((total, current) => total + current, 0) / 7;
@@ -127,8 +137,8 @@ export const Calc = () => {
 
     const weightDifference = avgWeightWeek2 - avgWeightWeek1;
 
-    const kcalIntakeWeek1 = testKcalIntake.slice(0, 7);
-    const kcalIntakeWeek2 = testKcalIntake.slice(7);
+    const kcalIntakeWeek1 = kcalFor14Days.slice(0, 7);
+    const kcalIntakeWeek2 = kcalFor14Days.slice(7);
 
     const avgKcalIntakeWeek1 =
       kcalIntakeWeek1.reduce((total, current) => total + current, 0) / 7;
