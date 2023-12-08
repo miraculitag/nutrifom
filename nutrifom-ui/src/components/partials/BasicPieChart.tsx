@@ -36,15 +36,15 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
 
 export default function BasicPie(props: BasicPieChartProps) {
   const theme = useTheme();
-  let remainingKcal = 0;
-  let overConsumedKcal = 0;
-  let overConsumedRemainigKcal = props.totalKcal
+  const [remainingKcal, setRemainingKcal] = React.useState(0);
+  const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);
+  const [overConsumedRemainigKcal, setOverConsumedRemainigKcal] = React.useState(0);
   if(props.totalKcal >= props.consumedKcal){
-    remainingKcal = props.totalKcal - props.consumedKcal;
+    setRemainingKcal(props.totalKcal - props.consumedKcal);
   }
   else{    
-    overConsumedKcal = props.consumedKcal - props.totalKcal;
-    overConsumedRemainigKcal = props.totalKcal - overConsumedKcal;
+    setOverConsumedKcal(props.consumedKcal - props.totalKcal);
+    setOverConsumedRemainigKcal(props.totalKcal - overConsumedKcal);
   }
 
   const overconsumedData = [
@@ -61,23 +61,25 @@ export default function BasicPie(props: BasicPieChartProps) {
     <>
       <PieChart
        margin={{left: 60}}
-
         series={[
           {
             data,
             outerRadius: 70,
             innerRadius: 50,
           },
-          {data: overconsumedData, innerRadius: 70},
+          {
+            data: overconsumedData, 
+            innerRadius: 70,
+          },
         ]}
         sx={{
           position: "absolute",
         }}
-
         slotProps={{
           legend: {
             hidden: true,
           }}}
+          tooltip={{ trigger: 'none', }}
       >
         <PieCenterLabel>
           {[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}

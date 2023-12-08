@@ -18,7 +18,8 @@ public class Recipe {
     private Double carbohydrates;
     private Double energy_kcal;
     private Integer portions;
-    private Double fat;
+    private Double unsatured_fat;
+    private Double saturated_fat;
     private String description;
 
     private int uses;
@@ -69,14 +70,6 @@ public class Recipe {
 
     public void setCarbohydrates(Double carbohydrates) {
         this.carbohydrates = carbohydrates;
-    }
-
-    public Double getFat() {
-        return fat;
-    }
-
-    public void setFat(Double fat) {
-        this.fat = fat;
     }
 
     public Double getEnergy_kcal() {
@@ -141,5 +134,21 @@ public class Recipe {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Double getSaturated_fat() {
+        return saturated_fat;
+    }
+
+    public void setSaturated_fat(Double saturated_fat) {
+        this.saturated_fat = saturated_fat;
+    }
+
+    public Double getUnsatured_fat() {
+        return unsatured_fat;
+    }
+
+    public void setUnsatured_fat(Double unsatured_fat) {
+        this.unsatured_fat = unsatured_fat;
     }
 }

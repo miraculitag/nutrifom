@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
@@ -21,9 +23,9 @@ public class WeightService {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    public void addWeightEntry(AppUser appUser, int weight, LocalDate entryDate) {
+    public void addWeightEntry(AppUser appUser, int weight, LocalDate entryDate) throws CustomAuthenticationException {
         if (weight < 0) {
-            throw new IllegalArgumentException("Weight cannot be negative");
+            throw new CustomAuthenticationException("Weight cannot be negative", HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -36,26 +38,23 @@ public class WeightService {
             appUser.setWeight(weight);
             appUserRepository.save(appUser);
         } catch (Exception e) {
-            // Loggen Sie hier den Fehler
-            throw new RuntimeException(e.getMessage(), e);
+            throw new CustomAuthenticationException("Error while adding weight entry", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public List<WeightEntry> getWeightHistory(AppUser appUser) {
+    public List<WeightEntry> getWeightHistory(AppUser appUser) throws CustomAuthenticationException {
         if (appUser == null) {
-            throw new IllegalArgumentException("AppUser must not be null");
+            throw new CustomAuthenticationException("AppUser must not be null", HttpStatus.BAD_REQUEST);
         }
 
         try {
             return weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUser.getId());
         } catch (Exception e) {
-            // Loggen Sie hier den Fehler. Beispielsweise:
-            // Log.error("Error retrieving weight history for user ID: " + appUser.getId(), e);
-            throw new RuntimeException(e.getMessage(), e);
+            throw new CustomAuthenticationException("Error retrieving weight history", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public List<Double> getWeightHistoryForLast14Days(Integer appUserId) {
+    public List<Double> getWeightHistoryForLast14Days(Integer appUserId) throws CustomAuthenticationException {
         try {
             List<WeightEntry> entries = weightEntryRepository.findByAppUserIdOrderByEntryDateDesc(appUserId);
 
@@ -75,11 +74,8 @@ public class WeightService {
 
             return last14DaysWeights;
         } catch (Exception e) {
-            // Loggen Sie hier den Fehler
-            throw new RuntimeException(e.getMessage(), e);
+            throw new CustomAuthenticationException("Error while getting weight history for last 14 days", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    // ... restliche Methoden
 }
 

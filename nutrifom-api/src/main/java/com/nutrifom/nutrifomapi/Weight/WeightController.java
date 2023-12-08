@@ -2,9 +2,11 @@ package com.nutrifom.nutrifomapi.Weight;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,58 +35,70 @@ public class WeightController {
 
     @GetMapping("/history")
     public ResponseEntity<List<WeightEntry>> getWeightHistory(Principal principal) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        AppUser appUser = appUserRepository.findById(userId).orElse(null);
-        if (appUser == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            AppUser appUser = appUserRepository.findById(userId).orElse(null);
+            if (appUser == null) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            List<WeightEntry> weightHistory = weightService.getWeightHistory(appUser);
+            return ResponseEntity.ok(weightHistory);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(new ArrayList<>());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-        List<WeightEntry> weightHistory = weightService.getWeightHistory(appUser);
-        return new ResponseEntity<>(weightHistory, HttpStatus.OK);
     }
 
     @PostMapping("/entry")
-    public ResponseEntity<?> addWeightEntry(
-            Principal principal,
-            @RequestParam Integer weight,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
-
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
-
-        if (!userOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: User not found in token.");
-        }
-
-        int userId = userOptional.get().getId();
-        Optional<AppUser> appUserOptional = appUserRepository.findById(userId);
-
-        if (!appUserOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found in database.");
-        }
-
+    public ResponseEntity<?> addWeightEntry(Principal principal, @RequestBody WeightEntryDTO weightEntryDTO) {
         try {
-            weightService.addWeightEntry(appUserOptional.get(), weight, entryDate);
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
+
+            if (!userOptional.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            int userId = userOptional.get().getId();
+            Optional<AppUser> appUserOptional = appUserRepository.findById(userId);
+
+            if (!appUserOptional.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            weightService.addWeightEntry(appUserOptional.get(), weightEntryDTO.getWeight(), weightEntryDTO.getEntryDate());
             return ResponseEntity.ok("Weight entry added successfully");
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {
-            // Loggen Sie die Ausnahme und senden Sie eine allgemeine Fehlermeldung zurück.
-            // Abhängig von Ihrer Logging-Strategie
-            // Log.error("Error adding weight entry", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 
-
     @GetMapping("/last14Days")
     public ResponseEntity<List<Double>> getLast14DaysWeightHistory(Principal principal) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        if (!appUserRepository.existsById(userId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            if (!appUserRepository.existsById(userId)) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            List<Double> weightHistoryForLast14Days = weightService.getWeightHistoryForLast14Days(userId);
+            return new ResponseEntity<>(weightHistoryForLast14Days, HttpStatus.OK);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(new ArrayList<>());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
-        List<Double> weightHistoryForLast14Days = weightService.getWeightHistoryForLast14Days(userId);
-        return new ResponseEntity<>(weightHistoryForLast14Days, HttpStatus.OK);
     }
 }

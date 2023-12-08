@@ -1,12 +1,17 @@
 package com.nutrifom.nutrifomapi.Recipe;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
+import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,27 +25,60 @@ public class RecipeController {
      @Autowired
     private RecipeRepository recipeRepository;
 
+     @Autowired
+     private AppUserRepository appUserRepository;
+
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("tag/{tag}")
-    public List<Recipe> getRecipesByTag(@PathVariable String tag) {
-        return recipeService.getRecipesByTag(tag);
+    @GetMapping("/all")
+    public ResponseEntity<List<Recipe>> getAllRecipes() {
+        try {
+            List<Recipe> recipes = recipeService.getAllRecipes();
+            return ResponseEntity.ok(recipes);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(new ArrayList<>());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+        }
     }
 
-    @PostMapping("{recipeId}/rate")
-    public Recipe rateRecipe(@PathVariable Integer recipeId,
-                             Principal principal,
-                             @RequestBody Double score) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        return recipeService.rateRecipe(recipeId, userId, score);
+    @PostMapping("/rate")
+    public ResponseEntity<?> rateRecipe(Principal principal, @RequestBody RecipeRatingDTO ratingDTO) {
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
+
+            if (!userOptional.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            int userId = userOptional.get().getId();
+            Optional<AppUser> appUserOptional = appUserRepository.findById(userId);
+
+            if (!appUserOptional.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+
+            Recipe ratedRecipe = recipeService.rateRecipe(ratingDTO.getRecipeId(), userId, ratingDTO.getScore());
+            return ResponseEntity.ok(ratedRecipe);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @GetMapping("{recipeId}")
-    public Recipe getRecipeById(@PathVariable Integer recipeId) {
-        return recipeRepository.findById(recipeId).orElseThrow();
+    public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer recipeId) {
+        try {
+            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomAuthenticationException("Recipe not found", HttpStatus.NOT_FOUND));
+            return ResponseEntity.ok(recipe);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
