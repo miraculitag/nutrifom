@@ -45,10 +45,7 @@ public class WeightController {
     }
 
     @PostMapping("/entry")
-    public ResponseEntity<?> addWeightEntry(
-            Principal principal,
-            @RequestParam Integer weight,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
+    public ResponseEntity<?> addWeightEntry(Principal principal, @RequestBody WeightEntryDTO weightEntryDTO) {
 
         String username = principal.getName(); // Hier ist die E-Mail-Adresse
         Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
@@ -65,15 +62,15 @@ public class WeightController {
         }
 
         try {
-            weightService.addWeightEntry(appUserOptional.get(), weight, entryDate);
+            weightService.addWeightEntry(appUserOptional.get(), weightEntryDTO.getWeight(), weightEntryDTO.getEntryDate());
             return ResponseEntity.ok("Weight entry added successfully");
         } catch (Exception e) {
             // Loggen Sie die Ausnahme und senden Sie eine allgemeine Fehlermeldung zurück.
-            // Abhängig von Ihrer Logging-Strategie
             // Log.error("Error adding weight entry", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
 
 
     @GetMapping("/last14Days")

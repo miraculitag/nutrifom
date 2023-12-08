@@ -32,15 +32,12 @@ public class NutrilogController {
     private JwtService jwtService;
 
     @PostMapping("/product")
-    public ResponseEntity<String> saveProductLog(
-            Principal principal,
-            @RequestBody Product product,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
+    public ResponseEntity<String> saveProductLog(Principal principal, @RequestBody ProductLogDTO productLogDTO) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             int userId = user.get().getId();
-            nutrilogService.saveProductLog(userId, product, entryDate);
+            nutrilogService.saveProductLog(userId, productLogDTO.getProduct(), productLogDTO.getEntryDate());
             return new ResponseEntity<>("Product log entry added successfully", HttpStatus.OK);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -48,20 +45,18 @@ public class NutrilogController {
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<String> saveRecipeLog(
-            Principal principal,
-            @RequestParam Integer recipeId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
+    public ResponseEntity<String> saveRecipeLog(Principal principal, @RequestBody RecipeLogDTO recipeLogDTO) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             int userId = user.get().getId();
-            nutrilogService.saveRecipeLog(userId, recipeId, entryDate);
+            nutrilogService.saveRecipeLog(userId, recipeLogDTO.getRecipeId(), recipeLogDTO.getEntryDate());
             return new ResponseEntity<>("Recipe log entry added successfully", HttpStatus.CREATED);
         } catch (IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
 
     @GetMapping("")

@@ -19,14 +19,14 @@ public class RecipeService {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    public List<Recipe> getRecipesByTag(String tag) {
-        Specification<Recipe> spec = (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("tag"), tag);
+    public List<Recipe> getAllRecipes() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "averageRating")
+                .and(Sort.by(Sort.Direction.DESC, "uses"));
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "rating");  // sortiert nach Bewertung absteigend
-
-        return recipeRepository.findAll(spec, sort);
+        return recipeRepository.findAll(sort);
     }
+
+
 
     public Recipe rateRecipe(Integer recipeId, Integer userId, Double score) {
         Recipe recipe = recipeRepository.findById(recipeId)
