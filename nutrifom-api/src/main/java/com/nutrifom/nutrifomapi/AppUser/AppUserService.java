@@ -3,6 +3,7 @@ package com.nutrifom.nutrifomapi.AppUser;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,11 @@ public class AppUserService {
         this.appUserRepository = appUserRepository;
     }
 
-    public Optional<AppUser> getAppUserById(int id) {
-        return appUserRepository.findById(id);
-    }
-
-    public Optional<AppUser> getAppUserByEmail(String email) {
-        return appUserRepository.findByEmail(email);
-    }
-
-    public ResponseEntity<String> updateAppUserGoal(int id, String updatedGoal) {
+    public ResponseEntity<String> updateAppUserGoal(int id, String updatedGoal) throws CustomAuthenticationException {
         Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
 
         if (!existingAppUserOptional.isPresent()) {
-            return new ResponseEntity<>("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
 
         AppUser existingAppUser = existingAppUserOptional.get();
@@ -42,11 +35,11 @@ public class AppUserService {
         return new ResponseEntity<>("Updated goal: " + updatedGoal + " for userid: " + id, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> updateAppUserWeight(int id, int updatedWeight) {
+    public ResponseEntity<String> updateAppUserWeight(int id, int updatedWeight) throws CustomAuthenticationException {
         Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
 
         if (!existingAppUserOptional.isPresent()) {
-            return new ResponseEntity<>("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
 
         AppUser existingAppUser = existingAppUserOptional.get();
@@ -56,11 +49,11 @@ public class AppUserService {
         return new ResponseEntity<>("Updated Weight: " + updatedWeight + " for userid: " + id, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> updateAppUserPal(int id, String updatedPal) {
+    public ResponseEntity<String> updateAppUserPal(int id, String updatedPal) throws CustomAuthenticationException {
         Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
 
         if (!existingAppUserOptional.isPresent()) {
-            return new ResponseEntity<>("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
 
         AppUser existingAppUser = existingAppUserOptional.get();
@@ -70,11 +63,11 @@ public class AppUserService {
         return new ResponseEntity<>("Updated PAL: " + updatedPal + " for userid: " + id, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> updateAppUserWpa(int id, double updatedWpa) {
+    public ResponseEntity<String> updateAppUserWpa(int id, double updatedWpa) throws CustomAuthenticationException {
         Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
 
         if (!existingAppUserOptional.isPresent()) {
-            return new ResponseEntity<>("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
 
         AppUser existingAppUser = existingAppUserOptional.get();
@@ -84,9 +77,9 @@ public class AppUserService {
         return new ResponseEntity<>("Updated WPA: " + updatedWpa + " for userid:" + id, HttpStatus.OK);
     }
 
-    public HttpStatus updateAppUserImage(int id, MultipartFile file) {
+    public HttpStatus updateAppUserImage(int id, MultipartFile file) throws CustomAuthenticationException {
         AppUser existingAppUser = appUserRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("User with userid " + id + " doesn't exist"));
+                .orElseThrow(() -> new CustomAuthenticationException("User with userid " + id + " doesn't exist", HttpStatus.NOT_FOUND));
 
         try {
             byte[] bytes = file.getBytes();
@@ -95,27 +88,27 @@ public class AppUserService {
             return HttpStatus.OK;
         } catch (IOException e) {
             // Fehlerbehandlung
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            throw new CustomAuthenticationException("Error while updating image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public byte[] getAppUserImage(int id) {
+    public byte[] getAppUserImage(int id) throws CustomAuthenticationException {
         AppUser existingAppUser = appUserRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("User with id " + id + " doesn't exist"));
+                .orElseThrow(() -> new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
 
         byte[] imageData = existingAppUser.getImage();
 
         if (imageData == null) {
-            throw new IllegalStateException("No image found for user with userid " + id);
+            throw new CustomAuthenticationException("No image found for user with userid " + id, HttpStatus.NOT_FOUND);
         }
 
         return imageData;
     }
 
-    public void deleteAppUser(int id) {
+    public void deleteAppUser(int id) throws CustomAuthenticationException {
         Optional<AppUser> foundUser = appUserRepository.findById(id);
         if (!foundUser.isPresent()) {
-            throw new IllegalStateException("User with id " + id + " doesn't exist");
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
         appUserRepository.deleteById(foundUser.get().getId());
     }

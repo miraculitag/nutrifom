@@ -3,6 +3,7 @@ package com.nutrifom.nutrifomapi.AppUser;
 import java.security.Principal;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -29,12 +30,19 @@ public class AppUserController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<AppUser> getUser(Principal principal) {
-        // Extrahieren Sie die UserID aus dem JWT.
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<?> getUser(Principal principal) {
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            return user.map(ResponseEntity::ok)
+                    .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        } catch (CustomAuthenticationException e) {
+            // Spezifische Ausnahme, die im Service geworfen wird
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            // Generelle Ausnahme
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @GetMapping("/image")
@@ -42,6 +50,9 @@ public class AppUserController {
         try {
             String username = principal.getName(); // Hier ist die E-Mail-Adresse
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
             int userId = user.get().getId();
             byte[] imageData = appUserService.getAppUserImage(userId);
 
@@ -49,41 +60,81 @@ public class AppUserController {
             headers.setContentType(MediaType.IMAGE_JPEG); // Oder den tatsächlichen Medientyp des Bildes
 
             return new ResponseEntity<>(imageData, headers, HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(new byte[0]);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new byte[0]);
         }
     }
 
     @PutMapping("/goal")
     public ResponseEntity<String> updateGoal(Principal principal, @RequestParam String goal) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        return appUserService.updateAppUserGoal(userId, goal);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.updateAppUserGoal(userId, goal);
+        } catch (CustomAuthenticationException e) {
+            // Spezifische Ausnahme, die im Service geworfen wird
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            // Generelle Ausnahme
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @PutMapping("/weight")
     public ResponseEntity<String> updateWeight(Principal principal, @RequestParam int weight) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        return appUserService.updateAppUserWeight(userId, weight);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.updateAppUserWeight(userId, weight);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @PutMapping("/pal")
     public ResponseEntity<String> updatePal(Principal principal, @RequestParam String pal) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        return appUserService.updateAppUserPal(userId, pal);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.updateAppUserPal(userId, pal);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @PutMapping("/wpa")
     public ResponseEntity<String> updateWpa(Principal principal, @RequestParam double wpa) {
-        String username = principal.getName(); // Hier ist die E-Mail-Adresse
-        Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-        int userId = user.get().getId();
-        return appUserService.updateAppUserWpa(userId, wpa);
+        try {
+            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.updateAppUserWpa(userId, wpa);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
 
     @PutMapping("/image")
@@ -91,11 +142,16 @@ public class AppUserController {
         try {
             String username = principal.getName(); // Hier ist die E-Mail-Adresse
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
             int userId = user.get().getId();
             HttpStatus status = appUserService.updateAppUserImage(userId, image);
             return new ResponseEntity<>(status);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 
@@ -104,11 +160,16 @@ public class AppUserController {
         try {
             String username = principal.getName(); // Hier ist die E-Mail-Adresse
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
             int userId = user.get().getId();
             appUserService.deleteAppUser(userId);
             return new ResponseEntity<>("User with id " + userId + " deleted successfully.", HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 }

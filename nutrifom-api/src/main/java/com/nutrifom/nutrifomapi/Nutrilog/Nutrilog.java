@@ -1,6 +1,7 @@
 package com.nutrifom.nutrifomapi.Nutrilog;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
@@ -51,7 +52,7 @@ public class Nutrilog {
         this.id = id;
     }
 
-    public AppUser getAppUser() {
+    public AppUser getAppUser()  {
         return appUser;
     }
 
