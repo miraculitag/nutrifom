@@ -7,7 +7,7 @@ export interface BasicButtonProps {
   onButtonClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export default function BasicButton(props: BasicButtonProps) {
+export const BasicButton = (props: BasicButtonProps) => {
   const theme = useTheme();
 
   return (
@@ -27,4 +27,4 @@ export default function BasicButton(props: BasicButtonProps) {
       {props.label}
     </Button>
   );
-}
+};

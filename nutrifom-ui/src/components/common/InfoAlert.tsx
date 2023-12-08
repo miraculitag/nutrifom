@@ -1,6 +1,6 @@
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import JustifiedTypography from "./JustifiedTypography";
+import { JustifiedTypography } from "./JustifiedTypography";
 
 export interface InfoAlertProps {
   title: string;
@@ -8,7 +8,7 @@ export interface InfoAlertProps {
   table?: JSX.Element;
 }
 
-export default function InfoAlert(props: InfoAlertProps) {
+export const InfoAlert = (props: InfoAlertProps) => {
   const theme = useTheme();
 
   return (
@@ -24,4 +24,4 @@ export default function InfoAlert(props: InfoAlertProps) {
       {props.table && <Box>{props.table}</Box>}
     </Alert>
   );
-}
+};

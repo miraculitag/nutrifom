@@ -1,17 +1,17 @@
+import React from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import React from "react";
-import BasicButton from "../common/BasicButton";
-import BasicPie from "../common/BasicPieChart";
+import { BasicButton } from "../common/BasicButton";
+import BasicPie from "../partials/BasicPieChart";
 import { FloatInputField } from "../common/FloatInputField";
-import FoodTable, { FoodItem } from "../common/FoodTable";
-import NutritionalTable from "../common/NutritionalTable";
+import FoodTable, { FoodItem } from "../partials/FoodTable";
+import { NutritionalTable } from "../common/NutritionalTable";
 import { TextInputField } from "../common/TextInputField";
 import { Layout } from "../layout/Layout";
 
-export const FoodLog = (testParams: any) => {
+export const Nutrilog = (testParams: any) => {
   const theme = useTheme();
 
   const [isButtonClicked] = React.useState(false);
@@ -164,38 +164,39 @@ export const FoodLog = (testParams: any) => {
 
   return (
     <Layout>
-
       <Box
         sx={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
           gridTemplateAreas: `"Food Recepie PieChart"
         "Foodlog Foodlog Nutrition"`,
-        columnGap: 5,
-        rowGap: 8,
+          columnGap: 5,
+          rowGap: 8,
         }}
       >
         <Box sx={{ gridArea: "Food" }}>
           <Box sx={{ marginBottom: "5%" }}>
-          <TextInputField
+            <TextInputField
               label="Suche hier nach einem Lebensmittel..."
               value={SearchTextFood}
               setValue={setSearchTextFood}
               hasError={FoodSearchHasError}
               errorText="Du hast kein Lebensmittel eingegeben."
-              width="100%" 
-              required={false}            />
+              width="100%"
+              required={false}
+            />
           </Box>
           <Box sx={{ marginBottom: "5%" }}>
-          <FloatInputField
+            <FloatInputField
               label="Menge eintragen"
               suffix="Gramm"
               value={currentFoodAmount}
               setValue={setCurrentFoodAmount}
               hasError={foodAmountHasError}
               errorText="Die Menge kann nicht negativ oder 0 sein."
-              width="100%" 
-              required={false}            />
+              width="100%"
+              required={false}
+            />
           </Box>
           <BasicButton
             label="Lebensmittel hinzufügen"
@@ -205,15 +206,12 @@ export const FoodLog = (testParams: any) => {
               if (currentFoodAmount <= 0 || SearchTextFood === "") {
                 if (currentFoodAmount <= 0) {
                   setFoodAmountHasError(true);
-                }
-                else{
+                } else {
                   setFoodAmountHasError(false);
                 }
                 if (SearchTextFood === "") {
                   setFoodSearchHasError(true);
-                }
-                else
-                {
+                } else {
                   setFoodSearchHasError(true);
                 }
               } else {
@@ -225,25 +223,27 @@ export const FoodLog = (testParams: any) => {
 
         <Box sx={{ gridArea: "Recepie" }}>
           <Box sx={{ marginBottom: "5%" }}>
-          <TextInputField
+            <TextInputField
               label="Suche hier nach einem Rezept..."
               value={searchTextRecepie}
               setValue={setSearchTextRecepie}
               hasError={recepieSearchHasError}
               errorText="Du hast kein Rezept ausgewählt."
-              width="100%" 
-              required={false}            />
+              width="100%"
+              required={false}
+            />
           </Box>
           <Box sx={{ marginBottom: "5%" }}>
-          <FloatInputField
+            <FloatInputField
               label="Portionen eintragen"
               suffix="Portion(en)"
               value={currentPortionAmount}
               setValue={setCurrentPortionAmount}
               hasError={portionAmountHasError}
               errorText="Die Portionen kann nicht negativ oder 0 sein."
-              width="100%" 
-              required={false}            />
+              width="100%"
+              required={false}
+            />
           </Box>
           <BasicButton
             label="Rezept hinzufügen"
@@ -253,15 +253,12 @@ export const FoodLog = (testParams: any) => {
               if (currentPortionAmount <= 0 || searchTextRecepie === "") {
                 if (currentPortionAmount <= 0) {
                   setPortionAmountHasError(true);
-                }
-                else
-                {
+                } else {
                   setPortionAmountHasError(false);
                 }
                 if (searchTextRecepie === "") {
                   setRecepieSearchHasError(true);
-                }
-                else{
+                } else {
                   setRecepieSearchHasError(false);
                 }
               } else {
@@ -271,7 +268,7 @@ export const FoodLog = (testParams: any) => {
           />
         </Box>
 
-        <Box sx={{ gridArea: "PieChart", height:"100%" }}>
+        <Box sx={{ gridArea: "PieChart", height: "100%" }}>
           <BasicPie
             totalKcal={2200}
             consumedKcal={Math.round(
@@ -281,7 +278,7 @@ export const FoodLog = (testParams: any) => {
         </Box>
 
         <Box sx={{ gridArea: "Foodlog" }}>
-          <Box sx={{ display: "flex", marginBottom:"2%"}}>
+          <Box sx={{ display: "flex", marginBottom: "2%" }}>
             <Typography>Lebenmittel & Rezepte</Typography>
             {selectedDate &&
             !dayjs(selectedDate).isSame(sevenDaysAgo, "day") ? (
@@ -350,7 +347,6 @@ export const FoodLog = (testParams: any) => {
           )}
         </Box>
       </Box>
-
     </Layout>
   );
 };

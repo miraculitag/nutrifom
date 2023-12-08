@@ -1,12 +1,14 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Dialog from "@mui/material/Dialog";
-import RadioGroup from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+} from "@mui/material";
 
 export interface FilterDialogProps {
   id: string;
@@ -18,7 +20,7 @@ export interface FilterDialogProps {
   onClose: (value?: string) => void;
 }
 
-export default function FilterDialog(props: FilterDialogProps) {
+export const FilterDialog = (props: FilterDialogProps) => {
   const { onClose, valueFilter: valueProp, open, ...other } = props;
   const [valueFilter, setValueFilter] = React.useState(valueProp);
   const radioGroupRef = React.useRef<HTMLElement>(null);
@@ -80,4 +82,4 @@ export default function FilterDialog(props: FilterDialogProps) {
       </DialogActions>
     </Dialog>
   );
-}
+};

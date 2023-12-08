@@ -43,7 +43,7 @@ export const Header = (testParams: any) => {
           }}
         >
           <Button
-            onClick={() => navigate("/foodlog")}
+            onClick={() => navigate("/nutrilog")}
             sx={{ color: "inherit", fontSize: "inherit" }}
           >
             Nutriprotokoll

@@ -3,7 +3,7 @@ import nutrifomTheme from "./theme/nutrifomTheme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./components/pages/Home";
 import { User } from "./components/pages/User";
-import { FoodLog } from "./components/pages/FoodLog";
+import { Nutrilog } from "./components/pages/Nutrilog";
 import { Weight } from "./components/pages/Weight";
 import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
@@ -41,10 +41,10 @@ export default function App() {
                 }
               />
               <Route
-                path="/foodlog"
+                path="/nutrilog"
                 element={
                   <RequireAuth loginPath="/signin">
-                    <FoodLog />
+                    <Nutrilog />
                   </RequireAuth>
                 }
               />

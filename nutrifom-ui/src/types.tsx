@@ -33,6 +33,24 @@ export type AuthenticateRequest = {
   googleIDToken?: string;
 };
 
+export type Recipe = {
+  id: number;
+  title: string;
+  ingredients: string;
+  portions: number;
+  energy_kcal: number;
+  proteins: number;
+  saturatedFat: number;
+  unsaturatedFat: number;
+  carbohydrates: number;
+  description: string;
+  uses: number;
+  ratings: number;
+  averageRating: number;
+  image: string;
+  tag: string;
+};
+
 export enum fieldErrorEnum {
   NAME,
   DOB,

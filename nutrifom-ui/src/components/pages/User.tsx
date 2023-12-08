@@ -1,43 +1,29 @@
-import {
-  Avatar,
-  Box,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
-import FileUploadButton from "../common/FileUploadButton";
+import React from "react";
+import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
+import dayjs from "dayjs";
+import { useAuthHeader } from "react-auth-kit";
+import ImageUploadButton from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
-//import { AppUser } from "../../types";
-//import { getAppUser } from "../../api";
+import { getAppUser } from "../../api";
+import { AppUser } from "../../types";
 
-export const User = (testParams: any) => {
-  //const [user, setUser] = React.useState<AppUser>();
+export const User = () => {
+  const [user, setUser] = React.useState<AppUser>();
 
-
-  /*const getUser = () => {
-    getAppUser(userId, userToken).then((response) => {
+  React.useEffect(() => {
+    getAppUser(auth()).then((response) => {
       setUser(response.data);
     });
-  };
-  getUser();*/
+  }, []);
 
-  //const testUser: AppUser | undefined = user;
-  const testUser = {
-    id: 1,
-    name: "Username",
-    dob: "01.01.2000",
-    height: 170,
-    gender: "weiblich",
-    image: "",
-    email: "x@testmail.de",
-  };
+  const auth = useAuthHeader();
 
   const userData = [
-    { label: "Username", data: testUser.name },
-    { label: "E-Mail", data: testUser.email },
-    { label: "Geburtstag", data: testUser.dob },
-    { label: "Geschlecht", data: testUser.gender },
-    { label: "Größe", data: testUser.height + " cm" },
+    { label: "Username", data: user?.name },
+    { label: "E-Mail", data: user?.email },
+    { label: "Geburtstag", data: dayjs(user?.dob).format("DD.MM.YYYY") },
+    { label: "Geschlecht", data: user?.gender },
+    { label: "Größe", data: user?.height + " cm" },
   ];
 
   return (
@@ -59,7 +45,7 @@ export const User = (testParams: any) => {
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>
-            <FileUploadButton />
+            <ImageUploadButton />
           </Box>
         </Box>
         <Box
@@ -83,8 +69,9 @@ export const User = (testParams: any) => {
                   <TextField
                     label={field.label}
                     variant="standard"
-                    value={field.data}
+                    value={field.data || ""}
                     inputProps={{ readOnly: true }}
+                    InputLabelProps={{ shrink: true }}
                     sx={{ paddingBottom: "5%" }}
                   />
                 </Grid>

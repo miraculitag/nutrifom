@@ -21,7 +21,7 @@ export interface DropDownProps {
   errorText?: string;
 }
 
-export default function DropDownMenu(props: DropDownProps) {
+export const DropDownMenu = (props: DropDownProps) => {
   const theme = useTheme();
 
   return (
@@ -59,4 +59,4 @@ export default function DropDownMenu(props: DropDownProps) {
       </Select>
     </FormControl>
   );
-}
+};
