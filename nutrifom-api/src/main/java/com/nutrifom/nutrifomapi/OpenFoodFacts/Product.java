@@ -9,8 +9,8 @@ public class Product {
     private double proteins_serving;
     private double carbohydrates_serving;
     private double energy_kcal_serving;
-    private double fat_serving;
     private double saturated_fat_serving;
+    private double unsaturated_fat_serving;
 
     public String getCode() {
         return code;
@@ -68,13 +68,6 @@ public class Product {
         this.energy_kcal_serving = energy_kcal_serving;
     }
 
-    public double getFat_serving() {
-        return fat_serving;
-    }
-
-    public void setFat_serving(double fat_serving) {
-        this.fat_serving = fat_serving;
-    }
 
     public double getSaturated_fat_serving() {
         return saturated_fat_serving;
@@ -82,5 +75,13 @@ public class Product {
 
     public void setSaturated_fat_serving(double saturated_fat_serving) {
         this.saturated_fat_serving = saturated_fat_serving;
+    }
+
+    public double getUnsaturated_fat_serving() {
+        return unsaturated_fat_serving;
+    }
+
+    public void setUnsaturated_fat_serving(double unsaturated_fat_serving) {
+        this.unsaturated_fat_serving = unsaturated_fat_serving;
     }
 }

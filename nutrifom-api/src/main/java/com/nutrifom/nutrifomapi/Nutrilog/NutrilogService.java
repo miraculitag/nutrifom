@@ -42,8 +42,8 @@ public class NutrilogService {
         nutrilog.setProteins_serving(product.getProteins_serving());
         nutrilog.setCarbohydrates_serving(product.getCarbohydrates_serving());
         nutrilog.setEnergy_kcal_serving(product.getEnergy_kcal_serving());
-        nutrilog.setFat_serving(product.getFat_serving());
         nutrilog.setSaturated_fat_serving(product.getSaturated_fat_serving());
+        nutrilog.setUnsaturated_fat_serving(product.getUnsaturated_fat_serving());
         nutrilog.setEntryDate(entryDate);
 
         return nutrilogRepository.save(nutrilog);

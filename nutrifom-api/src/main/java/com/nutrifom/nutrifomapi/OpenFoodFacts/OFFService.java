@@ -71,6 +71,7 @@ public class OFFService {
             double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
             double saturatedFat = roundToOneDecimalPlace(
                     nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
+            double unsaturatedFat = fat-saturatedFat;
 
             Product p = new Product();
             p.setCode(code);
@@ -80,8 +81,8 @@ public class OFFService {
             p.setProteins_serving(proteins);
             p.setCarbohydrates_serving(carbohydrates);
             p.setEnergy_kcal_serving(energyKcal);
-            p.setFat_serving(fat);
             p.setSaturated_fat_serving(saturatedFat);
+            p.setUnsaturated_fat_serving(unsaturatedFat);
 
             productList.add(p);
         }

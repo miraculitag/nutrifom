@@ -39,8 +39,8 @@ public class Nutrilog {
     private Double proteins_serving;
     private Double carbohydrates_serving;
     private Double energy_kcal_serving;
-    private Double fat_serving;
     private Double saturated_fat_serving;
+    private Double unsaturated_fat_serving;
     private LocalDate entryDate;
 
     public Integer getId() {
@@ -123,14 +123,6 @@ public class Nutrilog {
         this.energy_kcal_serving = energy_kcal_serving;
     }
 
-    public Double getFat_serving() {
-        return fat_serving;
-    }
-
-    public void setFat_serving(Double fat_serving) {
-        this.fat_serving = fat_serving;
-    }
-
     public Double getSaturated_fat_serving() {
         return saturated_fat_serving;
     }
@@ -145,5 +137,13 @@ public class Nutrilog {
 
     public void setEntryDate(LocalDate entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public Double getUnsaturated_fat_serving() {
+        return unsaturated_fat_serving;
+    }
+
+    public void setUnsaturated_fat_serving(Double unsaturated_fat_serving) {
+        this.unsaturated_fat_serving = unsaturated_fat_serving;
     }
 }
