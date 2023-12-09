@@ -1,12 +1,11 @@
 import axios from "axios";
 import {
-  AuthenticateRequest,
-  RegisterRequest,
-  ImageRequest,
-  WeightRequest,
-  RateRecipeRequest,
-  AddRecipeRequest,
   AddProductRequest,
+  AddRecipeRequest,
+  AuthenticateRequest,
+  RateRecipeRequest,
+  RegisterRequest,
+  WeightRequest
 } from "./types";
 
 export const axiosInstance = axios.create({
@@ -53,18 +52,13 @@ export const putAppUserPal = async (pal: string, token: string) =>
     params: { pal: pal },
   });
 
-export const putAppUserImage = async (image: File, token: string) => {
-  //tbd
-  const formData = new FormData();
-  formData.append("image", image);
-
-  return await axiosInstance.put("/api/appUser/image", formData, {
-    ...addAuth(token),
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-};
+  export const putAppUserImage = async (formData: FormData, token: string) => {
+    return await axiosInstance.put("/api/appUser/image", formData, {
+      headers: {
+        ...addAuth(token).headers,
+      },
+    });
+  };
 
 export const putAppUserGoal = async (goal: string, token: string) =>
   await axiosInstance.put(`/api/appUser/goal`, null, {
