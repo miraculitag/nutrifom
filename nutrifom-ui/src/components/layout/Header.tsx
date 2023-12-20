@@ -11,10 +11,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AppUser } from "../../types";
 import { getAppUser } from "../../api";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 
 export const Header = (testParams: any) => {
-  const navigate = useNavigate();
   const [user, setUser] = React.useState<AppUser>();
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
 
@@ -46,6 +45,13 @@ export const Header = (testParams: any) => {
     }
   }, [user?.image]);
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
+  const handleSignOutButtonClick = () => {
+    signOut();
+    navigate("/signin");
+  };
 
   return (
     <>
@@ -56,8 +62,7 @@ export const Header = (testParams: any) => {
           onClick={() => navigate("/")}
         />
       </Box>
-      <IconButton
-        onClick={() => navigate("/user")}
+      <Box
         sx={{
           float: "right",
           padding: "1%",
@@ -65,8 +70,11 @@ export const Header = (testParams: any) => {
           marginRight: "1%",
         }}
       >
-        <Avatar src={URL.createObjectURL(avatarBlob)} />
-      </IconButton>
+        <Button onClick={handleSignOutButtonClick}>Ausloggen</Button>
+        <IconButton onClick={() => navigate("/user")}>
+          <Avatar src={URL.createObjectURL(avatarBlob)} />
+        </IconButton>
+      </Box>
       <AppBar sx={{ position: "static", marginBottom: "2%" }}>
         <Toolbar
           sx={{
