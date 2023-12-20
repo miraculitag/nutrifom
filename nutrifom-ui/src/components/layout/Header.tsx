@@ -15,7 +15,6 @@ import { useAuthHeader } from "react-auth-kit";
 
 export const Header = (testParams: any) => {
   const navigate = useNavigate();
-  const userProfilePicture = ""; //tbd
   const [user, setUser] = React.useState<AppUser>();
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
 
@@ -23,7 +22,7 @@ export const Header = (testParams: any) => {
     getAppUser(auth()).then((response) => {
       setUser(response.data);
     });
-  }, []);
+  }, [user]);
 
   React.useEffect(() => {
     if (user) {
