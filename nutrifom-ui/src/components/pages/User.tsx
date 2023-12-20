@@ -9,12 +9,35 @@ import { AppUser } from "../../types";
 
 export const User = () => {
   const [user, setUser] = React.useState<AppUser>();
+  const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
 
   React.useEffect(() => {
     getAppUser(auth()).then((response) => {
       setUser(response.data);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (user) {
+      if (user.image && user.image.length > 0) {
+        const processImage = () => {
+          const byteCharacters = atob(user.image);
+          const byteNumbers = new Array(byteCharacters.length);
+
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+          setAvatarBlob(blob);
+        };
+
+        processImage();
+      }
+    }
+  }, [user?.image]);
 
   const auth = useAuthHeader();
 
@@ -41,11 +64,11 @@ export const User = () => {
           }}
         >
           <Avatar
-            src={""}
+            src={URL.createObjectURL(avatarBlob)}
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>
-            <ImageUploadButton />
+            <ImageUploadButton setUser={setUser} />
           </Box>
         </Box>
         <Box
