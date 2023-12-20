@@ -269,7 +269,7 @@ export const Nutrilog = (testParams: any) => {
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-          <BasicPie
+         <BasicPie
             totalKcal={2200}
             consumedKcal={Math.round(
               getTotalNutritionalValues().energy_kcal_per_unit
