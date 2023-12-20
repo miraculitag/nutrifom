@@ -17,7 +17,6 @@ export interface ImageUploadButtonProps {
 
 export default function ImageUploadButton(props: ImageUploadButtonProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const [uploadProgress, setUploadProgress] = React.useState<number>(0);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
 
   const theme = useTheme();
@@ -42,27 +41,14 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
       const formData = new FormData();
       formData.append("image", image);
       setIsUploading(true);
-      const config = {
-        onUploadProgress: (progressEvent: ProgressEvent) => {
-          const progress = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-          setUploadProgress(progress);
-        },
-        headers: {
-          Authorization: auth() || "",
-          "Content-Type": "multipart/form-data",
-        },
-      };
       try {
-        await putAppUserImage(formData, auth()); //config tbd
+        await putAppUserImage(formData, auth());
         const updatedUser = await getAppUser(auth());
         props.setUser(updatedUser.data);
       } catch (error) {
         console.error(error);
       } finally {
         setIsUploading(false);
-        setUploadProgress(0);
       }
     }
   };
@@ -82,15 +68,12 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
       </IconButton>
       {isUploading && (
         <LinearProgress
-          variant="determinate"
-          value={uploadProgress}
           sx={{
-            height: 10, // Höhe der Fortschrittsleiste
-            borderRadius: 5, // Abrundung der Ecken
-            backgroundColor: "rgba(0, 0, 0, 0.2)", // Hintergrundfarbe
+            height: 5,
+            borderRadius: 5,
+            backgroundColor: theme.palette.primary.light,
             "& .MuiLinearProgress-bar": {
-              borderRadius: 5, // Abrundung der Ecken des Fortschrittsbalkens
-              backgroundColor: theme.palette.primary.main, // Farbe des Fortschrittsbalkens
+              backgroundColor: theme.palette.primary.main,
             },
           }}
         />
