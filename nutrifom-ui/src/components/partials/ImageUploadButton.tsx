@@ -1,23 +1,20 @@
 import { FileUpload } from "@mui/icons-material";
-import {
-  CircularProgress,
-  IconButton,
-  LinearProgress,
-  useTheme,
-} from "@mui/material";
+import { IconButton, LinearProgress, Tooltip, useTheme } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
 import { useAuthHeader } from "react-auth-kit";
 import { getAppUser, putAppUserImage } from "../../api";
 import { AppUser } from "../../types";
+import { ErrorDialog } from "../common/ErrorDialog";
 
 export interface ImageUploadButtonProps {
   setUser: (user: AppUser) => void;
 }
 
 export default function ImageUploadButton(props: ImageUploadButtonProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
+  const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -36,19 +33,24 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const image = event.target.files && event.target.files[0];
-    console.log(image);
     if (image) {
-      const formData = new FormData();
-      formData.append("image", image);
-      setIsUploading(true);
-      try {
-        await putAppUserImage(formData, auth());
-        const updatedUser = await getAppUser(auth());
-        props.setUser(updatedUser.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsUploading(false);
+      const fileSizeInMB = image.size / (1024 * 1024);
+
+      if (fileSizeInMB > 1) {
+        setOpenErrorDialog(true);
+      } else {
+        const formData = new FormData();
+        formData.append("image", image);
+        setIsUploading(true);
+        try {
+          await putAppUserImage(formData, auth());
+          const updatedUser = await getAppUser(auth());
+          props.setUser(updatedUser.data);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsUploading(false);
+        }
       }
     }
   };
@@ -61,11 +63,13 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
         accept="image/*"
         onChange={handleImageChange}
       />
-      <IconButton onClick={handleIconClick}>
-        <FileUpload
-          sx={{ fontSize: "150%", color: theme.palette.primary.main }}
-        />
-      </IconButton>
+      <Tooltip title="Profilbild hochladen (max. 1 MB groß)">
+        <IconButton onClick={handleIconClick}>
+          <FileUpload
+            sx={{ fontSize: "150%", color: theme.palette.primary.main }}
+          />
+        </IconButton>
+      </Tooltip>
       {isUploading && (
         <LinearProgress
           sx={{
@@ -78,6 +82,15 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
           }}
         />
       )}
+      <ErrorDialog
+        keepMounted
+        open={openErrorDialog}
+        setOpen={setOpenErrorDialog}
+        heading={"Überschreitung der Bildgröße"}
+        errorMessage={
+          "Die Bilddatei ist zu groß. Bitte wähle eine Bilddatei, die maximal ein MB groß ist."
+        }
+      />
     </>
   );
 }
