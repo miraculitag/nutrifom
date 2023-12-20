@@ -4,12 +4,13 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { BasicButton } from "../common/BasicButton";
-import BasicPie from "../partials/BasicPieChart";
 import { FloatInputField } from "../common/FloatInputField";
 import FoodTable, { FoodItem } from "../partials/FoodTable";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { TextInputField } from "../common/TextInputField";
 import { Layout } from "../layout/Layout";
+import KalcFoodChart from "../partials/KalcFoodChart";
+import { authenticateAppUser } from "../../api";
 
 export const Nutrilog = (testParams: any) => {
   const theme = useTheme();
@@ -17,23 +18,14 @@ export const Nutrilog = (testParams: any) => {
   const [isButtonClicked] = React.useState(false);
   const [SearchTextFood, setSearchTextFood] = React.useState<string>("");
   const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
-
   const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
   const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
-
   const [searchTextRecepie, setSearchTextRecepie] = React.useState<string>("");
-  const [recepieSearchHasError, setRecepieSearchHasError] =
-    React.useState(false);
-
-  const [currentPortionAmount, setCurrentPortionAmount] =
-    React.useState<number>(0);
-  const [portionAmountHasError, setPortionAmountHasError] =
-    React.useState(false);
-
+  const [recepieSearchHasError, setRecepieSearchHasError] = React.useState(false);
+  const [currentPortionAmount, setCurrentPortionAmount] = React.useState<number>(0);
+  const [portionAmountHasError, setPortionAmountHasError] = React.useState(false);
   const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
-
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
@@ -162,6 +154,8 @@ export const Nutrilog = (testParams: any) => {
     }
   };
 
+  
+
   return (
     <Layout>
       <Box
@@ -269,7 +263,7 @@ export const Nutrilog = (testParams: any) => {
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-          <BasicPie
+         <KalcFoodChart
             totalKcal={2200}
             consumedKcal={Math.round(
               getTotalNutritionalValues().energy_kcal_per_unit

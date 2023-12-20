@@ -3,7 +3,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { styled, useTheme } from "@mui/material/styles";
 import { useDrawingArea } from "@mui/x-charts";
 
-export interface BasicPieChartProps {
+export interface KalcFoodChartProps {
   totalKcal: number;
   consumedKcal: number;
 }
@@ -34,22 +34,28 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function BasicPie(props: BasicPieChartProps) {
+export default function KalcFoodChart(props: KalcFoodChartProps) {
   const theme = useTheme();
   const [remainingKcal, setRemainingKcal] = React.useState(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);
-  const [overConsumedRemainigKcal, setOverConsumedRemainigKcal] = React.useState(0);
-  if(props.totalKcal >= props.consumedKcal){
-    setRemainingKcal(props.totalKcal - props.consumedKcal);
-  }
-  else{    
-    setOverConsumedKcal(props.consumedKcal - props.totalKcal);
-    setOverConsumedRemainigKcal(props.totalKcal - overConsumedKcal);
-  }
+  const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] = React.useState(0);
+  
+  React.useEffect(() => {
+    if (props.totalKcal >= props.consumedKcal) {
+      setRemainingKcal(props.totalKcal - props.consumedKcal);
+      setOverConsumedKcal(0);
+      setOverConsumedRemainingKcal(0);
+    } else {
+      setRemainingKcal(0);
+      setOverConsumedKcal(props.consumedKcal - props.totalKcal);
+      setOverConsumedRemainingKcal(props.totalKcal - overConsumedKcal);
+    }
+  }, [props.totalKcal, props.consumedKcal, overConsumedKcal]);
+  
 
   const overconsumedData = [
     {value: overConsumedKcal, color: "red"},
-    {value: overConsumedRemainigKcal, color: "white"}
+    {value: overConsumedRemainingKcal, color: "white"}
   ];
 
   const data = [
