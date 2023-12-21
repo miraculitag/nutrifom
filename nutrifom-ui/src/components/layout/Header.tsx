@@ -6,12 +6,52 @@ import {
   IconButton,
   Toolbar,
 } from "@mui/material";
+import React from "react";
 
 import { useNavigate } from "react-router-dom";
+import { AppUser } from "../../types";
+import { getAppUser } from "../../api";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 
 export const Header = (testParams: any) => {
+  const [user, setUser] = React.useState<AppUser>();
+  const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
+
+  React.useEffect(() => {
+    getAppUser(auth()).then((response) => {
+      setUser(response.data);
+    });
+  }, [user]);
+
+  React.useEffect(() => {
+    if (user) {
+      if (user.image && user.image.length > 0) {
+        const processImage = () => {
+          const byteCharacters = atob(user.image);
+          const byteNumbers = new Array(byteCharacters.length);
+
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+          setAvatarBlob(blob);
+        };
+
+        processImage();
+      }
+    }
+  }, [user?.image]);
+  const auth = useAuthHeader();
+  const signOut = useSignOut();
   const navigate = useNavigate();
-  const userProfilePicture = ""; //tbd
+
+  const handleSignOutButtonClick = () => {
+    signOut();
+    navigate("/signin");
+  };
 
   return (
     <>
@@ -22,8 +62,7 @@ export const Header = (testParams: any) => {
           onClick={() => navigate("/")}
         />
       </Box>
-      <IconButton
-        onClick={() => navigate("/user")}
+      <Box
         sx={{
           float: "right",
           padding: "1%",
@@ -31,8 +70,11 @@ export const Header = (testParams: any) => {
           marginRight: "1%",
         }}
       >
-        <Avatar src={userProfilePicture} />
-      </IconButton>
+        <Button onClick={handleSignOutButtonClick}>Ausloggen</Button>
+        <IconButton onClick={() => navigate("/user")}>
+          <Avatar src={URL.createObjectURL(avatarBlob)} />
+        </IconButton>
+      </Box>
       <AppBar sx={{ position: "static", marginBottom: "2%" }}>
         <Toolbar
           sx={{

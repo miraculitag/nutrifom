@@ -1,39 +1,44 @@
 import React from "react";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { FloatInputField } from "../common/FloatInputField";
-import BasicLineChart from "../partials/BasicLineChart";
+import WeightLineChart from "../partials/WeightLineChart";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import { JustifiedTypography } from "../common/JustifiedTypography";
 import { Layout } from "../layout/Layout";
 import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
+import { useAuthHeader } from "react-auth-kit";
+import { addWeightEntry, getRecipes } from "../../api";
 
 export const Weight = (testParams: any) => {
   const theme = useTheme();
+  const auth = useAuthHeader();
   const [isButtonClicked] = React.useState(false);
-  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
-    dayjs(new Date())
-  );
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(dayjs(new Date()));
   const [dateHasError, setDateHasError] = React.useState(false);
-
   const [currentWeight, setCurrentWeight] = React.useState<number>(0);
   const [weightHasError, setWeightHasError] = React.useState(false);
-
   const infoText = {
     title: "Gewichtsveränderung:",
     description:
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
 
+
   const handleAddWeightClick = () => {
     setWeightHasError(false);
     setDateHasError(false);
-    const currentDate = selectedDate;
+  
+    const dateString: string = selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
+  
     if (currentWeight >= 0) {
-      console.log(
-        `Suchbutton geklickt. Eingegebener Text: ${currentWeight} ${currentDate}`
-      );
+      addWeightEntry({ weight: currentWeight, entryDate: dateString}, auth())
+        .catch((error) => {
+          if (error.response.status === 403) {
+            console.log("Error 403 while putting weight:", auth());
+          }
+        });
     }
   };
 
@@ -51,7 +56,7 @@ export const Weight = (testParams: any) => {
           width: "100%",
         }}
       >
-        <BasicLineChart></BasicLineChart>
+        <WeightLineChart/>
         <Box
           sx={{
             display: "flex",
