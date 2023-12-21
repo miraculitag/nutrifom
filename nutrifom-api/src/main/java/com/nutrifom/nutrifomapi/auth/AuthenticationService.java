@@ -59,7 +59,7 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .password((request.getPassword()))
                     .dob(request.getDob())
-                    .initialWeight(request.getWeight())
+                    .initialWeight(request.getInitialWeight())
                     .goal(request.getGoal())
                     .gender(request.getGender())
                     .height(request.getHeight())
@@ -70,7 +70,7 @@ public class AuthenticationService {
             var savedUser = appUserRepository.save(user);
             var jwtToken = jwtService.generateJwt(user);
             saveUserToken(savedUser, jwtToken);
-            weightService.addOrUpdateWeightEntry(savedUser, request.getWeight(), LocalDate.now());
+            weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -81,7 +81,7 @@ public class AuthenticationService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .dob(request.getDob())
-                        .initialWeight(request.getWeight())
+                        .initialWeight(request.getInitialWeight())
                         .goal(request.getGoal())
                         .gender(request.getGender())
                         .height(request.getHeight())
@@ -92,7 +92,7 @@ public class AuthenticationService {
                 var savedUser = appUserRepository.save(user);
                 var jwtToken = jwtService.generateJwt(user);
                 saveUserToken(savedUser, jwtToken);
-                weightService.addOrUpdateWeightEntry(savedUser, request.getWeight(), LocalDate.now());
+                weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
                 return AuthenticationResponse.builder()
                         .token(jwtToken)
                         .build();
