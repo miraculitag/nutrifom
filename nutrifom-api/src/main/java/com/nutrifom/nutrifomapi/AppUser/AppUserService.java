@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-
 @Service
 public class AppUserService {
     private final AppUserRepository appUserRepository;
@@ -19,6 +17,27 @@ public class AppUserService {
     @Autowired
     public AppUserService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
+    }
+
+    public ResponseEntity<String> getAppUserGoal(int id) throws CustomAuthenticationException {
+        AppUser existingAppUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
+
+        return new ResponseEntity<>("Goal for userid " + id + ": " + existingAppUser.getGoal(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> getAppUserPal(int id) throws CustomAuthenticationException {
+        AppUser existingAppUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
+
+        return new ResponseEntity<>("PAL for userid " + id + ": " + existingAppUser.getPal(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> getAppUserWpa(int id) throws CustomAuthenticationException {
+        AppUser existingAppUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
+
+        return new ResponseEntity<>("WPA for userid " + id + ": " + existingAppUser.getWpa(), HttpStatus.OK);
     }
 
     public ResponseEntity<String> updateAppUserGoal(int id, String updatedGoal) throws CustomAuthenticationException {
@@ -91,6 +110,8 @@ public class AppUserService {
             throw new CustomAuthenticationException("Error while updating image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     public byte[] getAppUserImage(int id) throws CustomAuthenticationException {
         AppUser existingAppUser = appUserRepository.findById(id)

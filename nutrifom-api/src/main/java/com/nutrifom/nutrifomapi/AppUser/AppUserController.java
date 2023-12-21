@@ -67,6 +67,57 @@ public class AppUserController {
         }
     }
 
+    @GetMapping("/goal")
+    public ResponseEntity<?> getGoal(Principal principal) {
+        try {
+            String username = principal.getName();
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.getAppUserGoal(userId);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+    @GetMapping("/pal")
+    public ResponseEntity<?> getPal(Principal principal) {
+        try {
+            String username = principal.getName();
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.getAppUserPal(userId);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
+    @GetMapping("/wpa")
+    public ResponseEntity<?> getWpa(Principal principal) {
+        try {
+            String username = principal.getName();
+            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
+            if (!user.isPresent()) {
+                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
+            }
+            int userId = user.get().getId();
+            return appUserService.getAppUserWpa(userId);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
+
     @PutMapping("/goal")
     public ResponseEntity<String> updateGoal(Principal principal, @RequestParam String goal) {
         try {
