@@ -6,6 +6,7 @@ import java.util.Collections;
 import com.nutrifom.nutrifomapi.Weight.WeightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -103,8 +104,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        if (request.getGoogleIDToken() != null) {
-            try {
+        try {
+            if (request.getGoogleIDToken() != null) {
                 GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
                         .setAudience(Collections.singletonList(CLIENT_ID))
                         .build();
@@ -121,24 +122,31 @@ public class AuthenticationService {
                     saveUserToken(existingUser, jwt);
 
                     return AuthenticationResponse.builder().token(jwt).build();
+                } else {
+                    throw new CustomAuthenticationException("Invalid GoogleID Token", HttpStatus.BAD_REQUEST);
                 }
-            } catch (Exception e) {
-                throw new CustomAuthenticationException("Failed to verify googleIdToken", HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                try {
+                    // The existing username-password authentication
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    request.getEmail(),
+                                    request.getPassword()));
+                } catch (BadCredentialsException e) {
+                    throw new CustomAuthenticationException("Bad credentials", HttpStatus.UNAUTHORIZED);
+                }
+                AppUser user = appUserRepository.findByEmail(request.getEmail())
+                        .orElseThrow(() -> new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND));
+                String jwt = jwtService.generateJwt(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, jwt);
+                return AuthenticationResponse.builder().token(jwt).build();
             }
-        } else {
-            // The existing username-password authentication
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()));
-            AppUser user = appUserRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND));
-            String jwt = jwtService.generateJwt(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, jwt);
-            return AuthenticationResponse.builder().token(jwt).build();
+        } catch (CustomAuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomAuthenticationException("Authentication failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        throw new CustomAuthenticationException("Authentication failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void saveUserToken(AppUser appUser, String jwtToken) {
