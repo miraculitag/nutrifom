@@ -48,6 +48,7 @@ export const SignIn = () => {
 
   const signIn = useSignIn();
   const navigate = useNavigate();
+
   const palCatergories = [
     "Bitte wählen",
     "nicht aktiv",
@@ -63,14 +64,14 @@ export const SignIn = () => {
   const [isGoogleSignUpButtonClicked, setIsGoogleSignUpButtonClicked] =
     React.useState(false);*/ //tdb
 
-  /*const isAuthenticated = useIsAuthenticated();
+  /* const isAuthenticated = useIsAuthenticated();
 
   React.useEffect(() => {
     console.log("isAuthenticated" + isAuthenticated());
     if (isAuthenticated()) {
       navigate("/");
     }
-  }, []);*/
+  }, [isAuthenticated]);*/
 
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })

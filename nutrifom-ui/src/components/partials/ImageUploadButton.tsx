@@ -4,20 +4,16 @@ import { styled } from "@mui/system";
 import React from "react";
 import { useAuthHeader } from "react-auth-kit";
 import { getAppUser, putAppUserImage } from "../../api";
-import { AppUser } from "../../types";
 import { ErrorDialog } from "../common/ErrorDialog";
+import { useUser } from "../../userContext";
 
-export interface ImageUploadButtonProps {
-  setUser: (user: AppUser) => void;
-}
-
-export default function ImageUploadButton(props: ImageUploadButtonProps) {
+export default function ImageUploadButton() {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-
   const theme = useTheme();
   const auth = useAuthHeader();
+  const { updateUser } = useUser();
 
   const StyledInput = styled("input")({
     display: "none",
@@ -45,7 +41,7 @@ export default function ImageUploadButton(props: ImageUploadButtonProps) {
         try {
           await putAppUserImage(formData, auth());
           const updatedUser = await getAppUser(auth());
-          props.setUser(updatedUser.data);
+          updateUser(updatedUser.data);
         } catch (error) {
           console.error(error);
         } finally {

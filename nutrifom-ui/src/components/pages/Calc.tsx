@@ -16,21 +16,18 @@ import { Layout } from "../layout/Layout";
 import { FloatInputField } from "../common/FloatInputField";
 import { PalTable } from "../common/PalTable";
 import {
-  getAppUser,
   getKcalLast14Days,
   getWeightLast14Days,
   putAppUserGoal,
   putAppUserPal,
   putAppUserWpa,
 } from "../../api";
-
-import { AppUser } from "../../types";
+import { useUser } from "../../userContext";
 
 export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
     React.useState(false);
   const [kcalRequirement, setKcalRequirement] = React.useState<number>();
-  const [user, setUser] = React.useState<AppUser>();
   const [weightFor14Days, setWeightFor14Days] = React.useState<number[]>([]);
   const [kcalFor14Days, setKcalFor14Days] = React.useState<number[]>([]);
   const [dataFor14Days, setDataFor14Days] = React.useState(false);
@@ -42,17 +39,12 @@ export const Calc = () => {
 
   React.useEffect(() => {
     checkDataSuffiency();
-
-    getAppUser(auth()).then((response) => {
-      setUser(response.data);
-      setPal(response.data.pal);
-      setGoal(response.data.goal);
-      setWpa(response.data.wpa);
-    });
+    setLocalStates();
   }, []);
 
   const theme = useTheme();
   const auth = useAuthHeader();
+  const { user, updateUserAttribute } = useUser();
 
   const checkDataSuffiency = async () => {
     const weightResponse = await getWeightLast14Days(auth());
@@ -67,6 +59,14 @@ export const Calc = () => {
 
     if (!weightData.includes(0) && !kcalData.includes(0)) {
       setDataFor14Days(true);
+    }
+  };
+
+  const setLocalStates = () => {
+    if (user) {
+      setPal(user.pal);
+      setGoal(user.goal);
+      setWpa(user.wpa);
     }
   };
 
@@ -126,6 +126,7 @@ export const Calc = () => {
 
   const calcKcalMethodA = () => {
     putAppUserGoal(goal, auth());
+    updateUserAttribute({ goal: goal });
 
     const weightsWeek1 = weightFor14Days.slice(0, 7);
     const weightsWeek2 = weightFor14Days.slice(7);
@@ -163,6 +164,8 @@ export const Calc = () => {
     putAppUserPal(pal, auth());
     putAppUserWpa(wpa, auth());
     putAppUserGoal(goal, auth());
+
+    updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
 
     const currentDate = new Date();
     const userDob = new Date(user.dob); //tbd

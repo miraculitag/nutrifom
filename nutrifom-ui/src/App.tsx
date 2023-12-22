@@ -10,10 +10,11 @@ import { Recipes } from "./components/pages/Recipes";
 import { ThemeProvider } from "@mui/material";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
 import { SignIn } from "./components/pages/SignIn";
+import { UserProvider } from "./userContext";
 
 export default function App() {
   return (
-    <>
+    <UserProvider>
       <AuthProvider
         authType={"cookie"}
         authName={"_auth"}
@@ -76,6 +77,6 @@ export default function App() {
           </Router>
         </ThemeProvider>
       </AuthProvider>
-    </>
+    </UserProvider>
   );
 }

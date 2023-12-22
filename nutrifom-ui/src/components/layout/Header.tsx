@@ -7,21 +7,15 @@ import {
   Toolbar,
 } from "@mui/material";
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
-import { AppUser } from "../../types";
-import { getAppUser } from "../../api";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
+import { useSignOut } from "react-auth-kit";
+import { useUser } from "../../userContext";
 
 export const Header = (testParams: any) => {
-  const [user, setUser] = React.useState<AppUser>();
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
-
-  React.useEffect(() => {
-    getAppUser(auth()).then((response) => {
-      setUser(response.data);
-    });
-  }, [user]);
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+  const { user } = useUser();
 
   React.useEffect(() => {
     if (user) {
@@ -44,9 +38,6 @@ export const Header = (testParams: any) => {
       }
     }
   }, [user?.image]);
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
 
   const handleSignOutButtonClick = () => {
     signOut();
