@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
-
 @Service
 public class AppUserService {
     private final AppUserRepository appUserRepository;
@@ -19,6 +17,27 @@ public class AppUserService {
     @Autowired
     public AppUserService(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
+    }
+
+    public ResponseEntity<String> getAppUserKcalGoal(int id) throws CustomAuthenticationException {
+        AppUser existingAppUser = appUserRepository.findById(id)
+                .orElseThrow(() -> new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
+
+        return new ResponseEntity<>("KcalGoal for userid " + id + ": " + existingAppUser.getKcalGoal(), HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> updateAppUserKcalGoal(int id, int updatedKcalGoal) throws CustomAuthenticationException {
+        Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
+
+        if (!existingAppUserOptional.isPresent()) {
+            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+        }
+
+        AppUser existingAppUser = existingAppUserOptional.get();
+        existingAppUser.setKcalGoal(updatedKcalGoal);
+        appUserRepository.save(existingAppUser);
+
+        return new ResponseEntity<>("Updated KcalGoal: " + updatedKcalGoal + " for userid: " + id, HttpStatus.OK);
     }
 
     public ResponseEntity<String> updateAppUserGoal(int id, String updatedGoal) throws CustomAuthenticationException {
@@ -33,20 +52,6 @@ public class AppUserService {
         appUserRepository.save(existingAppUser);
 
         return new ResponseEntity<>("Updated goal: " + updatedGoal + " for userid: " + id, HttpStatus.OK);
-    }
-
-    public ResponseEntity<String> updateAppUserWeight(int id, int updatedWeight) throws CustomAuthenticationException {
-        Optional<AppUser> existingAppUserOptional = appUserRepository.findById(id);
-
-        if (!existingAppUserOptional.isPresent()) {
-            throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
-        }
-
-        AppUser existingAppUser = existingAppUserOptional.get();
-        existingAppUser.setWeight(updatedWeight);
-        appUserRepository.save(existingAppUser);
-
-        return new ResponseEntity<>("Updated Weight: " + updatedWeight + " for userid: " + id, HttpStatus.OK);
     }
 
     public ResponseEntity<String> updateAppUserPal(int id, String updatedPal) throws CustomAuthenticationException {
@@ -91,6 +96,8 @@ public class AppUserService {
             throw new CustomAuthenticationException("Error while updating image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     public byte[] getAppUserImage(int id) throws CustomAuthenticationException {
         AppUser existingAppUser = appUserRepository.findById(id)

@@ -1,7 +1,9 @@
 package com.nutrifom.nutrifomapi.auth;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
+import com.nutrifom.nutrifomapi.Weight.WeightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,6 +34,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final WeightService weightService;
 
     private static final HttpTransport TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
@@ -56,7 +59,7 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .password((request.getPassword()))
                     .dob(request.getDob())
-                    .weight(request.getWeight())
+                    .initialWeight(request.getInitialWeight())
                     .goal(request.getGoal())
                     .gender(request.getGender())
                     .height(request.getHeight())
@@ -67,6 +70,7 @@ public class AuthenticationService {
             var savedUser = appUserRepository.save(user);
             var jwtToken = jwtService.generateJwt(user);
             saveUserToken(savedUser, jwtToken);
+            weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -77,7 +81,7 @@ public class AuthenticationService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .dob(request.getDob())
-                        .weight(request.getWeight())
+                        .initialWeight(request.getInitialWeight())
                         .goal(request.getGoal())
                         .gender(request.getGender())
                         .height(request.getHeight())
@@ -88,6 +92,7 @@ public class AuthenticationService {
                 var savedUser = appUserRepository.save(user);
                 var jwtToken = jwtService.generateJwt(user);
                 saveUserToken(savedUser, jwtToken);
+                weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
                 return AuthenticationResponse.builder()
                         .token(jwtToken)
                         .build();

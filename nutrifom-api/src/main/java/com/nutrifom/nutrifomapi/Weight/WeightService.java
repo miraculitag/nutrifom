@@ -23,26 +23,26 @@ public class WeightService {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    public void addWeightEntry(AppUser appUser, int weight, LocalDate entryDate) throws CustomAuthenticationException {
+    public void addOrUpdateWeightEntry(AppUser appUser, int weight, LocalDate entryDate) throws CustomAuthenticationException {
         if (weight < 0) {
             throw new CustomAuthenticationException("Weight cannot be negative", HttpStatus.BAD_REQUEST);
         }
 
         try {
-            WeightEntry entry = new WeightEntry();
+            WeightEntry entry = weightEntryRepository.findByAppUserIdAndEntryDate(appUser.getId(), entryDate)
+                    .orElse(new WeightEntry());
+
             entry.setAppUser(appUser);
             entry.setWeight(weight);
             entry.setEntryDate(entryDate);
             weightEntryRepository.save(entry);
-
-            appUser.setWeight(weight);
             appUserRepository.save(appUser);
         } catch (Exception e) {
-            throw new CustomAuthenticationException("Error while adding weight entry", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomAuthenticationException("Error while adding or updating weight entry", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public List<WeightEntry> getWeightHistory(AppUser appUser) throws CustomAuthenticationException {
+        public List<WeightEntry> getWeightHistory(AppUser appUser) throws CustomAuthenticationException {
         if (appUser == null) {
             throw new CustomAuthenticationException("AppUser must not be null", HttpStatus.BAD_REQUEST);
         }

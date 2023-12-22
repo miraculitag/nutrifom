@@ -36,7 +36,7 @@ public class WeightController {
     @GetMapping("/history")
     public ResponseEntity<List<WeightEntry>> getWeightHistory(Principal principal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -58,7 +58,7 @@ public class WeightController {
     @PostMapping("/entry")
     public ResponseEntity<?> addWeightEntry(Principal principal, @RequestBody WeightEntryDTO weightEntryDTO) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
 
             if (!userOptional.isPresent()) {
@@ -72,7 +72,7 @@ public class WeightController {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
 
-            weightService.addWeightEntry(appUserOptional.get(), weightEntryDTO.getWeight(), weightEntryDTO.getEntryDate());
+            weightService.addOrUpdateWeightEntry(appUserOptional.get(), weightEntryDTO.getWeight(), weightEntryDTO.getEntryDate());
             return ResponseEntity.ok("Weight entry added successfully");
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
@@ -84,7 +84,7 @@ public class WeightController {
     @GetMapping("/last14Days")
     public ResponseEntity<List<Double>> getLast14DaysWeightHistory(Principal principal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
