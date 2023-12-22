@@ -44,7 +44,7 @@ public class RecipeController {
     }
 
     @PostMapping("/rate")
-    public ResponseEntity<?> rateRecipe(Principal principal, @RequestBody RecipeRatingDTO ratingDTO) {
+    public ResponseEntity<String> rateRecipe(Principal principal, @RequestBody RecipeRatingDTO ratingDTO) {
         try {
             String username = principal.getName();
             Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
@@ -61,7 +61,7 @@ public class RecipeController {
             }
 
             Recipe ratedRecipe = recipeService.rateRecipe(ratingDTO.getRecipeId(), userId, ratingDTO.getScore());
-            return ResponseEntity.ok(ratedRecipe);
+            return new ResponseEntity<>("Recipe " + ratedRecipe.getTitle() + " rated with " + ratingDTO.getScore() + " stars", HttpStatus.OK);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {

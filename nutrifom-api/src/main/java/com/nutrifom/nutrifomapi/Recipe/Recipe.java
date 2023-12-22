@@ -1,5 +1,7 @@
 package com.nutrifom.nutrifomapi.Recipe;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -24,8 +26,10 @@ public class Recipe {
     private String description;
 
     private int uses;
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Rating> ratings = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe")
+    @JsonManagedReference
+    @JsonIgnore
+    private List<Rating> ratings;
 
     private Double averageRating;
     @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
