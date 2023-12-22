@@ -9,7 +9,7 @@ import { Layout } from "../layout/Layout";
 import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
 import { useAuthHeader } from "react-auth-kit";
-import { addWeightEntry, getRecipes } from "../../api";
+import { addWeightEntry } from "../../api";
 
 export const Weight = (testParams: any) => {
   const theme = useTheme();

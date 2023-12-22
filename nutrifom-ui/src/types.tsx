@@ -37,6 +37,20 @@ export type AddRecipeRequest = {
   entryDate: string;
 };
 
+
+export type NurtilogEntryRequest = {
+    code: string;
+    productName: string;
+    product_quantity: number;
+    serving_quantity: number;
+    proteins_serving: number;
+    carbohydrates_serving: number;
+    energy_kcal_serving: number;
+    saturated_fat_serving: number;
+    unsaturated_fat_serving: number;
+    entryDate: string;  
+};
+
 export type AddProductRequest = {
   product: {
     code: string;

@@ -7,9 +7,10 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { NurtilogEntryRequest } from "../../types";
 
 export interface FoodTableProps {
-  foods: FoodItem[];
+  nutrilogItems: NurtilogEntryRequest[];
   onSelectRow: (index: number) => void; // Änderung des Funktionsparameters
 }
 
@@ -26,7 +27,7 @@ export interface FoodItem {
 }
 
 export default function FoodTable(props: FoodTableProps) {
-  const { foods, onSelectRow } = props; // Destructuring der Props
+  const { nutrilogItems, onSelectRow } = props; // Destructuring der Props
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   const handleRowClick = (index: number) => {
@@ -38,15 +39,15 @@ export default function FoodTable(props: FoodTableProps) {
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          {foods.map((food, index) => (
+          {nutrilogItems.map((food, index) => (
             <TableRow
               key={index}
               onClick={() => handleRowClick(index)} // Aufruf von handleRowClick
               selected={index === selectedRow}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{food.foodName}{` [${food.unit}]`}</TableCell>
-              <TableCell>{food.amount}</TableCell>
+              <TableCell>{food.productName}{` [Gramm / Portionen]`}</TableCell>
+              <TableCell>{food.product_quantity}</TableCell>
             </TableRow>
           ))}
         </TableBody>
