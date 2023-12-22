@@ -30,6 +30,9 @@ export const SignIn = () => {
 
   const [emailSignIn, setEmailSignIn] = React.useState("");
   const [emailSignUp, setEmailSignUp] = React.useState("");
+  const [emailSignUpError, setEmailSignUpError] = React.useState(
+    "Gib eine gültige E-Mail-Adresse an."
+  );
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
@@ -82,7 +85,7 @@ export const SignIn = () => {
       .catch((error) => {
         if (error.response.status === 404) {
           setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
-        } else if (error.response.status === 500) {
+        } else if (error.response.status === 401) {
           setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
         }
       });
@@ -101,14 +104,23 @@ export const SignIn = () => {
       wpa: wpa,
       email: emailSignUp,
       password: passwordSignUp,
-    }).then((response) => {
-      signIn({
-        token: response.data.token,
-        tokenType: "Bearer",
-        expiresIn: 3600,
+    })
+      .then((response) => {
+        signIn({
+          token: response.data.token,
+          tokenType: "Bearer",
+          expiresIn: 3600,
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        if (error.response.status === 400) {
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setEmailSignUpError(
+            "Es gibt bereits einen Account zu dieser E-Mail-Adresse."
+          );
+        }
       });
-      navigate("/");
-    });
   };
 
   const handleGoogleSignInButtonClick = () => {};
@@ -300,7 +312,7 @@ export const SignIn = () => {
               errorText={
                 onSignInPage
                   ? "Es gibt keinen Account zu dieser E-Mail-Adresse."
-                  : "Gib eine gültige E-Mail-Adresse an."
+                  : emailSignUpError
               }
             />
             <TextInputField

@@ -172,10 +172,10 @@ export const Calc = () => {
 
     if (user.gender === "weiblich") {
       basalMetabolicRate =
-        65.51 + 9.6 * user.weight + 1.85 * user.height - 4.68 * userAge;
+        65.51 + 9.6 * user.initialWeight + 1.85 * user.height - 4.68 * userAge;
     } else {
       basalMetabolicRate =
-        66.47 + 13.75 * user.weight + 5 * user.height - 6.76 * userAge;
+        66.47 + 13.75 * user.initialWeight + 5 * user.height - 6.76 * userAge;
     }
 
     const physicalActivity = palAsValue(pal) + wpaAsValue(wpa);
