@@ -104,6 +104,9 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        if (!appUserRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new CustomAuthenticationException("User does not exist", HttpStatus.NOT_FOUND);
+        }
         try {
             if (request.getGoogleIDToken() != null) {
                 GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
