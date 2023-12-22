@@ -80,9 +80,9 @@ export const SignIn = () => {
         navigate("/");
       })
       .catch((error) => {
-        if (error.response.status === 403) {
-          //tbd
+        if (error.response.status === 404) {
           setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+        } else if (error.response.status === 500) {
           setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
         }
       });
@@ -298,7 +298,9 @@ export const SignIn = () => {
               autoFocus={onSignInPage && true}
               hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
               errorText={
-                onSignInPage ? "" : "Gib eine gültige E-Mail-Adresse an."
+                onSignInPage
+                  ? "Es gibt keinen Account zu dieser E-Mail-Adresse."
+                  : "Gib eine gültige E-Mail-Adresse an."
               }
             />
             <TextInputField
@@ -311,7 +313,9 @@ export const SignIn = () => {
               autoComplete="current-password"
               hasError={fieldErrors.includes(fieldErrorEnum.PASSWORD)}
               errorText={
-                onSignInPage ? "Ungültige Anmeldedaten" : "Gib ein Passwort an."
+                onSignInPage
+                  ? "Das Passwort ist falsch."
+                  : "Gib ein Passwort an."
               }
             />
           </Stack>
