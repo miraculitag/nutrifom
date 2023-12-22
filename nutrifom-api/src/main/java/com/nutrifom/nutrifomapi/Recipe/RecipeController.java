@@ -46,7 +46,7 @@ public class RecipeController {
     @PostMapping("/rate")
     public ResponseEntity<?> rateRecipe(Principal principal, @RequestBody RecipeRatingDTO ratingDTO) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
 
             if (!userOptional.isPresent()) {

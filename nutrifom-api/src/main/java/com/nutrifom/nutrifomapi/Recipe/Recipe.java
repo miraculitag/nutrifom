@@ -9,17 +9,18 @@ import java.util.List;
 @Table(name = "Recipe")
 public class Recipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    @Column(length = 2048)  // Setzt die maximale Länge für die Zutatenliste
+    @Column(length = Integer.MAX_VALUE, columnDefinition = "VARCHAR(MAX)")
     private String ingredients;
     private Double proteins;
     private Double carbohydrates;
     private Double energy_kcal;
     private Integer portions;
-    private Double unsatured_fat;
+    private Double unsaturated_fat;
     private Double saturated_fat;
+    @Column(length = Integer.MAX_VALUE, columnDefinition = "VARCHAR(MAX)")
     private String description;
 
     private int uses;
@@ -144,11 +145,11 @@ public class Recipe {
         this.saturated_fat = saturated_fat;
     }
 
-    public Double getUnsatured_fat() {
-        return unsatured_fat;
+    public Double getUnsaturated_fat() {
+        return unsaturated_fat;
     }
 
-    public void setUnsatured_fat(Double unsatured_fat) {
-        this.unsatured_fat = unsatured_fat;
+    public void setUnsaturated_fat(Double unsaturated_fat) {
+        this.unsaturated_fat = unsaturated_fat;
     }
 }

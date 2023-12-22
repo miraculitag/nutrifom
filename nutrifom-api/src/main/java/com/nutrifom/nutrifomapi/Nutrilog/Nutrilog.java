@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @Table(name = "Nutrilog")
 public class Nutrilog {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Integer id;
 
