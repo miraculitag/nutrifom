@@ -38,8 +38,11 @@ public class AppUser implements UserDetails {
     @Column(name = "Name")
     private String name;
 
-    @Column(name = "Weight")
-    private int weight;
+    @Column(name = "KcalGoal")
+    private int kcalGoal;
+
+    @Column(name = "InitialWeight")
+    private int initialWeight;
 
     @Column(name = "DOB")
     private LocalDate dob;

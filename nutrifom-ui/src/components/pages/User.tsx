@@ -1,21 +1,14 @@
 import React from "react";
 import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { useAuthHeader } from "react-auth-kit";
 import ImageUploadButton from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
-import { getAppUser } from "../../api";
-import { AppUser } from "../../types";
+
+import { useUser } from "../../userContext";
 
 export const User = () => {
-  const [user, setUser] = React.useState<AppUser>();
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
-
-  React.useEffect(() => {
-    getAppUser(auth()).then((response) => {
-      setUser(response.data);
-    });
-  }, []);
+  const { user } = useUser();
 
   React.useEffect(() => {
     if (user) {
@@ -38,8 +31,6 @@ export const User = () => {
       }
     }
   }, [user?.image]);
-
-  const auth = useAuthHeader();
 
   const userData = [
     { label: "Username", data: user?.name },
@@ -68,7 +59,7 @@ export const User = () => {
             sx={{ margin: "auto", width: "200px", height: "200px" }}
           />
           <Box sx={{ float: "right" }}>
-            <ImageUploadButton setUser={setUser} />
+            <ImageUploadButton />
           </Box>
         </Box>
         <Box

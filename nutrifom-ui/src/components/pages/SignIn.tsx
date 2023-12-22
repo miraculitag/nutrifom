@@ -30,6 +30,9 @@ export const SignIn = () => {
 
   const [emailSignIn, setEmailSignIn] = React.useState("");
   const [emailSignUp, setEmailSignUp] = React.useState("");
+  const [emailSignUpError, setEmailSignUpError] = React.useState(
+    "Gib eine gültige E-Mail-Adresse an."
+  );
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
@@ -45,6 +48,7 @@ export const SignIn = () => {
 
   const signIn = useSignIn();
   const navigate = useNavigate();
+
   const palCatergories = [
     "Bitte wählen",
     "nicht aktiv",
@@ -60,14 +64,14 @@ export const SignIn = () => {
   const [isGoogleSignUpButtonClicked, setIsGoogleSignUpButtonClicked] =
     React.useState(false);*/ //tdb
 
-  /*const isAuthenticated = useIsAuthenticated();
+  /* const isAuthenticated = useIsAuthenticated();
 
   React.useEffect(() => {
     console.log("isAuthenticated" + isAuthenticated());
     if (isAuthenticated()) {
       navigate("/");
     }
-  }, []);*/
+  }, [isAuthenticated]);*/
 
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
@@ -80,9 +84,9 @@ export const SignIn = () => {
         navigate("/");
       })
       .catch((error) => {
-        if (error.response.status === 403) {
-          //tbd
+        if (error.response.status === 404) {
           setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+        } else if (error.response.status === 401) {
           setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
         }
       });
@@ -101,14 +105,23 @@ export const SignIn = () => {
       wpa: wpa,
       email: emailSignUp,
       password: passwordSignUp,
-    }).then((response) => {
-      signIn({
-        token: response.data.token,
-        tokenType: "Bearer",
-        expiresIn: 3600,
+    })
+      .then((response) => {
+        signIn({
+          token: response.data.token,
+          tokenType: "Bearer",
+          expiresIn: 3600,
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        if (error.response.status === 400) {
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setEmailSignUpError(
+            "Es gibt bereits einen Account zu dieser E-Mail-Adresse."
+          );
+        }
       });
-      navigate("/");
-    });
   };
 
   const handleGoogleSignInButtonClick = () => {};
@@ -298,7 +311,9 @@ export const SignIn = () => {
               autoFocus={onSignInPage && true}
               hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
               errorText={
-                onSignInPage ? "" : "Gib eine gültige E-Mail-Adresse an."
+                onSignInPage
+                  ? "Es gibt keinen Account zu dieser E-Mail-Adresse."
+                  : emailSignUpError
               }
             />
             <TextInputField
@@ -311,7 +326,9 @@ export const SignIn = () => {
               autoComplete="current-password"
               hasError={fieldErrors.includes(fieldErrorEnum.PASSWORD)}
               errorText={
-                onSignInPage ? "Ungültige Anmeldedaten" : "Gib ein Passwort an."
+                onSignInPage
+                  ? "Das Passwort ist falsch."
+                  : "Gib ein Passwort an."
               }
             />
           </Stack>

@@ -18,7 +18,7 @@ public class RegisterRequest {
     private String gender;
     private double wpa;
     private String pal;
-    private int weight;
+    private int initialWeight;
     private String goal;
     private byte[] image;
     private String GoogleIDToken;

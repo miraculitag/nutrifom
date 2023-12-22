@@ -36,8 +36,6 @@ public class WeightService {
             entry.setWeight(weight);
             entry.setEntryDate(entryDate);
             weightEntryRepository.save(entry);
-
-            appUser.setWeight(weight);
             appUserRepository.save(appUser);
         } catch (Exception e) {
             throw new CustomAuthenticationException("Error while adding or updating weight entry", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -69,7 +69,7 @@ export type AddProductRequest = {
 export type AppUser = {
   id: number;
   name: string;
-  weight: number;
+  initialWeight: number;
   dob: string;
   goal: string;
   height: number;

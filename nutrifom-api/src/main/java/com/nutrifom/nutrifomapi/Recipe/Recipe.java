@@ -1,5 +1,7 @@
 package com.nutrifom.nutrifomapi.Recipe;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -9,22 +11,25 @@ import java.util.List;
 @Table(name = "Recipe")
 public class Recipe {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
-    @Column(length = 2048)  // Setzt die maximale Länge für die Zutatenliste
+    @Column(length = Integer.MAX_VALUE, columnDefinition = "VARCHAR(MAX)")
     private String ingredients;
     private Double proteins;
     private Double carbohydrates;
     private Double energy_kcal;
     private Integer portions;
-    private Double unsatured_fat;
+    private Double unsaturated_fat;
     private Double saturated_fat;
+    @Column(length = Integer.MAX_VALUE, columnDefinition = "VARCHAR(MAX)")
     private String description;
 
     private int uses;
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Rating> ratings = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe")
+    @JsonManagedReference
+    @JsonIgnore
+    private List<Rating> ratings;
 
     private Double averageRating;
     @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
@@ -144,11 +149,11 @@ public class Recipe {
         this.saturated_fat = saturated_fat;
     }
 
-    public Double getUnsatured_fat() {
-        return unsatured_fat;
+    public Double getUnsaturated_fat() {
+        return unsaturated_fat;
     }
 
-    public void setUnsatured_fat(Double unsatured_fat) {
-        this.unsatured_fat = unsatured_fat;
+    public void setUnsaturated_fat(Double unsaturated_fat) {
+        this.unsaturated_fat = unsaturated_fat;
     }
 }

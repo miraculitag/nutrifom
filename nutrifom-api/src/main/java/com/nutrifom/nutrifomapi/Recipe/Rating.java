@@ -1,5 +1,7 @@
 package com.nutrifom.nutrifomapi.Recipe;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.Recipe.Recipe;
 import jakarta.persistence.*;
@@ -9,7 +11,7 @@ import jakarta.persistence.*;
 public class Rating {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private Double score;
@@ -19,6 +21,8 @@ public class Rating {
 
     @ManyToOne
     @JoinColumn(name = "recipe_id")
+    @JsonBackReference
+    @JsonIgnore
     private Recipe recipe;
 
     public Integer getId() {

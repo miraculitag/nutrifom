@@ -67,8 +67,8 @@ public class AppUserController {
         }
     }
 
-    @GetMapping("/goal")
-    public ResponseEntity<?> getGoal(Principal principal) {
+    @GetMapping("/kcalgoal")
+    public ResponseEntity<?> getKcalGoal(Principal principal) {
         try {
             String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
@@ -76,7 +76,7 @@ public class AppUserController {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
             int userId = user.get().getId();
-            return appUserService.getAppUserGoal(userId);
+            return appUserService.getAppUserKcalGoal(userId);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {
@@ -84,8 +84,8 @@ public class AppUserController {
         }
     }
 
-    @GetMapping("/pal")
-    public ResponseEntity<?> getPal(Principal principal) {
+    @PutMapping("/kcalgoal")
+    public ResponseEntity<?> updateKcalGoal(Principal principal, @RequestParam int updatedKcalGoal) {
         try {
             String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
@@ -93,24 +93,7 @@ public class AppUserController {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
             int userId = user.get().getId();
-            return appUserService.getAppUserPal(userId);
-        } catch (CustomAuthenticationException e) {
-            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
-    }
-
-    @GetMapping("/wpa")
-    public ResponseEntity<?> getWpa(Principal principal) {
-        try {
-            String username = principal.getName();
-            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-            if (!user.isPresent()) {
-                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
-            }
-            int userId = user.get().getId();
-            return appUserService.getAppUserWpa(userId);
+            return appUserService.updateAppUserKcalGoal(userId, updatedKcalGoal);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {
@@ -121,7 +104,7 @@ public class AppUserController {
     @PutMapping("/goal")
     public ResponseEntity<String> updateGoal(Principal principal, @RequestParam String goal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -137,27 +120,10 @@ public class AppUserController {
         }
     }
 
-    @PutMapping("/weight")
-    public ResponseEntity<String> updateWeight(Principal principal, @RequestParam int weight) {
-        try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
-            Optional<AppUser> user = jwtService.getAppUserFromToken(username);
-            if (!user.isPresent()) {
-                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
-            }
-            int userId = user.get().getId();
-            return appUserService.updateAppUserWeight(userId, weight);
-        } catch (CustomAuthenticationException e) {
-            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
-        }
-    }
-
     @PutMapping("/pal")
     public ResponseEntity<String> updatePal(Principal principal, @RequestParam String pal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -174,7 +140,7 @@ public class AppUserController {
     @PutMapping("/wpa")
     public ResponseEntity<String> updateWpa(Principal principal, @RequestParam double wpa) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -191,7 +157,7 @@ public class AppUserController {
     @PutMapping("/image")
     public ResponseEntity<?> updateAppUserImage(Principal principal, @RequestParam MultipartFile image) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -209,7 +175,7 @@ public class AppUserController {
     @DeleteMapping("/user")
     public ResponseEntity<String> deleteAppUser(Principal principal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);

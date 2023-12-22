@@ -1,7 +1,11 @@
 package com.nutrifom.nutrifomapi.OpenFoodFacts;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import org.springframework.http.HttpStatus;
@@ -44,54 +48,77 @@ public class OFFService {
             throw new CustomAuthenticationException("Error while calling API", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        // Datenextraktion
         if (root == null) {
             throw new CustomAuthenticationException("No data received from API", HttpStatus.NOT_FOUND);
         }
         JsonNode products = root.path("products");
         List<Product> productList = new ArrayList<>();
+        Set<String> productNames = new HashSet<>();
 
         for (JsonNode product : products) {
             String productName = product.path("product_name").asText();
-
-            // Überspringe das Produkt, wenn kein Produktname vorhanden ist
-            if (productName == null || productName.isEmpty()) {
+            if (productName == null || productName.isEmpty() || productNames.contains(productName)) {
                 continue;
             }
+
+            Pattern pattern = Pattern.compile("(\\d+g)|x(\\d+)");
+            Matcher matcher = pattern.matcher(productName);
+
+            if (matcher.find()) {
+                // Extrahieren Sie die Mengenangabe oder die Zahl nach dem "x"
+                String quantityInName = matcher.group(1);
+                String xNumber = matcher.group(2);
+
+                // Überprüfen Sie, ob die Mengenangabe oder die product_quantity geteilt durch die Zahl nach dem "x" mit der product_quantity eines anderen Produkts übereinstimmt
+                if (quantityInName != null && !quantityInName.equals(product.path("product_quantity").asText())) {
+                    continue;
+                }
+                if (xNumber != null) {
+                    String productNameWithoutX = productName.replace("x" + xNumber, "").trim();
+                    if (productNames.contains(productNameWithoutX) && Integer.parseInt(xNumber) != product.path("product_quantity").asInt()) {
+                        continue;
+                    }
+                }
+            }
+
+
+
             String code = product.path("code").asText();
-            Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
-            Double servingQuantityDouble = convertToDouble(product.path("serving_quantity").asText());
+            if (product.has("serving_quantity") && product.has("product_quantity")) {
+                Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
+                Double servingQuantityDouble = convertToDouble(product.path("serving_quantity").asText());
 
-            if (productQuantityDouble == null || servingQuantityDouble == null || servingQuantityDouble == 0) {
-                // handle the error, for example, skip this product
-                continue;
+                if (productQuantityDouble == null || servingQuantityDouble == null || servingQuantityDouble == 0) {
+                    // handle the error, for example, skip this product
+                    continue;
+                }
+
+                Double quantityFactor = productQuantityDouble / servingQuantityDouble;
+                JsonNode nutriments = product.path("nutriments");
+
+                double proteins = roundToOneDecimalPlace(nutriments.path("proteins_serving").asDouble() * quantityFactor);
+                double carbohydrates = roundToOneDecimalPlace(
+                        nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
+                double energyKcal = roundToOneDecimalPlace(
+                        nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
+                double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
+                double saturatedFat = roundToOneDecimalPlace(
+                        nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
+                double unsaturatedFat = fat - saturatedFat;
+
+                Product p = new Product();
+                p.setCode(code);
+                p.setProductName(productName);
+                p.setProduct_quantity(productQuantityDouble);
+                p.setProteins(proteins);
+                p.setCarbohydrates(carbohydrates);
+                p.setEnergy_kcal(energyKcal);
+                p.setSaturated_fat(saturatedFat);
+                p.setUnsaturated_fat(unsaturatedFat);
+
+                productList.add(p);
+                productNames.add(productName);
             }
-
-            Double quantityFactor = productQuantityDouble / servingQuantityDouble;
-            JsonNode nutriments = product.path("nutriments");
-
-            double proteins = roundToOneDecimalPlace(nutriments.path("proteins_serving").asDouble() * quantityFactor);
-            double carbohydrates = roundToOneDecimalPlace(
-                    nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
-            double energyKcal = roundToOneDecimalPlace(
-                    nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
-            double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
-            double saturatedFat = roundToOneDecimalPlace(
-                    nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
-            double unsaturatedFat = fat-saturatedFat;
-
-            Product p = new Product();
-            p.setCode(code);
-            p.setProductName(productName);
-            p.setProduct_quantity(productQuantityDouble);
-            p.setServing_quantity(servingQuantityDouble);
-            p.setProteins_serving(proteins);
-            p.setCarbohydrates_serving(carbohydrates);
-            p.setEnergy_kcal_serving(energyKcal);
-            p.setSaturated_fat_serving(saturatedFat);
-            p.setUnsaturated_fat_serving(unsaturatedFat);
-
-            productList.add(p);
         }
 
         return productList;

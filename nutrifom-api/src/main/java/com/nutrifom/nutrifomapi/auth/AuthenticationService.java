@@ -1,9 +1,12 @@
 package com.nutrifom.nutrifomapi.auth;
 
+import java.time.LocalDate;
 import java.util.Collections;
 
+import com.nutrifom.nutrifomapi.Weight.WeightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +35,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final WeightService weightService;
 
     private static final HttpTransport TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
@@ -56,7 +60,7 @@ public class AuthenticationService {
                     .email(request.getEmail())
                     .password((request.getPassword()))
                     .dob(request.getDob())
-                    .weight(request.getWeight())
+                    .initialWeight(request.getInitialWeight())
                     .goal(request.getGoal())
                     .gender(request.getGender())
                     .height(request.getHeight())
@@ -67,6 +71,7 @@ public class AuthenticationService {
             var savedUser = appUserRepository.save(user);
             var jwtToken = jwtService.generateJwt(user);
             saveUserToken(savedUser, jwtToken);
+            weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
             return AuthenticationResponse.builder()
                     .token(jwtToken)
                     .build();
@@ -77,7 +82,7 @@ public class AuthenticationService {
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .dob(request.getDob())
-                        .weight(request.getWeight())
+                        .initialWeight(request.getInitialWeight())
                         .goal(request.getGoal())
                         .gender(request.getGender())
                         .height(request.getHeight())
@@ -88,6 +93,7 @@ public class AuthenticationService {
                 var savedUser = appUserRepository.save(user);
                 var jwtToken = jwtService.generateJwt(user);
                 saveUserToken(savedUser, jwtToken);
+                weightService.addOrUpdateWeightEntry(savedUser, request.getInitialWeight(), LocalDate.now());
                 return AuthenticationResponse.builder()
                         .token(jwtToken)
                         .build();
@@ -98,8 +104,11 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        if (request.getGoogleIDToken() != null) {
-            try {
+        if (!appUserRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new CustomAuthenticationException("User does not exist", HttpStatus.NOT_FOUND);
+        }
+        try {
+            if (request.getGoogleIDToken() != null) {
                 GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
                         .setAudience(Collections.singletonList(CLIENT_ID))
                         .build();
@@ -116,24 +125,31 @@ public class AuthenticationService {
                     saveUserToken(existingUser, jwt);
 
                     return AuthenticationResponse.builder().token(jwt).build();
+                } else {
+                    throw new CustomAuthenticationException("Invalid GoogleID Token", HttpStatus.BAD_REQUEST);
                 }
-            } catch (Exception e) {
-                throw new CustomAuthenticationException("Failed to verify googleIdToken", HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                try {
+                    // The existing username-password authentication
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    request.getEmail(),
+                                    request.getPassword()));
+                } catch (BadCredentialsException e) {
+                    throw new CustomAuthenticationException("Bad credentials", HttpStatus.UNAUTHORIZED);
+                }
+                AppUser user = appUserRepository.findByEmail(request.getEmail())
+                        .orElseThrow(() -> new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND));
+                String jwt = jwtService.generateJwt(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, jwt);
+                return AuthenticationResponse.builder().token(jwt).build();
             }
-        } else {
-            // The existing username-password authentication
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()));
-            AppUser user = appUserRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND));
-            String jwt = jwtService.generateJwt(user);
-            revokeAllUserTokens(user);
-            saveUserToken(user, jwt);
-            return AuthenticationResponse.builder().token(jwt).build();
+        } catch (CustomAuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomAuthenticationException("Authentication failed", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        throw new CustomAuthenticationException("Authentication failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void saveUserToken(AppUser appUser, String jwtToken) {
