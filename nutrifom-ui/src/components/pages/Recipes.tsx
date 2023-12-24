@@ -164,7 +164,7 @@ export const Recipes = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <Box sx={{ minWidth: "25%" }}>
+                <Box sx={{ width: "25%" }}>
                   <Typography>Zutaten:</Typography>
                   {recipe.ingredients.split(",").map((ingredient, index) => (
                     <Box key={index} sx={{ marginLeft: "20px" }}>
