@@ -30,6 +30,7 @@ export const Recipes = () => {
   React.useEffect(() => {
     getRecipes(auth()).then((response) => {
       setRecipes(response.data);
+      setShownRecipes(response.data);
     });
   }, []);
 
@@ -76,6 +77,20 @@ export const Recipes = () => {
     }
   };
 
+  const formatImage = (image: string) => {
+    const byteCharacters = atob(image);
+    const byteNumbers = new Array(byteCharacters.length);
+
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "image/jpeg" });
+
+    return URL.createObjectURL(blob);
+  };
+
   return (
     <Layout>
       <Box>
@@ -105,7 +120,15 @@ export const Recipes = () => {
               }
             >
               <Box sx={{ display: "flex", flexDirection: "row" }}>
-                <img src={recipe.image} alt={recipe.title} width="10%" />
+                {recipe.image ? (
+                  <img
+                    src={formatImage(recipe.image)}
+                    alt={recipe.title}
+                    width="10%"
+                  />
+                ) : (
+                  <Box sx={{ width: "10%" }} />
+                )}
                 <Box sx={{ paddingLeft: "5%" }}>
                   <Typography
                     sx={{ fontSize: "150%", width: "100%", flexShrink: 0 }}
@@ -115,7 +138,7 @@ export const Recipes = () => {
                   <Rating
                     size="medium"
                     precision={0.1}
-                    value={ratingValues[recipe.id] || recipe.ratings}
+                    value={ratingValues[recipe.id] || recipe.averageRating}
                     onChange={handleRatingChange(recipe.id)}
                   />
                   <Typography sx={{ color: "text.secondary" }}>
@@ -164,7 +187,7 @@ export const Recipes = () => {
                   <Box sx={{ paddingTop: "5%", paddingBottom: "5%" }}>
                     <NutritionalTable
                       energy_kcal={Math.round(
-                        recipe.energy_kcal / recipe.portions
+                        recipe.energyKcal / recipe.portions
                       )}
                       proteins={Math.round(recipe.proteins / recipe.portions)}
                       saturatedFat={Math.round(
