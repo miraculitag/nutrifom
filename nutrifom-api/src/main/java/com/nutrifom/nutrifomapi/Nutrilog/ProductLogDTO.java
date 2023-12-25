@@ -1,27 +1,22 @@
 package com.nutrifom.nutrifomapi.Nutrilog;
 
 import com.nutrifom.nutrifomapi.OpenFoodFacts.Product;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 public class ProductLogDTO {
 
-    private Product product;
+    @Getter
+    @Setter
+    private String productCode;
+
+    @Getter
+    @Setter
     private LocalDate entryDate;
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public LocalDate getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-    }
+    @Getter
+    @Setter
+    private Double productQuantity;
 }

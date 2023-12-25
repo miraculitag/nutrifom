@@ -1,25 +1,21 @@
 package com.nutrifom.nutrifomapi.Nutrilog;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
 public class RecipeLogDTO {
 
+    @Getter
+    @Setter
     private Integer recipeId;
+
+    @Getter
+    @Setter
     private LocalDate entryDate;
 
-    public Integer getRecipeId() {
-        return recipeId;
-    }
-
-    public void setRecipeId(Integer recipeId) {
-        this.recipeId = recipeId;
-    }
-
-    public LocalDate getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-    }
+    @Getter
+    @Setter
+    private Integer recipePortions;
 }

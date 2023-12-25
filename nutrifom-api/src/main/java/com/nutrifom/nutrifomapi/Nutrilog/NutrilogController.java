@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.nutrifom.nutrifomapi.OpenFoodFacts.Product;
@@ -41,8 +42,7 @@ public class NutrilogController {
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
-            int userId = user.get().getId();
-            nutrilogService.saveProductLog(userId, productLogDTO.getProduct(), productLogDTO.getEntryDate());
+            nutrilogService.saveProductLog(user.get(), productLogDTO);
             return new ResponseEntity<>("Product log entry added successfully", HttpStatus.OK);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
@@ -52,16 +52,15 @@ public class NutrilogController {
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<String> saveRecipeLog(Principal principal, @RequestBody RecipeLogDTO recipeLogDTO) {
+    public ResponseEntity<?> saveRecipeLog(Principal principal, @RequestBody RecipeLogDTO recipeLogDTO) {
         try {
             String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
-            int userId = user.get().getId();
-            nutrilogService.saveRecipeLog(userId, recipeLogDTO.getRecipeId(), recipeLogDTO.getEntryDate());
-            return new ResponseEntity<>("Recipe log entry added successfully", HttpStatus.CREATED);
+            nutrilogService.saveRecipeLog(user.get(), recipeLogDTO);
+            return new ResponseEntity<>("Recipe log entry added successfully", HttpStatus.OK);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {
@@ -70,28 +69,29 @@ public class NutrilogController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<Nutrilog>> getNutritionLogs(
+    public ResponseEntity<NutrilogResponse> getNutritionLogs(
             Principal principal,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate entryDate) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
             int userId = user.get().getId();
-            return ResponseEntity.ok(nutrilogService.getNutritionLogs(userId, entryDate));
+            NutrilogResponse nutrilogResponse = nutrilogService.getNutrilogs(userId, entryDate);
+            return ResponseEntity.ok(nutrilogResponse);
         } catch (CustomAuthenticationException e) {
-            return ResponseEntity.status(e.getHttpStatus()).body(new ArrayList<>());
+            return ResponseEntity.status(e.getHttpStatus()).body(null);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @GetMapping("/last14DaysCalories")
     public ResponseEntity<List<Double>> getLast14DaysCaloriesHistory(Principal principal) {
         try {
-            String username = principal.getName(); // Hier ist die E-Mail-Adresse
+            String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
             if (!user.isPresent()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
@@ -108,4 +108,6 @@ public class NutrilogController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ArrayList<>());
         }
     }
+
+
 }

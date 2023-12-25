@@ -52,6 +52,12 @@ export const putAppUserPal = async (pal: string, token: string) =>
     params: { pal: pal },
   });
 
+export const putAppUserKcalGoal = async (kcalGoal: number, token: string) =>
+  await axiosInstance.put("/api/appUser/kcalgoal", null, {
+    ...addAuth(token),
+    params: { updatedKcalGoal: kcalGoal },
+  });
+
 export const putAppUserImage = async (formData: FormData, token: string) => {
   return await axiosInstance.put("/api/appUser/image", formData, {
     headers: {

@@ -5,9 +5,17 @@ import { Footer } from "./Footer";
 export const Layout = (props: any) => {
   return (
     <>
-      <Header />
-      <Box sx={{ margin: "auto", width: "80%" }}>{props.children}</Box>
-      <Footer />
+      <Box
+        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Box sx={{ flex: "1 0 auto" }}>
+          <Header />
+          <Box sx={{ width: "80%", margin: "auto" }}>{props.children}</Box>
+        </Box>
+        <Box sx={{ mt: "auto" }}>
+          <Footer />
+        </Box>
+      </Box>
     </>
   );
 };
