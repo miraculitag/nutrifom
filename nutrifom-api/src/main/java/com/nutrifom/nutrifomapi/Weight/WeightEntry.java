@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "Weight")
@@ -21,48 +23,25 @@ public class WeightEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
+    @Getter
+    @Setter
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "appUser_id", nullable = false)
+    @JoinColumn(name = "appUserId", nullable = false)
     @JsonIgnore
+    @Getter
+    @Setter
     private AppUser appUser;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private double weight;
 
-    @Column(name = "entry_date", nullable = false)
+    @Column(name = "entryDate", nullable = false)
+    @Getter
+    @Setter
     private LocalDate entryDate;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public AppUser getAppUser() {
-        return appUser;
-    }
-
-    public void setAppUser(AppUser appUser) {
-        this.appUser = appUser;
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public LocalDate getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-    }
 }

@@ -1,78 +1,39 @@
 package com.nutrifom.nutrifomapi.OpenFoodFacts;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Product {
+    @Getter
+    @Setter
     private String code;
+
+    @Getter
+    @Setter
     private String productName;
 
-    private double product_quantity;
+    @Getter
+    @Setter
+    private double productQuantity;
+
+    @Getter
+    @Setter
     private double proteins;
+
+    @Getter
+    @Setter
     private double carbohydrates;
-    private double energy_kcal;
-    private double saturated_fat;
-    private double unsaturated_fat;
 
-    public String getCode() {
-        return code;
-    }
+    @Getter
+    @Setter
+    private double energyKcal;
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+    @Getter
+    @Setter
+    private double saturatedFat;
 
-    public String getProductName() {
-        return productName;
-    }
+    @Getter
+    @Setter
+    private double unsaturatedFat;
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public double getProduct_quantity() {
-        return product_quantity;
-    }
-
-    public void setProduct_quantity(double productQuantity) {
-        this.product_quantity = productQuantity;
-    }
-
-    public double getProteins() {
-        return proteins;
-    }
-
-    public void setProteins(double proteins) {
-        this.proteins = proteins;
-    }
-
-    public double getCarbohydrates() {
-        return carbohydrates;
-    }
-
-    public void setCarbohydrates(double carbohydrates) {
-        this.carbohydrates = carbohydrates;
-    }
-
-    public double getEnergy_kcal() {
-        return energy_kcal;
-    }
-
-    public void setEnergy_kcal(double energy_kcal) {
-        this.energy_kcal = energy_kcal;
-    }
-
-
-    public double getSaturated_fat() {
-        return saturated_fat;
-    }
-
-    public void setSaturated_fat(double saturated_fat) {
-        this.saturated_fat = saturated_fat;
-    }
-
-    public double getUnsaturated_fat() {
-        return unsaturated_fat;
-    }
-
-    public void setUnsaturated_fat(double unsaturated_fat) {
-        this.unsaturated_fat = unsaturated_fat;
-    }
 }

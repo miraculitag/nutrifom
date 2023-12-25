@@ -109,12 +109,12 @@ public class OFFService {
                 Product p = new Product();
                 p.setCode(code);
                 p.setProductName(productName);
-                p.setProduct_quantity(productQuantityDouble);
+                p.setProductQuantity(productQuantityDouble);
                 p.setProteins(proteins);
                 p.setCarbohydrates(carbohydrates);
-                p.setEnergy_kcal(energyKcal);
-                p.setSaturated_fat(saturatedFat);
-                p.setUnsaturated_fat(unsaturatedFat);
+                p.setEnergyKcal(energyKcal);
+                p.setSaturatedFat(saturatedFat);
+                p.setUnsaturatedFat(unsaturatedFat);
 
                 productList.add(p);
                 productNames.add(productName);
@@ -122,5 +122,35 @@ public class OFFService {
         }
 
         return productList;
+    }
+
+    public Product getProduct(String productCode) throws CustomAuthenticationException {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://world.openfoodfacts.org/api/v2/search?code=" + productCode + "&fields=code,product_name,nutriments,product_quantity";
+
+        // API-Aufruf
+        JsonNode root;
+        try {
+            root = restTemplate.getForObject(url, JsonNode.class);
+        } catch (Exception e) {
+            throw new CustomAuthenticationException("Error while calling API", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (root == null) {
+            throw new CustomAuthenticationException("No data received from API or product not found", HttpStatus.NOT_FOUND);
+        }
+
+        JsonNode productNode = root.path("products").get(0);
+        Product product = new Product();
+        product.setCode(productNode.path("code").asText());
+        product.setProductName(productNode.path("product_name").asText());
+        product.setProductQuantity(productNode.path("product_quantity").asDouble());
+        product.setProteins(productNode.path("nutriments").path("proteins").asDouble());
+        product.setCarbohydrates(productNode.path("nutriments").path("carbohydrates").asDouble());
+        product.setEnergyKcal(productNode.path("nutriments").path("energy-kcal").asDouble());
+        product.setSaturatedFat(productNode.path("nutriments").path("saturated-fat").asDouble());
+        product.setUnsaturatedFat(productNode.path("nutriments").path("fat").asDouble() - product.getSaturatedFat());
+
+        return product;
     }
 }
