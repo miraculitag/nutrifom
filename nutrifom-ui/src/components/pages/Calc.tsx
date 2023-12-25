@@ -19,6 +19,7 @@ import {
   getKcalLast14Days,
   getWeightLast14Days,
   putAppUserGoal,
+  putAppUserKcalGoal,
   putAppUserPal,
   putAppUserWpa,
 } from "../../api";
@@ -27,7 +28,7 @@ import { useUser } from "../../userContext";
 export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
     React.useState(false);
-  const [kcalRequirement, setKcalRequirement] = React.useState<number>();
+  const [kcalRequirement, setKcalRequirement] = React.useState<number>(0);
   const [weightFor14Days, setWeightFor14Days] = React.useState<number[]>([]);
   const [kcalFor14Days, setKcalFor14Days] = React.useState<number[]>([]);
   const [dataFor14Days, setDataFor14Days] = React.useState(false);
@@ -112,7 +113,10 @@ export const Calc = () => {
     return wpa * 0.1;
   };
 
-  const saveKcalGoalToNutrilog = () => {}; //tbd
+  const saveKcalGoalToNutrilog = (kcalGoal: number) => {
+    putAppUserKcalGoal(kcalGoal, auth());
+    updateUserAttribute({ kcalGoal: kcalGoal });
+  };
 
   const calcGoalDependentPart = (goal: string) => {
     if (goal === "Aufbauen") {
@@ -295,7 +299,7 @@ export const Calc = () => {
           </Typography>
           <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
             <IconButton
-              onClick={() => saveKcalGoalToNutrilog()}
+              onClick={() => saveKcalGoalToNutrilog(kcalRequirement)}
               sx={{ marginLeft: "2%" }}
             >
               <BookmarkBorderIcon sx={{ color: theme.palette.primary.main }} />

@@ -45,11 +45,10 @@ export default function WeightLineChart() {
 
   });
 
-/*
-          yAxis={[{ 
-            min: minValue, 
-            max: maxValue 
-          }]}*/ 
+const filteredDataPoints = dataPoints.map((value) => (value !== null ? value : 0));
+const maxValue = Math.max(...filteredDataPoints) >= 110 ? Math.max(...filteredDataPoints) * 1.1 : 110;
+
+
   return (
     <>
       {dataPoints.length > 0 && (
@@ -66,7 +65,10 @@ export default function WeightLineChart() {
               scaleType: "point",
             },
           ]}
-
+          yAxis={[{ 
+            min: 40, 
+            max: maxValue
+          }]}
           series={[
             {              
               data:dataPoints,

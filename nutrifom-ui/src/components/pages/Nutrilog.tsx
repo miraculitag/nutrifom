@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Typography, useTheme } from "@mui/material";
@@ -9,90 +9,102 @@ import FoodTable, { FoodItem } from "../partials/FoodTable";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { TextInputField } from "../common/TextInputField";
 import { Layout } from "../layout/Layout";
-import KalcFoodChart from "../partials/KalcFoodChart";
-import { authenticateAppUser } from "../../api";
+import KcalFoodChart from "../partials/KcalFoodChart";
+import {
+  addProductToNutrilog,
+  authenticateAppUser,
+  getNutrilog,
+  searchOFF,
+} from "../../api";
+import { useAuthHeader } from "react-auth-kit";
+import { NurtilogEntryRequest } from "../../types";
+import { response } from "express";
 
 export const Nutrilog = (testParams: any) => {
   const theme = useTheme();
+  const auth = useAuthHeader();
 
   const [isButtonClicked] = React.useState(false);
+  const currentDate = dayjs().format("YYYY-MM-DD");
   const [SearchTextFood, setSearchTextFood] = React.useState<string>("");
   const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
   const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
   const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
   const [searchTextRecepie, setSearchTextRecepie] = React.useState<string>("");
-  const [recepieSearchHasError, setRecepieSearchHasError] = React.useState(false);
-  const [currentPortionAmount, setCurrentPortionAmount] = React.useState<number>(0);
-  const [portionAmountHasError, setPortionAmountHasError] = React.useState(false);
-  const [selectedFood, setSelectedFood] = React.useState<FoodItem | null>(null);
+  const [recepieSearchHasError, setRecepieSearchHasError] =
+    React.useState(false);
+  const [currentPortionAmount, setCurrentPortionAmount] =
+    React.useState<number>(0);
+  const [portionAmountHasError, setPortionAmountHasError] =
+    React.useState(false);
+  const [selectedFood, setSelectedFood] =
+    React.useState<NurtilogEntryRequest | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
-  const foodData = [
-    {
-      id: 1,
-      foodName: "Chicken Breast",
-      amount: 150,
-      unit: "g",
-      energy_kcal_per_unit: 165,
-      proteins: 31,
-      saturatedFat: 1.6,
-      unsaturatedFat: 1.2,
-      carbohydrates: 0,
-    },
-    {
-      id: 2,
-      foodName: "Brown Rice",
-      amount: 100,
-      unit: "g",
-      energy_kcal_per_unit: 111,
-      proteins: 2.6,
-      saturatedFat: 0.3,
-      unsaturatedFat: 0.9,
-      carbohydrates: 23.5,
-    },
-    {
-      id: 3,
-      foodName: "Broccoli",
-      amount: 200,
-      unit: "g",
-      energy_kcal_per_unit: 62,
-      proteins: 4,
-      saturatedFat: 0.1,
-      unsaturatedFat: 0.6,
-      carbohydrates: 12,
-    },
-    {
-      id: 4,
-      foodName: "Water",
-      amount: 250,
-      unit: "ml",
-      energy_kcal_per_unit: 700,
-      proteins: 0,
-      saturatedFat: 0,
-      unsaturatedFat: 0,
-      carbohydrates: 0,
-    },
-    {
-      id: 5,
-      foodName: "Orange Juice",
-      amount: 200,
-      unit: "ml",
-      energy_kcal_per_unit: 88,
-      proteins: 1,
-      saturatedFat: 0,
-      unsaturatedFat: 0,
-      carbohydrates: 21,
-    },
-  ];
+  const [apiData, setApiData] = React.useState<any>(null);
+
+  const [nutrilog, setNutrilog] = useState<NurtilogEntryRequest[]>([]);
+
+  React.useEffect(() => {
+    if (selectedDate) {
+      const formattedDate = selectedDate.format("YYYY-MM-DD");
+      getNutrilog(formattedDate, auth())
+        .then((response) => {
+          setNutrilog(response.data);
+        })
+        .catch((error) => {
+          console.log("Fehler:", error);
+        });
+    }
+  }, [selectedDate, auth]);
+
+  React.useEffect(() => {
+    if (SearchTextFood !== "") {
+      searchOFF(SearchTextFood, auth())
+        .then((response) => {
+          setApiData(response.data);
+        })
+        .catch((error) => {
+          console.log("Fehler:", error);
+        });
+    }
+  }, [SearchTextFood]);
 
   const handleChangeSearchFoodTextAmount = () => {
     setFoodAmountHasError(false);
     setFoodSearchHasError(false);
-    console.log(`Suchbutton geklickt. Eingegebener Text: ${SearchTextFood}`);
+
+    const dateString: string = currentDate;
+    const productItem = {
+      code: "123456",
+      productName: SearchTextFood,
+      product_quantity: currentFoodAmount,
+      serving_quantity: 200,
+      proteins_serving: 3,
+      carbohydrates_serving: 150,
+      energy_kcal_serving: 100,
+      saturated_fat_serving: 30,
+      unsaturated_fat_serving: 40,
+    };
+
+    if (currentFoodAmount >= 0) {
+      addProductToNutrilog(
+        { product: productItem, entryDate: dateString },
+        auth()
+      )
+        .then((response) => {
+          console.log("API-Aufruf erfolgreich:", response.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 403) {
+            console.log("Error 403 while putting weight:", auth());
+          }
+        });
+    }
   };
 
   const handleChangeSearchPortionRecepieText = () => {
@@ -102,14 +114,13 @@ export const Nutrilog = (testParams: any) => {
   };
 
   const getTotalNutritionalValues = () => {
-    return foodData.reduce(
+    return nutrilog.reduce(
       (acc, food) => {
-        acc.energy_kcal_per_unit +=
-          food.energy_kcal_per_unit * (food.amount / 100);
-        acc.proteins += food.proteins * (food.amount / 100);
-        acc.saturatedFat += food.saturatedFat * (food.amount / 100);
-        acc.unsaturatedFat += food.unsaturatedFat * (food.amount / 100);
-        acc.carbohydrates += food.carbohydrates * (food.amount / 100);
+        acc.energy_kcal_per_unit += food.energy_kcal_serving;
+        acc.proteins += food.proteins_serving;
+        acc.saturatedFat += food.saturated_fat_serving;
+        acc.unsaturatedFat += food.unsaturated_fat_serving;
+        acc.carbohydrates += food.carbohydrates_serving;
         return acc;
       },
       {
@@ -128,13 +139,12 @@ export const Nutrilog = (testParams: any) => {
 
   const handleRowClick = (index: number) => {
     setSelectedRow((prevIndex) => (prevIndex === index ? null : index));
-    setSelectedFood((prevFood) => {
-      if (prevFood && prevFood.id === foodData[index].id) {
-        return null;
-      } else {
-        return foodData[index];
-      }
-    });
+
+    if(nutrilog[index]) {
+      setSelectedFood(nutrilog[index]);
+    } else {
+      setSelectedFood(null);
+    }
   };
 
   const handleChangeDateMinusOne = () => {
@@ -154,10 +164,16 @@ export const Nutrilog = (testParams: any) => {
     }
   };
 
-  
-
   return (
     <Layout>
+      {apiData && (
+        <Box>
+          <Typography variant="h6">API-Daten:</Typography>
+          {/* Hier kannst du die API-Daten anzeigen oder weiterverarbeiten */}
+          {/* Zum Beispiel: */}
+          <pre>{JSON.stringify(apiData, null, 2)}</pre>
+        </Box>
+      )}
       <Box
         sx={{
           display: "grid",
@@ -263,7 +279,7 @@ export const Nutrilog = (testParams: any) => {
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-         <KalcFoodChart
+          <KcalFoodChart
             totalKcal={2200}
             consumedKcal={Math.round(
               getTotalNutritionalValues().energy_kcal_per_unit
@@ -307,38 +323,40 @@ export const Nutrilog = (testParams: any) => {
               ></ArrowForwardIosIcon>
             )}
           </Box>
-          <FoodTable foods={foodData} onSelectRow={handleRowClick} />
+          <FoodTable nutrilogItems={nutrilog} onSelectRow={handleRowClick} />
         </Box>
 
         <Box sx={{ gridArea: "Nutrition" }}>
           <Box sx={{ marginBottom: "2%" }}>
             <Typography>Nährwerte</Typography>
           </Box>
-          {selectedFood ? (
-            <NutritionalTable
-              energy_kcal={Math.round(selectedFood.energy_kcal_per_unit)}
-              proteins={Math.round(selectedFood.proteins)}
-              saturatedFat={Math.round(selectedFood.saturatedFat)}
-              unsaturatedFat={Math.round(selectedFood.unsaturatedFat)}
-              carbohydrates={Math.round(selectedFood.carbohydrates)}
-            />
-          ) : (
-            <NutritionalTable
-              energy_kcal={Math.round(
-                getTotalNutritionalValues().energy_kcal_per_unit
-              )}
-              proteins={Math.round(getTotalNutritionalValues().proteins)}
-              saturatedFat={Math.round(
-                getTotalNutritionalValues().saturatedFat
-              )}
-              unsaturatedFat={Math.round(
-                getTotalNutritionalValues().unsaturatedFat
-              )}
-              carbohydrates={Math.round(
-                getTotalNutritionalValues().carbohydrates
-              )}
-            />
-          )}
+          <NutritionalTable
+            energy_kcal={Math.round(
+              selectedFood
+                ? selectedFood.energy_kcal_serving
+                : getTotalNutritionalValues().energy_kcal_per_unit
+            )}
+            proteins={Math.round(
+              selectedFood
+                ? selectedFood.proteins_serving
+                : getTotalNutritionalValues().proteins
+            )}
+            saturatedFat={Math.round(
+              selectedFood
+                ? selectedFood.saturated_fat_serving
+                : getTotalNutritionalValues().saturatedFat
+            )}
+            unsaturatedFat={Math.round(
+              selectedFood
+                ? selectedFood.unsaturated_fat_serving
+                : getTotalNutritionalValues().unsaturatedFat
+            )}
+            carbohydrates={Math.round(
+              selectedFood
+                ? selectedFood.carbohydrates_serving
+                : getTotalNutritionalValues().carbohydrates
+            )}
+          />
         </Box>
       </Box>
     </Layout>
