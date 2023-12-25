@@ -10,6 +10,8 @@ import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
 import { useAuthHeader } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
+import FoodSearch from "../partials/FoodSearch";
+import RecepieSearch from "../partials/RecepieSearch";
 
 export const Weight = (testParams: any) => {
   const theme = useTheme();

@@ -39,16 +39,15 @@ export type AddRecipeRequest = {
 
 
 export type NurtilogEntryRequest = {
-    code: string;
-    productName: string;
-    product_quantity: number;
-    serving_quantity: number;
-    proteins_serving: number;
-    carbohydrates_serving: number;
-    energy_kcal_serving: number;
-    saturated_fat_serving: number;
-    unsaturated_fat_serving: number;
-    entryDate: string;  
+  code: string;
+  productName: string;
+  product_quantity: number;
+  proteins: number;
+  carbohydrates: number;
+  energy_kcal: number;
+  saturated_fat: number;
+  unsaturated_fat: number;
+  entryDate: string;  
 };
 
 export type AddProductRequest = {
@@ -56,12 +55,25 @@ export type AddProductRequest = {
     code: string;
     productName: string;
     product_quantity: number;
-    serving_quantity: number;
-    proteins_serving: number;
-    carbohydrates_serving: number;
+    proteins: number;
+    carbohydrates: number;
     energy_kcal_serving: number;
-    saturated_fat_serving: number;
-    unsaturated_fat_serving: number;
+    saturated_fat: number;
+    unsaturated_fat: number;
+  };
+  entryDate: string;
+};
+
+export type AddProductRequestNEU = {
+  product: {
+    code: string;
+    productName: string;
+    product_quantity: number;
+    proteins: number;
+    carbohydrates: number;
+    energy_kcal: number;
+    saturated_fat: number;
+    unsaturated_fat: number;
   };
   entryDate: string;
 };
@@ -78,6 +90,7 @@ export type AppUser = {
   wpa: number;
   image: string;
   email: string;
+  kcalGoal: number;
 };
 
 export type Recipe = {
@@ -97,6 +110,18 @@ export type Recipe = {
   image: string;
   tag: string;
 };
+
+export type FoodEntry = {
+  code: string;
+  productName: string;
+  product_quantity: number;
+  proteins: number;
+  carbohydrates: number;
+  energy_kcal: number;
+  saturated_fat: number;
+  unsaturated_fat: number;
+};
+
 
 export enum fieldErrorEnum {
   NAME,
