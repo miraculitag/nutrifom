@@ -38,7 +38,7 @@ public class NutrilogService {
     private OFFService offService;
 
     public Nutrilog saveProductLog(AppUser appuser, ProductLogDTO productLogDTO) throws CustomAuthenticationException {
-        Optional<Nutrilog> existingNutrilog = nutrilogRepository.findByAppUserIdAndProductCode(appuser.getId(), productLogDTO.getProductCode());
+        Optional<Nutrilog> existingNutrilog = nutrilogRepository.findByAppUserIdAndProductCodeAndEntryDate(appuser.getId(), productLogDTO.getProductCode(), productLogDTO.getEntryDate());
         if (existingNutrilog.isPresent()) {
             Nutrilog nutrilog = existingNutrilog.get();
             nutrilog.setProductQuantity(nutrilog.getProductQuantity() + productLogDTO.getProductQuantity());
@@ -55,7 +55,7 @@ public class NutrilogService {
     }
 
     public Nutrilog saveRecipeLog(AppUser appuser, RecipeLogDTO recipeLogDTO) throws CustomAuthenticationException {
-        Optional<Nutrilog> existingNutrilog = nutrilogRepository.findByAppUserIdAndRecipe_Id(appuser.getId(), recipeLogDTO.getRecipeId());
+        Optional<Nutrilog> existingNutrilog = nutrilogRepository.findByAppUserIdAndRecipe_IdAndEntryDate(appuser.getId(), recipeLogDTO.getRecipeId(), recipeLogDTO.getEntryDate());
         if (existingNutrilog.isPresent()) {
             Nutrilog nutrilog = existingNutrilog.get();
             nutrilog.setRecipePortions(nutrilog.getRecipePortions() + recipeLogDTO.getRecipePortions());
@@ -88,31 +88,32 @@ public class NutrilogService {
 
         for (Nutrilog nutrilog : nutrilogs) {
             if (nutrilog.getProductCode() != null) {
-                // Fetch product details from OFF database
                 Product product = offService.getProduct(nutrilog.getProductCode());
+                double quantityFactor = nutrilog.getProductQuantity() / product.getProductQuantity();
                 ProductNutrilog productNutrilog = new ProductNutrilog();
                 productNutrilog.setProductCode(product.getCode());
                 productNutrilog.setProductName(product.getProductName());
-                productNutrilog.setProteins(product.getProteins());
-                productNutrilog.setCarbohydrates(product.getCarbohydrates());
-                productNutrilog.setEnergyKcal(product.getEnergyKcal());
-                productNutrilog.setSaturatedFat(product.getSaturatedFat());
-                productNutrilog.setUnsaturatedFat(product.getUnsaturatedFat());
+                productNutrilog.setProteins(product.getProteins() * quantityFactor);
+                productNutrilog.setCarbohydrates(product.getCarbohydrates() * quantityFactor);
+                productNutrilog.setEnergyKcal(product.getEnergyKcal() * quantityFactor);
+                productNutrilog.setSaturatedFat(product.getSaturatedFat() * quantityFactor);
+                productNutrilog.setUnsaturatedFat(product.getUnsaturatedFat() * quantityFactor);
                 productNutrilog.setProductQuantity(nutrilog.getProductQuantity());
                 productNutrilogs.add(productNutrilog);
             } else if (nutrilog.getRecipeId() != null) {
                 // Fetch recipe details from Recipe table
                 Recipe recipe = recipeRepository.findById(nutrilog.getRecipeId()).orElse(null);
                 if (recipe != null) {
+                    double portionFactor = (double) nutrilog.getRecipePortions() / recipe.getPortions();
                     RecipeNutrilog recipeNutrilog = new RecipeNutrilog();
                     recipeNutrilog.setRecipeId(recipe.getId());
                     recipeNutrilog.setRecipeTitle(recipe.getTitle());
                     recipeNutrilog.setPortions(nutrilog.getRecipePortions());
-                    recipeNutrilog.setProteins(recipe.getProteins());
-                    recipeNutrilog.setCarbohydrates(recipe.getCarbohydrates());
-                    recipeNutrilog.setEnergyKcal(recipe.getEnergyKcal());
-                    recipeNutrilog.setSaturatedFat(recipe.getSaturatedFat());
-                    recipeNutrilog.setUnsaturatedFat(recipe.getUnsaturatedFat());
+                    recipeNutrilog.setProteins(recipe.getProteins() * portionFactor);
+                    recipeNutrilog.setCarbohydrates(recipe.getCarbohydrates() * portionFactor);
+                    recipeNutrilog.setEnergyKcal(recipe.getEnergyKcal() * portionFactor);
+                    recipeNutrilog.setSaturatedFat(recipe.getSaturatedFat() * portionFactor);
+                    recipeNutrilog.setUnsaturatedFat(recipe.getUnsaturatedFat() * portionFactor);
                     recipeNutrilogs.add(recipeNutrilog);
                 }
             }

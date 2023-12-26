@@ -38,7 +38,7 @@ public class OFFService {
     public List<Product> searchProducts(String searchTerm) throws CustomAuthenticationException {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + searchTerm
-                + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,product_quantity,serving_quantity";
+                + "&search_simple=1&action=process&json=1^&fields=code,product_name,nutriments,product_quantity";
 
         // API-Aufruf
         JsonNode root;
@@ -84,26 +84,24 @@ public class OFFService {
 
 
             String code = product.path("code").asText();
-            if (product.has("serving_quantity") && product.has("product_quantity")) {
+            if (product.has("product_quantity")) {
                 Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
-                Double servingQuantityDouble = convertToDouble(product.path("serving_quantity").asText());
 
-                if (productQuantityDouble == null || servingQuantityDouble == null || servingQuantityDouble == 0) {
+                if (productQuantityDouble == null) {
                     // handle the error, for example, skip this product
                     continue;
                 }
-
-                Double quantityFactor = productQuantityDouble / servingQuantityDouble;
+                
                 JsonNode nutriments = product.path("nutriments");
 
-                double proteins = roundToOneDecimalPlace(nutriments.path("proteins_serving").asDouble() * quantityFactor);
+                double proteins = roundToOneDecimalPlace(nutriments.path("proteins").asDouble());
                 double carbohydrates = roundToOneDecimalPlace(
-                        nutriments.path("carbohydrates_serving").asDouble() * quantityFactor);
+                        nutriments.path("carbohydrates").asDouble());
                 double energyKcal = roundToOneDecimalPlace(
-                        nutriments.path("energy-kcal_serving").asDouble() * quantityFactor);
-                double fat = roundToOneDecimalPlace(nutriments.path("fat_serving").asDouble() * quantityFactor);
+                        nutriments.path("energy-kcal").asDouble());
+                double fat = roundToOneDecimalPlace(nutriments.path("fat").asDouble());
                 double saturatedFat = roundToOneDecimalPlace(
-                        nutriments.path("saturated-fat_serving").asDouble() * quantityFactor);
+                        nutriments.path("saturated-fat").asDouble());
                 double unsaturatedFat = fat - saturatedFat;
 
                 Product p = new Product();
