@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -81,6 +82,17 @@ public class RecipeController {
         }
     }
 
+    @PutMapping("/{id}/image")
+    public ResponseEntity<?> updateRecipeImage(@PathVariable int id, @RequestParam MultipartFile image) {
+        try {
+            HttpStatus status = recipeService.updateRecipeImage(id, image);
+            return new ResponseEntity<>(status);
+        } catch (CustomAuthenticationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
+    }
 
 
 }

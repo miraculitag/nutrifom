@@ -9,7 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +82,21 @@ public class RecipeService {
             throw e;
         } catch (Exception e) {
             throw new CustomAuthenticationException("Error while incrementing recipe uses", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public HttpStatus updateRecipeImage(int id, MultipartFile file) throws CustomAuthenticationException {
+        Recipe existingRecipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new CustomAuthenticationException("Recipe with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));
+
+        try {
+            byte[] bytes = file.getBytes();
+            existingRecipe.setImage(bytes);
+            recipeRepository.save(existingRecipe);
+            return HttpStatus.OK;
+        } catch (IOException e) {
+            // Fehlerbehandlung
+            throw new CustomAuthenticationException("Error while updating image", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
