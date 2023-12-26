@@ -24,7 +24,7 @@ export const Nutrilog = () => {
   const theme = useTheme();
   const auth = useAuthHeader();
   const { user } = useUser();
-  const [kcalGoal, setKcalGoal] = React.useState(0);
+  const [kcalGoal, setKcalGoal] = React.useState<number>(0);
   const [selectedFood, setSelectedFood] =
     React.useState<NurtilogEntryRequest | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
@@ -58,7 +58,7 @@ export const Nutrilog = () => {
   const setLocalStates = () => {
     if (user) {
       setKcalGoal(
-        user.kcalGoal !== null && user.kcalGoal !== 0 ? user.kcalGoal : 2000
+        2000
       );
     }
     if (selectedDate) {
