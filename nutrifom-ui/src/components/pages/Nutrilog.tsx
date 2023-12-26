@@ -58,7 +58,7 @@ export const Nutrilog = () => {
   const setLocalStates = () => {
     if (user) {
       setKcalGoal(
-        2000
+        user.kcalGoal !== undefined && user.kcalGoal !== 0 ? user.kcalGoal : 2000
       );
     }
     if (selectedDate) {
@@ -162,16 +162,16 @@ export const Nutrilog = () => {
             <Typography>Nährwerte</Typography>
           </Box>
           <NutritionalTable
-            energy_kcal={selectedFood ? selectedFood.energy_kcal : 100}
-            proteins={Math.round(selectedFood ? selectedFood.proteins : 0)}
+            energy_kcal={selectedFood ? selectedFood.energy_kcal_serving : 100}
+            proteins={Math.round(selectedFood ? selectedFood.proteins_serving : 0)}
             saturatedFat={Math.round(
-              selectedFood ? selectedFood.saturated_fat : 0
+              selectedFood ? selectedFood.saturated_fat_serving : 0
             )}
             unsaturatedFat={Math.round(
-              selectedFood ? selectedFood.unsaturated_fat : 0
+              selectedFood ? selectedFood.unsaturated_fat_serving : 0
             )}
             carbohydrates={Math.round(
-              selectedFood ? selectedFood.carbohydrates : 0
+              selectedFood ? selectedFood.carbohydrates_serving : 0
             )}
           />
         </Box>
