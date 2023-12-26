@@ -1,53 +1,44 @@
-import React, { useState } from "react";
+import React from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Box, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { BasicButton } from "../common/BasicButton";
-import { FloatInputField } from "../common/FloatInputField";
-import FoodTable, { FoodItem } from "../partials/FoodTable";
+import FoodTable from "../partials/FoodTable";
 import { NutritionalTable } from "../common/NutritionalTable";
-import { TextInputField } from "../common/TextInputField";
 import { Layout } from "../layout/Layout";
 import KcalFoodChart from "../partials/KcalFoodChart";
 import {
-  addProductToNutrilog,
-  authenticateAppUser,
   getNutrilog,
-  searchOFF,
 } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
 import { NurtilogEntryRequest } from "../../types";
-import { response } from "express";
+import { useUser } from "../../userContext";
+import FoodSearch from "../partials/FoodSearch";
+import RecepieSearch from "../partials/RecepieSearch";
 
-export const Nutrilog = (testParams: any) => {
+export const Nutrilog = () => {
   const theme = useTheme();
   const auth = useAuthHeader();
-
-  const [isButtonClicked] = React.useState(false);
-  const currentDate = dayjs().format("YYYY-MM-DD");
-  const [SearchTextFood, setSearchTextFood] = React.useState<string>("");
-  const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
-  const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
-  const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
-  const [searchTextRecepie, setSearchTextRecepie] = React.useState<string>("");
-  const [recepieSearchHasError, setRecepieSearchHasError] =
-    React.useState(false);
-  const [currentPortionAmount, setCurrentPortionAmount] =
-    React.useState<number>(0);
-  const [portionAmountHasError, setPortionAmountHasError] =
-    React.useState(false);
+  const { user } = useUser();
+  const [kcalGoal, setKcalGoal] = React.useState<number>(0);
   const [selectedFood, setSelectedFood] =
     React.useState<NurtilogEntryRequest | null>(null);
-  const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
-  const [apiData, setApiData] = React.useState<any>(null);
+  const [nutrilog, setNutrilog] = React.useState<NurtilogEntryRequest[]>([]);
 
-  const [nutrilog, setNutrilog] = useState<NurtilogEntryRequest[]>([]);
+  React.useEffect(() => {
+    setLocalStates();
+  }, []);
+
+
 
   React.useEffect(() => {
     if (selectedDate) {
@@ -55,96 +46,35 @@ export const Nutrilog = (testParams: any) => {
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
+          console.log(response.data)
         })
         .catch((error) => {
-          console.log("Fehler:", error);
+          console.log("Fehler beim Abrufen des nutrilogs:", error);
         });
     }
   }, [selectedDate, auth]);
 
-  React.useEffect(() => {
-    if (SearchTextFood !== "") {
-      searchOFF(SearchTextFood, auth())
+
+  const setLocalStates = () => {
+    if (user) {
+      setKcalGoal(
+        user.kcalGoal !== undefined && user.kcalGoal !== 0 ? user.kcalGoal : 2000
+      );
+    }
+    if (selectedDate) {
+      const formattedDate = selectedDate.format("YYYY-MM-DD");
+      getNutrilog(formattedDate, auth())
         .then((response) => {
-          setApiData(response.data);
+          setNutrilog(response.data);
         })
         .catch((error) => {
-          console.log("Fehler:", error);
+          console.log("Fehler beim Abrufen des nutrilogs (initial):", error);
         });
     }
-  }, [SearchTextFood]);
-
-  const handleChangeSearchFoodTextAmount = () => {
-    setFoodAmountHasError(false);
-    setFoodSearchHasError(false);
-
-    const dateString: string = currentDate;
-    const productItem = {
-      code: "123456",
-      productName: SearchTextFood,
-      product_quantity: currentFoodAmount,
-      serving_quantity: 200,
-      proteins_serving: 3,
-      carbohydrates_serving: 150,
-      energy_kcal_serving: 100,
-      saturated_fat_serving: 30,
-      unsaturated_fat_serving: 40,
-    };
-
-    if (currentFoodAmount >= 0) {
-      addProductToNutrilog(
-        { product: productItem, entryDate: dateString },
-        auth()
-      )
-        .then((response) => {
-          console.log("API-Aufruf erfolgreich:", response.data);
-        })
-        .catch((error) => {
-          if (error.response.status === 403) {
-            console.log("Error 403 while putting weight:", auth());
-          }
-        });
-    }
-  };
-
-  const handleChangeSearchPortionRecepieText = () => {
-    setPortionAmountHasError(false);
-    setRecepieSearchHasError(false);
-    console.log(`Suchbutton geklickt. Eingegebener Text: ${searchTextRecepie}`);
-  };
-
-  const getTotalNutritionalValues = () => {
-    return nutrilog.reduce(
-      (acc, food) => {
-        acc.energy_kcal_per_unit += food.energy_kcal_serving;
-        acc.proteins += food.proteins_serving;
-        acc.saturatedFat += food.saturated_fat_serving;
-        acc.unsaturatedFat += food.unsaturated_fat_serving;
-        acc.carbohydrates += food.carbohydrates_serving;
-        return acc;
-      },
-      {
-        id: 0,
-        foodName: "Total",
-        amount: 0,
-        unit: "g",
-        energy_kcal_per_unit: 0,
-        proteins: 0,
-        saturatedFat: 0,
-        unsaturatedFat: 0,
-        carbohydrates: 0,
-      }
-    );
   };
 
   const handleRowClick = (index: number) => {
-    setSelectedRow((prevIndex) => (prevIndex === index ? null : index));
-
-    if(nutrilog[index]) {
-      setSelectedFood(nutrilog[index]);
-    } else {
-      setSelectedFood(null);
-    }
+    setSelectedFood(nutrilog[index]);
   };
 
   const handleChangeDateMinusOne = () => {
@@ -161,19 +91,11 @@ export const Nutrilog = (testParams: any) => {
     if (selectedDate) {
       const newDate = selectedDate.add(1, "day");
       setSelectedDate(newDate);
-    }
-  };
+  };}
 
   return (
     <Layout>
-      {apiData && (
-        <Box>
-          <Typography variant="h6">API-Daten:</Typography>
-          {/* Hier kannst du die API-Daten anzeigen oder weiterverarbeiten */}
-          {/* Zum Beispiel: */}
-          <pre>{JSON.stringify(apiData, null, 2)}</pre>
-        </Box>
-      )}
+      
       <Box
         sx={{
           display: "grid",
@@ -185,106 +107,15 @@ export const Nutrilog = (testParams: any) => {
         }}
       >
         <Box sx={{ gridArea: "Food" }}>
-          <Box sx={{ marginBottom: "5%" }}>
-            <TextInputField
-              label="Suche hier nach einem Lebensmittel..."
-              value={SearchTextFood}
-              setValue={setSearchTextFood}
-              hasError={FoodSearchHasError}
-              errorText="Du hast kein Lebensmittel eingegeben."
-              width="100%"
-              required={false}
-            />
-          </Box>
-          <Box sx={{ marginBottom: "5%" }}>
-            <FloatInputField
-              label="Menge eintragen"
-              suffix="Gramm"
-              value={currentFoodAmount}
-              setValue={setCurrentFoodAmount}
-              hasError={foodAmountHasError}
-              errorText="Die Menge kann nicht negativ oder 0 sein."
-              width="100%"
-              required={false}
-            />
-          </Box>
-          <BasicButton
-            label="Lebensmittel hinzufügen"
-            width="100%"
-            isButtonClicked={isButtonClicked}
-            onButtonClick={(e) => {
-              if (currentFoodAmount <= 0 || SearchTextFood === "") {
-                if (currentFoodAmount <= 0) {
-                  setFoodAmountHasError(true);
-                } else {
-                  setFoodAmountHasError(false);
-                }
-                if (SearchTextFood === "") {
-                  setFoodSearchHasError(true);
-                } else {
-                  setFoodSearchHasError(true);
-                }
-              } else {
-                handleChangeSearchFoodTextAmount();
-              }
-            }}
-          />
+        <FoodSearch/>
         </Box>
-
+        
         <Box sx={{ gridArea: "Recepie" }}>
-          <Box sx={{ marginBottom: "5%" }}>
-            <TextInputField
-              label="Suche hier nach einem Rezept..."
-              value={searchTextRecepie}
-              setValue={setSearchTextRecepie}
-              hasError={recepieSearchHasError}
-              errorText="Du hast kein Rezept ausgewählt."
-              width="100%"
-              required={false}
-            />
-          </Box>
-          <Box sx={{ marginBottom: "5%" }}>
-            <FloatInputField
-              label="Portionen eintragen"
-              suffix="Portion(en)"
-              value={currentPortionAmount}
-              setValue={setCurrentPortionAmount}
-              hasError={portionAmountHasError}
-              errorText="Die Portionen kann nicht negativ oder 0 sein."
-              width="100%"
-              required={false}
-            />
-          </Box>
-          <BasicButton
-            label="Rezept hinzufügen"
-            width="100%"
-            isButtonClicked={isButtonClicked}
-            onButtonClick={(e) => {
-              if (currentPortionAmount <= 0 || searchTextRecepie === "") {
-                if (currentPortionAmount <= 0) {
-                  setPortionAmountHasError(true);
-                } else {
-                  setPortionAmountHasError(false);
-                }
-                if (searchTextRecepie === "") {
-                  setRecepieSearchHasError(true);
-                } else {
-                  setRecepieSearchHasError(false);
-                }
-              } else {
-                handleChangeSearchPortionRecepieText();
-              }
-            }}
-          />
+          <RecepieSearch/>
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-          <KcalFoodChart
-            totalKcal={2200}
-            consumedKcal={Math.round(
-              getTotalNutritionalValues().energy_kcal_per_unit
-            )}
-          />
+          <KcalFoodChart totalKcal={kcalGoal} consumedKcal={Math.round(250)} />
         </Box>
 
         <Box sx={{ gridArea: "Foodlog" }}>
@@ -331,30 +162,16 @@ export const Nutrilog = (testParams: any) => {
             <Typography>Nährwerte</Typography>
           </Box>
           <NutritionalTable
-            energy_kcal={Math.round(
-              selectedFood
-                ? selectedFood.energy_kcal_serving
-                : getTotalNutritionalValues().energy_kcal_per_unit
-            )}
-            proteins={Math.round(
-              selectedFood
-                ? selectedFood.proteins_serving
-                : getTotalNutritionalValues().proteins
-            )}
+            energy_kcal={selectedFood ? selectedFood.energy_kcal_serving : 100}
+            proteins={Math.round(selectedFood ? selectedFood.proteins_serving : 0)}
             saturatedFat={Math.round(
-              selectedFood
-                ? selectedFood.saturated_fat_serving
-                : getTotalNutritionalValues().saturatedFat
+              selectedFood ? selectedFood.saturated_fat_serving : 0
             )}
             unsaturatedFat={Math.round(
-              selectedFood
-                ? selectedFood.unsaturated_fat_serving
-                : getTotalNutritionalValues().unsaturatedFat
+              selectedFood ? selectedFood.unsaturated_fat_serving : 0
             )}
             carbohydrates={Math.round(
-              selectedFood
-                ? selectedFood.carbohydrates_serving
-                : getTotalNutritionalValues().carbohydrates
+              selectedFood ? selectedFood.carbohydrates_serving : 0
             )}
           />
         </Box>
