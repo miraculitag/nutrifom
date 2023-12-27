@@ -96,6 +96,11 @@ export const getRecipes = async (token: string) =>
     ...addAuth(token),
   });
 
+export const getRecipeById = async (recipeId: number, token: string) =>
+  await axiosInstance.get(`/api/recipe/${recipeId}`, {
+    ...addAuth(token),
+  });
+
 export const rateRecipe = async (
   rateRecipeRequestBody: RateRecipeRequest,
   token: string
