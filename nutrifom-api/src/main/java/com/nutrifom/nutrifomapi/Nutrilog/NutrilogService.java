@@ -91,7 +91,7 @@ public class NutrilogService {
                 Product product = offService.getProduct(nutrilog.getProductCode());
                 double quantityFactor = nutrilog.getProductQuantity() / product.getProductQuantity();
                 ProductNutrilog productNutrilog = new ProductNutrilog();
-                productNutrilog.setProductCode(product.getCode());
+                productNutrilog.setProductCode(product.getProductCode());
                 productNutrilog.setProductName(product.getProductName());
                 productNutrilog.setProteins(product.getProteins() * quantityFactor);
                 productNutrilog.setCarbohydrates(product.getCarbohydrates() * quantityFactor);

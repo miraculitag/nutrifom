@@ -85,7 +85,7 @@ public class AppUserController {
     }
 
     @PutMapping("/kcalgoal")
-    public ResponseEntity<?> updateKcalGoal(Principal principal, @RequestParam int updatedKcalGoal) {
+    public ResponseEntity<?> updateKcalGoal(Principal principal, @RequestParam int kcalGoal) {
         try {
             String username = principal.getName();
             Optional<AppUser> user = jwtService.getAppUserFromToken(username);
@@ -93,7 +93,7 @@ public class AppUserController {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
             int userId = user.get().getId();
-            return appUserService.updateAppUserKcalGoal(userId, updatedKcalGoal);
+            return appUserService.updateAppUserKcalGoal(userId, kcalGoal);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {

@@ -6,7 +6,7 @@ import lombok.Setter;
 public class Product {
     @Getter
     @Setter
-    private String code;
+    private String productCode;
 
     @Getter
     @Setter

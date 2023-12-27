@@ -105,7 +105,7 @@ public class OFFService {
                 double unsaturatedFat = fat - saturatedFat;
 
                 Product p = new Product();
-                p.setCode(code);
+                p.setProductCode(code);
                 p.setProductName(productName);
                 p.setProductQuantity(productQuantityDouble);
                 p.setProteins(proteins);
@@ -140,7 +140,7 @@ public class OFFService {
 
         JsonNode productNode = root.path("products").get(0);
         Product product = new Product();
-        product.setCode(productNode.path("code").asText());
+        product.setProductCode(productNode.path("code").asText());
         product.setProductName(productNode.path("product_name").asText());
         product.setProductQuantity(productNode.path("product_quantity").asDouble());
         product.setProteins(productNode.path("nutriments").path("proteins").asDouble());
