@@ -1,7 +1,8 @@
 import axios from "axios";
 import {
-  AddProductRequest,
+  AddProductToNutrilog,
   AddRecipeRequest,
+  AddRecipeToNutrilog,
   AuthenticateRequest,
   RateRecipeRequest,
   RegisterRequest,
@@ -55,7 +56,7 @@ export const putAppUserPal = async (pal: string, token: string) =>
 export const putAppUserKcalGoal = async (kcalGoal: number, token: string) =>
   await axiosInstance.put("/api/appUser/kcalgoal", null, {
     ...addAuth(token),
-    params: { updatedKcalGoal: kcalGoal },
+    params: { kcalGoal: kcalGoal },
   });
 
 export const putAppUserImage = async (formData: FormData, token: string) => {
@@ -95,6 +96,11 @@ export const getRecipes = async (token: string) =>
     ...addAuth(token),
   });
 
+export const getRecipeById = async (recipeId: number, token: string) =>
+  await axiosInstance.get(`/api/recipe/${recipeId}`, {
+    ...addAuth(token),
+  });
+
 export const rateRecipe = async (
   rateRecipeRequestBody: RateRecipeRequest,
   token: string
@@ -114,7 +120,7 @@ export const getKcalLast14Days = async (token: string) =>
     ...addAuth(token),
   });
 
-export const addRecipeToNutrilog = async (
+export const addRecipeRequest = async (
   addRecipeRequest: AddRecipeRequest,
   token: string
 ) =>
@@ -123,10 +129,18 @@ export const addRecipeToNutrilog = async (
   });
 
 export const addProductToNutrilog = async (
-  addProductRequest: AddProductRequest,
+  addProductRequest: AddProductToNutrilog,
   token: string
 ) =>
   await axiosInstance.post("/api/nutrilog/product", addProductRequest, {
+    ...addAuth(token),
+  });
+
+export const addRecipeToNutrilog = async (
+  addRecipeRequest: AddRecipeToNutrilog,
+  token: string
+) =>
+  await axiosInstance.post("/api/nutrilog/recipe", addRecipeRequest, {
     ...addAuth(token),
   });
 
@@ -143,14 +157,7 @@ export const authenticateAppUser = async (
   authenticateRequest: AuthenticateRequest
 ) => await axiosInstance.post("/api/auth/authenticate", authenticateRequest);
 
-
-
 export const getKcalGoal = async (token: string) =>
   await axiosInstance.get("/api/nutrilog/kcalgoal", {
     ...addAuth(token),
-  });
-  export const putAppUserkcalGoal = async (KcalGoal: number, token: string) =>
-  await axiosInstance.put("/api/appUser/kcalGoal", null, {
-    ...addAuth(token),
-    params: { KcalGoal: KcalGoal  },
   });

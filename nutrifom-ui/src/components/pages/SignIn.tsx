@@ -33,10 +33,13 @@ export const SignIn = () => {
   const [emailSignUpError, setEmailSignUpError] = React.useState(
     "Gib eine gültige E-Mail-Adresse an."
   );
+  const [passwordSignInError, setPasswordSignInError] = React.useState(
+    "Gib ein Passwort an."
+  );
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
-  const [weight, setWeight] = React.useState(0);
+  const [initialWeight, setWeight] = React.useState(0);
   const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
   const [goal, setGoal] = React.useState("Bitte wählen");
   const [height, setHeight] = React.useState(0);
@@ -85,9 +88,10 @@ export const SignIn = () => {
       })
       .catch((error) => {
         if (error.response.status === 404) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNIN]);
         } else if (error.response.status === 401) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNIN]);
+          setPasswordSignInError("Das Passwort ist falsch.");
         }
       });
   };
@@ -96,7 +100,7 @@ export const SignIn = () => {
     const formattedDob = dob!.format("YYYY-MM-DD");
     registerAppUser({
       name: name,
-      weight: weight,
+      initialWeight: initialWeight,
       dob: formattedDob,
       goal: goal,
       height: height,
@@ -116,7 +120,7 @@ export const SignIn = () => {
       })
       .catch((error) => {
         if (error.response.status === 400) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNUP]);
           setEmailSignUpError(
             "Es gibt bereits einen Account zu dieser E-Mail-Adresse."
           );
@@ -134,10 +138,10 @@ export const SignIn = () => {
 
   const handleFieldErrorsBeforeSignIn = () => {
     if (!validateEmail(emailSignIn)) {
-      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNIN]);
     }
     if (passwordSignIn === "") {
-      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNIN]);
     }
   };
 
@@ -155,7 +159,7 @@ export const SignIn = () => {
     if (height <= 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.HEIGHT]);
     }
-    if (weight <= 0) {
+    if (initialWeight <= 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.WEIGHT]);
     }
 
@@ -172,10 +176,10 @@ export const SignIn = () => {
       setFieldErrors((error) => [...error, fieldErrorEnum.WPA]);
     }
     if (!validateEmail(emailSignUp)) {
-      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNUP]);
     }
     if (passwordSignUp === "") {
-      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNUP]);
     }
   };
 
@@ -232,7 +236,7 @@ export const SignIn = () => {
                 <FloatInputField
                   label="Gewicht"
                   suffix="kg"
-                  value={weight}
+                  value={initialWeight}
                   setValue={setWeight}
                   hasError={fieldErrors.includes(fieldErrorEnum.WEIGHT)}
                   errorText="Dein Gewicht kann nicht negativ oder 0 sein."
@@ -309,7 +313,11 @@ export const SignIn = () => {
               required={true}
               autoComplete="email"
               autoFocus={onSignInPage && true}
-              hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
+              hasError={
+                onSignInPage
+                  ? fieldErrors.includes(fieldErrorEnum.EMAILSIGNIN)
+                  : fieldErrors.includes(fieldErrorEnum.EMAILSIGNUP)
+              }
               errorText={
                 onSignInPage
                   ? "Es gibt keinen Account zu dieser E-Mail-Adresse."
@@ -324,11 +332,13 @@ export const SignIn = () => {
               required={true}
               type="password"
               autoComplete="current-password"
-              hasError={fieldErrors.includes(fieldErrorEnum.PASSWORD)}
-              errorText={
+              hasError={
                 onSignInPage
-                  ? "Das Passwort ist falsch."
-                  : "Gib ein Passwort an."
+                  ? fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNIN)
+                  : fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNUP)
+              }
+              errorText={
+                onSignInPage ? passwordSignInError : "Gib ein Passwort an."
               }
             />
           </Stack>
@@ -360,7 +370,7 @@ export const SignIn = () => {
                         dob.isSame(dayjs(new Date()), "day") ||
                         dob.isAfter(dayjs(new Date()), "day") ||
                         height <= 0 ||
-                        weight <= 0 ||
+                        initialWeight <= 0 ||
                         gender === "Bitte wählen" ||
                         goal === "Bitte wählen" ||
                         pal === "Bitte wählen" ||

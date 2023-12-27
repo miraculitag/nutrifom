@@ -1,7 +1,7 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-import { addProductToNutrilog, getRecipes } from "../../api";
+import { addProductToNutrilog, addRecipeToNutrilog, getRecipes } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
 import dayjs from "dayjs";
 import React, { ChangeEvent } from "react";
@@ -32,19 +32,13 @@ export default function RecepieSearch() {
     setRecepieSearchHasError(false);
 
     const dateString: string = currentDate;
-    const productItem = {
-      code: "123456",
-      productName: selectedRecepie?.title || "",
-      product_quantity: currentPortionAmount,
-      proteins: 200,
-      carbohydrates: 3,
-      energy_kcal_serving: 150,
-      saturated_fat: 30,
-      unsaturated_fat: 40,
-    };
 
-    addProductToNutrilog(
-      { product: productItem, entryDate: dateString },
+    addRecipeToNutrilog(
+      {
+        recipeId: selectedRecepie?.id || 0 ,
+        entryDate: dateString,
+        recipePortions: currentPortionAmount,
+      },
       auth()
     ).catch((error) => {
       if (error.response.status === 403) {

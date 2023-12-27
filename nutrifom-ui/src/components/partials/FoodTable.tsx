@@ -14,17 +14,7 @@ export interface FoodTableProps {
   onSelectRow: (index: number) => void; // Änderung des Funktionsparameters
 }
 
-export interface FoodItem {
-  id: number;
-  foodName: string;
-  amount: number;
-  unit: string;
-  energy_kcal_per_unit: number;
-  proteins: number;
-  saturatedFat: number;
-  unsaturatedFat: number;
-  carbohydrates: number;
-}
+
 
 export default function FoodTable(props: FoodTableProps) {
   const { nutrilogItems, onSelectRow } = props; // Destructuring der Props
@@ -42,7 +32,7 @@ export default function FoodTable(props: FoodTableProps) {
           {nutrilogItems.map((food, index) => (
             <TableRow
               key={index}
-              onClick={() => handleRowClick(index)} // Aufruf von handleRowClick
+              onClick={() => handleRowClick(index)}
               selected={index === selectedRow}
               sx={{ cursor: "pointer" }}
             >

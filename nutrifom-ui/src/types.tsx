@@ -6,7 +6,7 @@ export type AuthenticateRequest = {
 
 export type RegisterRequest = {
   name: string;
-  weight: number;
+  initialWeight: number;
   dob: string;
   goal: string;
   height: number;
@@ -50,32 +50,16 @@ export type NurtilogEntryRequest = {
   entryDate: string;
 };
 
-export type AddProductRequest = {
-  product: {
-    code: string;
-    productName: string;
-    product_quantity: number;
-    proteins: number;
-    carbohydrates: number;
-    energy_kcal_serving: number;
-    saturated_fat: number;
-    unsaturated_fat: number;
-  };
+export type AddProductToNutrilog = {
+  productCode: string;
   entryDate: string;
+  productQuantity: number;
 };
 
-export type AddProductRequestNEU = {
-  product: {
-    code: string;
-    productName: string;
-    product_quantity: number;
-    proteins: number;
-    carbohydrates: number;
-    energy_kcal: number;
-    saturated_fat: number;
-    unsaturated_fat: number;
-  };
+export type AddRecipeToNutrilog = {
+  recipeId: number;
   entryDate: string;
+  recipePortions: number;
 };
 
 export type AppUser = {
@@ -111,16 +95,25 @@ export type Recipe = {
 };
 
 export type FoodEntry = {
-  code: string;
+  productCode: string;
   productName: string;
-  product_quantity: number;
   proteins: number;
   carbohydrates: number;
-  energy_kcal: number;
-  saturated_fat: number;
-  unsaturated_fat: number;
+  energyKcal: number;
+  saturatedFat: number;
+  unsaturatedFat: number;
+  productQuantity: number;
 };
 
+export type NutritionData = {
+  products: NurtilogEntryRequest[];
+  recipes: any[];
+  totalProteins: number;
+  totalCarbohydrates: number;
+  totalEnergyKcal: number;
+  totalSaturatedFat: number;
+  totalUnsaturatedFat: number;
+};
 
 export enum fieldErrorEnum {
   NAME,
@@ -131,6 +124,8 @@ export enum fieldErrorEnum {
   GOAL,
   PAL,
   WPA,
-  EMAIL,
-  PASSWORD,
+  EMAILSIGNIN,
+  PASSWORDSIGNIN,
+  EMAILSIGNUP,
+  PASSWORDSIGNUP,
 }

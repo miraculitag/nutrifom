@@ -23,7 +23,9 @@ export const Footer = (testParams: any) => {
         <Button
           color="inherit"
           onClick={() => {
-            window.open("mailto:email@example.com");
+            window.open(
+              "mailto:jennifer.witte@fom-net.de;mira.falk@fom-net.de;maid.sabanovic@fom-net.de;nele.hoffmann@fom-net.de"
+            );
           }}
         >
           Kontakt

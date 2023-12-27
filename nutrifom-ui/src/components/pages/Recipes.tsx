@@ -14,14 +14,11 @@ import { useAuthHeader } from "react-auth-kit";
 import { FilterDialog } from "../common/FilterDialog";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
-import { getRecipes, rateRecipe } from "../../api";
+import { getRecipeById, getRecipes, rateRecipe } from "../../api";
 import { Recipe } from "../../types";
 
 export const Recipes = () => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
-  const [ratingValues, setRatingValues] = React.useState<{
-    [key: number]: number;
-  }>({});
   const [filterValue, setFilterValue] = React.useState("Alle");
   const [openFilterDialog, setOpenFilterDialog] = React.useState(false);
   const [recipes, setRecipes] = React.useState<Recipe[]>();
@@ -45,16 +42,33 @@ export const Recipes = () => {
       setExpanded(isExpanded ? recipeId : false);
     };
 
+  const refreshRecipe = (recipeId: number) => {
+    getRecipeById(recipeId, auth()).then((response) => {
+      const updatedRecipe = response.data;
+      setRecipes((prevRecipes) => {
+        const updatedRecipes = prevRecipes?.map((recipe) =>
+          recipe.id === recipeId ? updatedRecipe : recipe
+        );
+        return updatedRecipes;
+      });
+      setShownRecipes((prevShownRecipes) => {
+        const updatedShownRecipes = prevShownRecipes?.map((recipe) =>
+          recipe.id === recipeId ? updatedRecipe : recipe
+        );
+        return updatedShownRecipes;
+      });
+    });
+  };
+
   const handleRatingChange =
     (recipeId: number) =>
     (event: React.ChangeEvent<{}>, newRatingValue: number | null) => {
-      setRatingValues((prevRatingValues) => ({
-        ...prevRatingValues,
-        [recipeId]: newRatingValue || 0,
-      }));
-
       if (newRatingValue !== null) {
-        rateRecipe({ recipeId: recipeId, score: newRatingValue }, auth());
+        rateRecipe({ recipeId: recipeId, score: newRatingValue }, auth()).then(
+          () => {
+            refreshRecipe(recipeId);
+          }
+        );
       }
     };
 
@@ -119,43 +133,66 @@ export const Recipes = () => {
                 <ExpandMore sx={{ color: theme.palette.primary.main }} />
               }
             >
-              <Box sx={{ display: "flex", flexDirection: "row" }}>
-                {recipe.image ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                {recipe.image && (
                   <img
                     src={formatImage(recipe.image)}
                     alt={recipe.title}
                     width="10%"
                   />
-                ) : (
-                  <Box sx={{ width: "10%" }} />
                 )}
-                <Box sx={{ paddingLeft: "5%" }}>
+                <Box sx={{ flex: 1, paddingLeft: "2%" }}>
                   <Typography
-                    sx={{ fontSize: "150%", width: "100%", flexShrink: 0 }}
+                    sx={{
+                      fontSize: "150%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     {recipe.title}
                   </Typography>
-                  <Rating
-                    size="medium"
-                    precision={0.1}
-                    value={ratingValues[recipe.id] || recipe.averageRating}
-                    onChange={handleRatingChange(recipe.id)}
-                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    <Rating
+                      size="medium"
+                      precision={0.5}
+                      value={recipe.averageRating}
+                      onChange={handleRatingChange(recipe.id)}
+                    />
+                    <Typography
+                      sx={{ color: "text.secondary", marginLeft: "1%" }}
+                    >
+                      {"(" + recipe.averageRating + ")"}
+                    </Typography>
+                  </Box>
                   <Typography sx={{ color: "text.secondary" }}>
                     {recipe.tag}
                   </Typography>
                 </Box>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    flexShrink: 0,
+                    paddingRight: "2%",
+                  }}
+                >
+                  {recipe.uses} mal nachgekocht
+                </Typography>
               </Box>
-              <Typography
-                sx={{
-                  color: "text.secondary",
-                  marginLeft: "auto",
-                  paddingRight: "5%",
-                }}
-              >
-                {recipe.uses} mal nachgekocht
-              </Typography>
             </AccordionSummary>
+
             <AccordionDetails>
               <Box
                 sx={{
