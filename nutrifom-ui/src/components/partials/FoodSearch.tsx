@@ -1,10 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import {
-  Box,
-  Autocomplete,
-  TextField,
-  useTheme,
-} from "@mui/material";
+import { Box, Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 import { addProductToNutrilog, searchOFF } from "../../api";
@@ -12,70 +7,73 @@ import dayjs from "dayjs";
 import useAuthHeader from "react-auth-kit/dist/hooks/useAuthHeader";
 import { FoodEntry } from "../../types";
 
+function sleep(duration: number): Promise<void> {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
 
 export default function FoodSearch() {
-  const theme = useTheme();
   const auth = useAuthHeader();
-  const [isButtonClicked] = React.useState(false);
   const currentDate = dayjs().format("YYYY-MM-DD");
+  const [isButtonClicked] = React.useState(false);
   const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
   const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
   const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
-  const [apiData, setApiData] = React.useState<any[]>([]);
+  const [apiData, setApiData] = React.useState<FoodEntry[]>([]);
   const [searchTextFood, setSearchTextFood] = React.useState("");
-  
-  const [selectedFood, setSelectedFood] = React.useState<FoodEntry>();
-
+  const [selectedFood, setSelectedFood] = React.useState<FoodEntry | null>(
+    null
+  );
+  const [loading, setLoading] = React.useState(false);
 
   const handleChangeSearchFoodTextAmount = () => {
     setFoodAmountHasError(false);
     setFoodSearchHasError(false);
 
     const dateString: string = currentDate;
-    const productItem = {
-      code: "123456",
-      productName: selectedFood?.productName || "",
-      product_quantity: currentFoodAmount,
-      proteins: 200,
-      carbohydrates: 3,
-      energy_kcal_serving: 150,
-      saturated_fat: 30,
-      unsaturated_fat: 40,
-    };
+    console.log(
+      "Sende Daten ans Backend",
+      selectedFood?.productCode || "123",
+      dateString,
+      currentFoodAmount
+    );
 
     addProductToNutrilog(
-      { product: productItem, entryDate: dateString },
+      {
+        productCode: selectedFood?.productCode || "123",
+        entryDate: dateString,
+        productQuantity: currentFoodAmount,
+      },
       auth()
     ).catch((error) => {
       if (error.response.status === 403) {
         console.log("Error 403 while putting weight:", auth());
       }
     });
-
-    //updateUserAttribute({ kcalGoal: 2500 });
+    console.log("Daten versendet");
   };
 
-  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchTextChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchTextFood(event.target.value);
-    setSelectedFood(undefined);
 
     if (searchTextFood !== "") {
-      searchOFF(searchTextFood, auth())
-        .then((response) => {
-          setApiData(response.data);
-        })
-        .catch((error) => {
-          console.log("Fehler beim Abrufen der offSearch:", error);
-        });
+      try {
+        setLoading(true);
+        await sleep(1000); // Simulate asynchronous behavior
+
+        const response = await searchOFF(searchTextFood, auth());
+        setApiData(response.data);
+      } catch (error) {
+        console.log("Fehler beim Abrufen der offSearch:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
-
-
-  const handleFoodSelection = (
-    event: React.SyntheticEvent<Element, Event>,
-    value: any
-  ) => {
-    setSelectedFood(value);
   };
 
   return (
@@ -86,8 +84,11 @@ export default function FoodSearch() {
           disableClearable
           options={apiData}
           getOptionLabel={(apiData) => apiData.productName}
-          isOptionEqualToValue={(option, value) => option.productName === value.productName}
-          onChange={handleFoodSelection}
+          isOptionEqualToValue={(option, value) =>
+            option.productName === value.productName
+          }
+          onChange={(event, value) => setSelectedFood(value)}
+          loading={loading}
           renderInput={(params) => (
             <TextField
               label="Suche hier nach einem Lebensmittel..."
@@ -98,7 +99,14 @@ export default function FoodSearch() {
               {...params}
               InputProps={{
                 ...params.InputProps,
-                type: "search",
+                endAdornment: (
+                  <React.Fragment>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
               }}
               InputLabelProps={{
                 shrink: true,
@@ -129,8 +137,12 @@ export default function FoodSearch() {
         label="Lebensmittel hinzufügen"
         width="100%"
         isButtonClicked={isButtonClicked}
-        onButtonClick={(e) => {
-          if (currentFoodAmount <= 0 || isNaN(currentFoodAmount) || !selectedFood) {
+        onButtonClick={() => {
+          if (
+            currentFoodAmount <= 0 ||
+            isNaN(currentFoodAmount) ||
+            !selectedFood
+          ) {
             if (currentFoodAmount <= 0 || isNaN(currentFoodAmount)) {
               setFoodAmountHasError(true);
             } else {
@@ -139,7 +151,7 @@ export default function FoodSearch() {
             if (!selectedFood) {
               setFoodSearchHasError(true);
             } else {
-              setFoodSearchHasError(true);
+              setFoodSearchHasError(false);
             }
           } else {
             handleChangeSearchFoodTextAmount();

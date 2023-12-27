@@ -15,7 +15,7 @@ import {
   getNutrilog,
 } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
-import { NurtilogEntryRequest } from "../../types";
+import { NurtilogEntryRequest, NutritionData } from "../../types";
 import { useUser } from "../../userContext";
 import FoodSearch from "../partials/FoodSearch";
 import RecepieSearch from "../partials/RecepieSearch";
@@ -32,13 +32,11 @@ export const Nutrilog = () => {
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
-  const [nutrilog, setNutrilog] = React.useState<NurtilogEntryRequest[]>([]);
+  const [nutrilog, setNutrilog] = React.useState<NutritionData>();
 
   React.useEffect(() => {
     setLocalStates();
   }, []);
-
-
 
   React.useEffect(() => {
     if (selectedDate) {
@@ -46,7 +44,6 @@ export const Nutrilog = () => {
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
-          console.log(response.data)
         })
         .catch((error) => {
           console.log("Fehler beim Abrufen des nutrilogs:", error);
@@ -66,6 +63,7 @@ export const Nutrilog = () => {
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
+          console.log(response.data)
         })
         .catch((error) => {
           console.log("Fehler beim Abrufen des nutrilogs (initial):", error);
@@ -74,7 +72,7 @@ export const Nutrilog = () => {
   };
 
   const handleRowClick = (index: number) => {
-    setSelectedFood(nutrilog[index]);
+    setSelectedFood(nutrilog?.products[index] || null);
   };
 
   const handleChangeDateMinusOne = () => {
@@ -115,11 +113,11 @@ export const Nutrilog = () => {
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-          <KcalFoodChart totalKcal={kcalGoal} consumedKcal={Math.round(250)} />
+          <KcalFoodChart totalKcal={kcalGoal} consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}/>
         </Box>
 
         <Box sx={{ gridArea: "Foodlog" }}>
-          <Box sx={{ display: "flex", marginBottom: "2%" }}>
+          <Box sx={{ display: "flex", marginBottom: "2%"}}>
             <Typography>Lebenmittel & Rezepte</Typography>
             {selectedDate &&
             !dayjs(selectedDate).isSame(sevenDaysAgo, "day") ? (
@@ -154,7 +152,7 @@ export const Nutrilog = () => {
               ></ArrowForwardIosIcon>
             )}
           </Box>
-          <FoodTable nutrilogItems={nutrilog} onSelectRow={handleRowClick} />
+
         </Box>
 
         <Box sx={{ gridArea: "Nutrition" }}>
@@ -162,16 +160,16 @@ export const Nutrilog = () => {
             <Typography>Nährwerte</Typography>
           </Box>
           <NutritionalTable
-            energy_kcal={selectedFood ? selectedFood.energy_kcal_serving : 100}
-            proteins={Math.round(selectedFood ? selectedFood.proteins_serving : 0)}
+            energy_kcal={Math.round(selectedFood ? selectedFood.energy_kcal_serving : nutrilog?.totalEnergyKcal || 0)}
+            proteins={Math.round(selectedFood ? selectedFood.proteins_serving : nutrilog?.totalProteins || 0)}
             saturatedFat={Math.round(
-              selectedFood ? selectedFood.saturated_fat_serving : 0
+              selectedFood ? selectedFood.saturated_fat_serving : nutrilog?.totalSaturatedFat || 0
             )}
             unsaturatedFat={Math.round(
-              selectedFood ? selectedFood.unsaturated_fat_serving : 0
+              selectedFood ? selectedFood.unsaturated_fat_serving : nutrilog?.totalUnsaturatedFat || 0
             )}
             carbohydrates={Math.round(
-              selectedFood ? selectedFood.carbohydrates_serving : 0
+              selectedFood ? selectedFood.carbohydrates_serving : nutrilog?.totalCarbohydrates || 0
             )}
           />
         </Box>

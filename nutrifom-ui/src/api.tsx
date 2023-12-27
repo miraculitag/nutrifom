@@ -1,7 +1,8 @@
 import axios from "axios";
 import {
-  AddProductRequest,
+  AddProductToNutrilog,
   AddRecipeRequest,
+  AddRecipeToNutrilog,
   AuthenticateRequest,
   RateRecipeRequest,
   RegisterRequest,
@@ -114,7 +115,7 @@ export const getKcalLast14Days = async (token: string) =>
     ...addAuth(token),
   });
 
-export const addRecipeToNutrilog = async (
+export const addRecipeRequest = async (
   addRecipeRequest: AddRecipeRequest,
   token: string
 ) =>
@@ -123,12 +124,20 @@ export const addRecipeToNutrilog = async (
   });
 
 export const addProductToNutrilog = async (
-  addProductRequest: AddProductRequest,
+  addProductRequest: AddProductToNutrilog,
   token: string
 ) =>
   await axiosInstance.post("/api/nutrilog/product", addProductRequest, {
     ...addAuth(token),
   });
+
+  export const addRecipeToNutrilog = async (
+    addRecipeRequest: AddRecipeToNutrilog,
+    token: string
+  ) =>
+    await axiosInstance.post("/api/nutrilog/recipe", addRecipeRequest, {
+      ...addAuth(token),
+    });
 
 export const searchOFF = async (searchTerm: string, token: string) =>
   await axiosInstance.get("/api/OFF/search", {
