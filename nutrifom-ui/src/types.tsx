@@ -124,6 +124,8 @@ export enum fieldErrorEnum {
   GOAL,
   PAL,
   WPA,
-  EMAIL,
-  PASSWORD,
+  EMAILSIGNIN,
+  PASSWORDSIGNIN,
+  EMAILSIGNUP,
+  PASSWORDSIGNUP,
 }

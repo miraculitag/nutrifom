@@ -85,9 +85,9 @@ export const SignIn = () => {
       })
       .catch((error) => {
         if (error.response.status === 404) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNIN]);
         } else if (error.response.status === 401) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNIN]);
         }
       });
   };
@@ -116,7 +116,7 @@ export const SignIn = () => {
       })
       .catch((error) => {
         if (error.response.status === 400) {
-          setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+          setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNUP]);
           setEmailSignUpError(
             "Es gibt bereits einen Account zu dieser E-Mail-Adresse."
           );
@@ -134,10 +134,10 @@ export const SignIn = () => {
 
   const handleFieldErrorsBeforeSignIn = () => {
     if (!validateEmail(emailSignIn)) {
-      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNIN]);
     }
     if (passwordSignIn === "") {
-      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNIN]);
     }
   };
 
@@ -172,10 +172,10 @@ export const SignIn = () => {
       setFieldErrors((error) => [...error, fieldErrorEnum.WPA]);
     }
     if (!validateEmail(emailSignUp)) {
-      setFieldErrors((error) => [...error, fieldErrorEnum.EMAIL]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNUP]);
     }
     if (passwordSignUp === "") {
-      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORD]);
+      setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNUP]);
     }
   };
 
@@ -309,7 +309,11 @@ export const SignIn = () => {
               required={true}
               autoComplete="email"
               autoFocus={onSignInPage && true}
-              hasError={fieldErrors.includes(fieldErrorEnum.EMAIL)}
+              hasError={
+                onSignInPage
+                  ? fieldErrors.includes(fieldErrorEnum.EMAILSIGNIN)
+                  : fieldErrors.includes(fieldErrorEnum.EMAILSIGNUP)
+              }
               errorText={
                 onSignInPage
                   ? "Es gibt keinen Account zu dieser E-Mail-Adresse."
@@ -324,7 +328,11 @@ export const SignIn = () => {
               required={true}
               type="password"
               autoComplete="current-password"
-              hasError={fieldErrors.includes(fieldErrorEnum.PASSWORD)}
+              hasError={
+                onSignInPage
+                  ? fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNIN)
+                  : fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNUP)
+              }
               errorText={
                 onSignInPage
                   ? "Das Passwort ist falsch."
