@@ -38,10 +38,6 @@ export const Calc = () => {
   const [wpa, setWpa] = React.useState(0);
   const [wpaHasError, setWpaHasError] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
-  const [isBookmarkIconClicked, setIsBookmarkIconClicked] =
-    React.useState(false);
-  const [kcalRequirementChanged, setKcalRequirementChanged] =
-    React.useState(false);
 
   React.useEffect(() => {
     checkDataSuffiency();
@@ -118,11 +114,9 @@ export const Calc = () => {
     return wpa * 0.1;
   };
 
-  const saveKcalGoalToNutrilog = (kcalGoal: number) => {
+  const saveKcalReqAsKcalGoal = (kcalGoal: number) => {
     putAppUserKcalGoal(kcalGoal, auth());
     updateUserAttribute({ kcalGoal: kcalGoal });
-    setIsBookmarkIconClicked(true);
-    setKcalRequirementChanged(false);
   };
 
   const calcGoalDependentPart = (goal: string) => {
@@ -206,7 +200,6 @@ export const Calc = () => {
       : (newKcalRequirement = calcKcalMethodB() + calcGoalDependentPart(goal));
 
     setKcalRequirement(Math.round(newKcalRequirement));
-    setKcalRequirementChanged(true);
   };
 
   return (
@@ -305,14 +298,14 @@ export const Calc = () => {
           >
             {kcalRequirement} kcal
           </Typography>
-          {isBookmarkIconClicked && !kcalRequirementChanged ? (
+          {kcalRequirement === user?.kcalGoal ? (
             <IconButton sx={{ marginLeft: "2%" }}>
               <BookmarkIcon sx={{ color: theme.palette.primary.main }} />
             </IconButton>
           ) : (
             <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
               <IconButton
-                onClick={() => saveKcalGoalToNutrilog(kcalRequirement)}
+                onClick={() => saveKcalReqAsKcalGoal(kcalRequirement)}
                 sx={{ marginLeft: "2%" }}
               >
                 <BookmarkBorderIcon
