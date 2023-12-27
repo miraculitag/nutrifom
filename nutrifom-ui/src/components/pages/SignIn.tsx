@@ -36,7 +36,7 @@ export const SignIn = () => {
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
-  const [weight, setWeight] = React.useState(0);
+  const [initialWeight, setWeight] = React.useState(0);
   const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
   const [goal, setGoal] = React.useState("Bitte wählen");
   const [height, setHeight] = React.useState(0);
@@ -96,7 +96,7 @@ export const SignIn = () => {
     const formattedDob = dob!.format("YYYY-MM-DD");
     registerAppUser({
       name: name,
-      weight: weight,
+      initialWeight: initialWeight,
       dob: formattedDob,
       goal: goal,
       height: height,
@@ -155,7 +155,7 @@ export const SignIn = () => {
     if (height <= 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.HEIGHT]);
     }
-    if (weight <= 0) {
+    if (initialWeight <= 0) {
       setFieldErrors((error) => [...error, fieldErrorEnum.WEIGHT]);
     }
 
@@ -232,7 +232,7 @@ export const SignIn = () => {
                 <FloatInputField
                   label="Gewicht"
                   suffix="kg"
-                  value={weight}
+                  value={initialWeight}
                   setValue={setWeight}
                   hasError={fieldErrors.includes(fieldErrorEnum.WEIGHT)}
                   errorText="Dein Gewicht kann nicht negativ oder 0 sein."
@@ -360,7 +360,7 @@ export const SignIn = () => {
                         dob.isSame(dayjs(new Date()), "day") ||
                         dob.isAfter(dayjs(new Date()), "day") ||
                         height <= 0 ||
-                        weight <= 0 ||
+                        initialWeight <= 0 ||
                         gender === "Bitte wählen" ||
                         goal === "Bitte wählen" ||
                         pal === "Bitte wählen" ||

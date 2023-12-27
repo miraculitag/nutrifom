@@ -6,7 +6,7 @@ export type AuthenticateRequest = {
 
 export type RegisterRequest = {
   name: string;
-  weight: number;
+  initialWeight: number;
   dob: string;
   goal: string;
   height: number;
@@ -95,26 +95,25 @@ export type Recipe = {
 };
 
 export type FoodEntry = {
-  productCode: string,
-  productName:string,
-  proteins: number,
-  carbohydrates: number,
-  energyKcal: number,
-  saturatedFat: number,
-  unsaturatedFat: number,
-  productQuantity: number,
+  productCode: string;
+  productName: string;
+  proteins: number;
+  carbohydrates: number;
+  energyKcal: number;
+  saturatedFat: number;
+  unsaturatedFat: number;
+  productQuantity: number;
 };
 
 export type NutritionData = {
   products: NurtilogEntryRequest[];
-  recipes: any[]; 
+  recipes: any[];
   totalProteins: number;
   totalCarbohydrates: number;
   totalEnergyKcal: number;
   totalSaturatedFat: number;
   totalUnsaturatedFat: number;
 };
-
 
 export enum fieldErrorEnum {
   NAME,

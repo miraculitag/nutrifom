@@ -120,14 +120,12 @@ export const Recipes = () => {
               }
             >
               <Box sx={{ display: "flex", flexDirection: "row" }}>
-                {recipe.image ? (
+                {recipe.image && (
                   <img
                     src={formatImage(recipe.image)}
                     alt={recipe.title}
                     width="10%"
                   />
-                ) : (
-                  <Box sx={{ width: "10%" }} />
                 )}
                 <Box sx={{ paddingLeft: "5%" }}>
                   <Typography
