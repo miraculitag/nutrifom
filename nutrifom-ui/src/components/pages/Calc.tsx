@@ -1,5 +1,4 @@
 import React from "react";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { useAuthHeader } from "react-auth-kit";
 import {
   Box,
@@ -9,6 +8,8 @@ import {
   Tooltip,
   Stack,
 } from "@mui/material";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { InfoAlert } from "../common/InfoAlert";
 import { DropDownMenu } from "../common/DropDownMenu";
 import { BasicButton } from "../common/BasicButton";
@@ -37,6 +38,10 @@ export const Calc = () => {
   const [wpa, setWpa] = React.useState(0);
   const [wpaHasError, setWpaHasError] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
+  const [isBookmarkIconClicked, setIsBookmarkIconClicked] =
+    React.useState(false);
+  const [kcalRequirementChanged, setKcalRequirementChanged] =
+    React.useState(false);
 
   React.useEffect(() => {
     checkDataSuffiency();
@@ -116,6 +121,8 @@ export const Calc = () => {
   const saveKcalGoalToNutrilog = (kcalGoal: number) => {
     putAppUserKcalGoal(kcalGoal, auth());
     updateUserAttribute({ kcalGoal: kcalGoal });
+    setIsBookmarkIconClicked(true);
+    setKcalRequirementChanged(false);
   };
 
   const calcGoalDependentPart = (goal: string) => {
@@ -199,6 +206,7 @@ export const Calc = () => {
       : (newKcalRequirement = calcKcalMethodB() + calcGoalDependentPart(goal));
 
     setKcalRequirement(Math.round(newKcalRequirement));
+    setKcalRequirementChanged(true);
   };
 
   return (
@@ -297,14 +305,22 @@ export const Calc = () => {
           >
             {kcalRequirement} kcal
           </Typography>
-          <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
-            <IconButton
-              onClick={() => saveKcalGoalToNutrilog(kcalRequirement)}
-              sx={{ marginLeft: "2%" }}
-            >
-              <BookmarkBorderIcon sx={{ color: theme.palette.primary.main }} />
+          {isBookmarkIconClicked && !kcalRequirementChanged ? (
+            <IconButton sx={{ marginLeft: "2%" }}>
+              <BookmarkIcon sx={{ color: theme.palette.primary.main }} />
             </IconButton>
-          </Tooltip>
+          ) : (
+            <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
+              <IconButton
+                onClick={() => saveKcalGoalToNutrilog(kcalRequirement)}
+                sx={{ marginLeft: "2%" }}
+              >
+                <BookmarkBorderIcon
+                  sx={{ color: theme.palette.primary.main }}
+                />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       ) : (
         ""
