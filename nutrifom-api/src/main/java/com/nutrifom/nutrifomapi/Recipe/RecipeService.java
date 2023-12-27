@@ -2,11 +2,11 @@ package com.nutrifom.nutrifomapi.Recipe;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import com.nutrifom.nutrifomapi.Rating.Rating;
+import com.nutrifom.nutrifomapi.Rating.RatingRepository;
 import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +23,9 @@ public class RecipeService {
     @Autowired
     private AppUserRepository appUserRepository;
 
+    @Autowired
+    private RatingRepository ratingRepository;
+
     public List<Recipe> getAllRecipes() throws CustomAuthenticationException {
         try {
             Sort sort = Sort.by(Sort.Direction.DESC, "averageRating")
@@ -34,35 +37,39 @@ public class RecipeService {
         }
     }
 
-    public Recipe rateRecipe(Integer recipeId, Integer userId, Double score) throws CustomAuthenticationException {
+    public HttpStatus rateRecipe(Integer recipeId, Integer userId, Double score) throws CustomAuthenticationException {
         try {
             Recipe recipe = recipeRepository.findById(recipeId)
                     .orElseThrow(() -> new CustomAuthenticationException("Recipe not found", HttpStatus.NOT_FOUND));
             AppUser user = appUserRepository.findById(userId)
                     .orElseThrow(() -> new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND));
 
-            Optional<Rating> existingRating = recipe.getRatings().stream()
-                    .filter(r -> r.getAppUser().getId() == userId)
-                    .findFirst();
+            Optional<Rating> existingRatingOptional = ratingRepository.findByAppUserIdAndRecipeId(userId, recipeId);
 
-            if (existingRating.isPresent()) {
-                existingRating.get().setScore(score);
+
+
+            if (existingRatingOptional.isPresent()) {
+                // User has already rated this recipe, update the existing rating
+                Rating existingRating = existingRatingOptional.get();
+                existingRating.setScore(score);
+                ratingRepository.save(existingRating);
             } else {
+                // This is the user's first rating for this recipe, create a new rating
                 Rating newRating = new Rating();
                 newRating.setAppUser(user);
                 newRating.setScore(score);
                 newRating.setRecipe(recipe);
-                recipe.getRatings().add(newRating);
+                ratingRepository.save(newRating);
             }
 
-            double averageRating = recipe.getRatings().stream()
+            // Recalculate the average rating for the recipe
+            double averageRating = ratingRepository.findByRecipeId(recipe.getId()).stream()
                     .mapToDouble(Rating::getScore)
                     .average()
                     .orElse(0.0);
-
             recipe.setAverageRating(averageRating);
-
-            return recipeRepository.save(recipe);
+            recipeRepository.save(recipe);
+            return HttpStatus.OK;
         } catch (CustomAuthenticationException e) {
             throw e;
         } catch (Exception e) {

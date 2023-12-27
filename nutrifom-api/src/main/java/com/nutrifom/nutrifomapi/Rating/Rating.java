@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.Recipe;
+package com.nutrifom.nutrifomapi.Rating;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,8 +21,9 @@ public class Rating {
     @Getter
     @Setter
     private Double score;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
+    @JoinColumn(name = "appUserId")
     @Getter
     @Setter
     private AppUser appUser;

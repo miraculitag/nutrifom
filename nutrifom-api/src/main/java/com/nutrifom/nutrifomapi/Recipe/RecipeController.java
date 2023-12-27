@@ -2,6 +2,7 @@ package com.nutrifom.nutrifomapi.Recipe;
 
 import com.nutrifom.nutrifomapi.AppUser.AppUser;
 import com.nutrifom.nutrifomapi.AppUser.AppUserRepository;
+import com.nutrifom.nutrifomapi.Rating.RecipeRatingDTO;
 import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import com.nutrifom.nutrifomapi.config.JwtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,19 +51,13 @@ public class RecipeController {
             String username = principal.getName();
             Optional<AppUser> userOptional = jwtService.getAppUserFromToken(username);
 
-            if (!userOptional.isPresent()) {
+            if (userOptional.isEmpty()) {
                 throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
             }
-
             int userId = userOptional.get().getId();
-            Optional<AppUser> appUserOptional = appUserRepository.findById(userId);
 
-            if (!appUserOptional.isPresent()) {
-                throw new CustomAuthenticationException("User not found", HttpStatus.NOT_FOUND);
-            }
-
-            Recipe ratedRecipe = recipeService.rateRecipe(ratingDTO.getRecipeId(), userId, ratingDTO.getScore());
-            return new ResponseEntity<>("Recipe " + ratedRecipe.getTitle() + " rated with " + ratingDTO.getScore() + " stars", HttpStatus.OK);
+            recipeService.rateRecipe(ratingDTO.getRecipeId(), userId, ratingDTO.getScore());
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.nutrifom.nutrifomapi.Recipe;
+package com.nutrifom.nutrifomapi.Rating;
 
 import lombok.Getter;
 import lombok.Setter;
