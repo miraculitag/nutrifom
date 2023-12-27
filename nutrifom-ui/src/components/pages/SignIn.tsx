@@ -33,6 +33,9 @@ export const SignIn = () => {
   const [emailSignUpError, setEmailSignUpError] = React.useState(
     "Gib eine gültige E-Mail-Adresse an."
   );
+  const [passwordSignInError, setPasswordSignInError] = React.useState(
+    "Gib ein Passwort an."
+  );
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
@@ -88,6 +91,7 @@ export const SignIn = () => {
           setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNIN]);
         } else if (error.response.status === 401) {
           setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNIN]);
+          setPasswordSignInError("Das Passwort ist falsch.");
         }
       });
   };
@@ -334,9 +338,7 @@ export const SignIn = () => {
                   : fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNUP)
               }
               errorText={
-                onSignInPage
-                  ? "Das Passwort ist falsch."
-                  : "Gib ein Passwort an."
+                onSignInPage ? passwordSignInError : "Gib ein Passwort an."
               }
             />
           </Stack>
