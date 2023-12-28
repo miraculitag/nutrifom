@@ -12,7 +12,7 @@ import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
 import KcalFoodChart from "../partials/KcalFoodChart";
 import {
-  getNutrilog,
+  getNutrilog, putAppUserKcalGoal,
 } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
 import { NurtilogEntryRequest, NutritionData } from "../../types";
@@ -49,7 +49,7 @@ export const Nutrilog = () => {
           console.log("Fehler beim Abrufen des nutrilogs:", error);
         });
     }
-  }, [selectedDate, auth]);
+  }, [selectedDate]);
 
 
   const setLocalStates = () => {

@@ -11,18 +11,18 @@ import { NurtilogEntryRequest } from "../../types";
 
 export interface FoodTableProps {
   nutrilogItems: NurtilogEntryRequest[];
-  onSelectRow: (index: number) => void; // Änderung des Funktionsparameters
+  onSelectRow: (index: number) => void;
 }
 
 
 
 export default function FoodTable(props: FoodTableProps) {
-  const { nutrilogItems, onSelectRow } = props; // Destructuring der Props
+  const { nutrilogItems, onSelectRow } = props;
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   const handleRowClick = (index: number) => {
     setSelectedRow((prevIndex) => (prevIndex === index ? null : index));
-    onSelectRow(index); // Aufruf der onSelectRow-Funktion aus den Props
+    onSelectRow(index);
   };
 
   return (

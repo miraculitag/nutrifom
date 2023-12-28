@@ -1,10 +1,13 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-import { addProductToNutrilog, addRecipeToNutrilog, getRecipes } from "../../api";
+import {
+  addRecipeToNutrilog,
+  getRecipes,
+} from "../../api";
 import { useAuthHeader } from "react-auth-kit";
 import dayjs from "dayjs";
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { Recipe } from "../../types";
 
 export default function RecepieSearch() {
@@ -26,7 +29,6 @@ export default function RecepieSearch() {
     });
   }, []);
 
-
   const handleChangeSearchPortionRecepieText = () => {
     setPortionAmountHasError(false);
     setRecepieSearchHasError(false);
@@ -35,7 +37,7 @@ export default function RecepieSearch() {
 
     addRecipeToNutrilog(
       {
-        recipeId: selectedRecepie?.id || 0 ,
+        recipeId: selectedRecepie?.id || 0,
         entryDate: dateString,
         recipePortions: currentPortionAmount,
       },
@@ -47,44 +49,29 @@ export default function RecepieSearch() {
     });
   };
 
-  const handleSearchTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-      setSelectedRecepie(undefined);
-  };
-
-
-  const handleRecepieSelection = (
-    event: React.SyntheticEvent<Element, Event>,
-    value: any
-  ) => {
-    setSelectedRecepie(value);
-  };
-
-
   return (
     <>
       <Box sx={{ marginBottom: "5%" }}>
         <Autocomplete
-          id="free-solo-2-demo"
-          disableClearable
+          onChange={(event: any, newValue: Recipe | null) => {
+            setSelectedRecepie(newValue || undefined);
+          }}
+          id="controllable-states-demo"
           options={recipes}
-          getOptionLabel={(recipe) => recipe.title}
-          isOptionEqualToValue={(option, value) => option.title === value.title}
-          onChange={handleRecepieSelection}
+          getOptionLabel={(recipes) => recipes?.title || ""}
+          isOptionEqualToValue={(option, value) =>
+            option?.title === value?.title
+          }
           renderInput={(params) => (
             <TextField
+              {...params}
               label="Suche hier nach einem Rezept..."
               variant="standard"
-              onChange={handleSearchTextChange}
-              required={false}
-              {...params}
-              InputProps={{
-                ...params.InputProps,
-                type: "search",
-              }}
               InputLabelProps={{
                 shrink: true,
               }}
               error={recepieSearchHasError}
+              required={true}
               helperText={
                 recepieSearchHasError ? "Du hast kein Rezept ausgewählt." : ""
               }
