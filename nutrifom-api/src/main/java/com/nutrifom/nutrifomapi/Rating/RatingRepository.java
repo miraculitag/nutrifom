@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface RatingRepository extends JpaRepository<Rating, Integer> {
     Optional<Rating> findByAppUserIdAndRecipeId(Integer appUserId, Integer recipeId);
     List<Rating> findByRecipeId(Integer recipeId);
+
+    Integer countByRecipeId(Integer recipeId);
 }

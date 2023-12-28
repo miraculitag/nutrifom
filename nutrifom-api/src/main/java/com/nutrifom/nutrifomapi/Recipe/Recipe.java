@@ -52,16 +52,11 @@ public class Recipe {
     @Setter
     private int uses;
 
-    @OneToMany(mappedBy = "recipe")
-    @JsonManagedReference
-    @JsonIgnore
-    @Getter
-    @Setter
-    private List<Rating> ratings;
-
     @Getter
     @Setter
     private Double averageRating;
+
+
     @Column(name = "Image", columnDefinition = "VARBINARY(MAX)")
     @Getter
     @Setter
@@ -70,5 +65,10 @@ public class Recipe {
     @Getter
     @Setter
     private String tag;
+
+    @Transient
+    @Getter
+    @Setter
+    private long ratingCount;
 
 }

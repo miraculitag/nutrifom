@@ -31,9 +31,28 @@ public class RecipeService {
             Sort sort = Sort.by(Sort.Direction.DESC, "averageRating")
                     .and(Sort.by(Sort.Direction.DESC, "uses"));
 
-            return recipeRepository.findAll(sort);
+            List<Recipe> recipes = recipeRepository.findAll(sort);
+            for (Recipe recipe : recipes) {
+                Integer ratingCount = ratingRepository.countByRecipeId(recipe.getId());
+                recipe.setRatingCount(ratingCount);
+            }
+            return recipes;
         } catch (Exception e) {
             throw new CustomAuthenticationException("Error while getting all recipes", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public Recipe getRecipeById(Integer recipeId) throws CustomAuthenticationException {
+        try {
+            Recipe recipe = recipeRepository.findById(recipeId)
+                    .orElseThrow(() -> new CustomAuthenticationException("Recipe not found", HttpStatus.NOT_FOUND));
+            Integer ratingCount = ratingRepository.countByRecipeId(recipe.getId());
+            recipe.setRatingCount(ratingCount);
+            return recipe;
+        } catch (CustomAuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomAuthenticationException("Error while getting recipe", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -67,6 +86,10 @@ public class RecipeService {
                     .mapToDouble(Rating::getScore)
                     .average()
                     .orElse(0.0);
+
+            // Round the average rating to one decimal place
+            averageRating = Math.round(averageRating * 10.0) / 10.0;
+
             recipe.setAverageRating(averageRating);
             recipeRepository.save(recipe);
             return HttpStatus.OK;

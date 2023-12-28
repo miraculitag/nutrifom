@@ -68,7 +68,7 @@ public class RecipeController {
     @GetMapping("{recipeId}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer recipeId) {
         try {
-            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new CustomAuthenticationException("Recipe not found", HttpStatus.NOT_FOUND));
+            Recipe recipe = recipeService.getRecipeById(recipeId);
             return ResponseEntity.ok(recipe);
         } catch (CustomAuthenticationException e) {
             return ResponseEntity.status(e.getHttpStatus()).body(null);
