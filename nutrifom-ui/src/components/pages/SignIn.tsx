@@ -83,6 +83,7 @@ export const SignIn = () => {
           token: response.data.token,
           tokenType: "Bearer",
           expiresIn: 3600,
+          authState: {},
         });
         navigate("/");
       })
@@ -115,6 +116,7 @@ export const SignIn = () => {
           token: response.data.token,
           tokenType: "Bearer",
           expiresIn: 3600,
+          authState: {},
         });
         navigate("/");
       })
