@@ -1,11 +1,14 @@
 import React, { createContext, useState, useContext, useCallback } from "react";
 import { AppUser } from "./types";
+import { getAppUser } from "./api";
+import { useAuthHeader } from "react-auth-kit";
 
 interface UserContextProps {
   user: AppUser | null;
   setUser: React.Dispatch<React.SetStateAction<AppUser | null>>;
   updateUser: (updatedUser: AppUser) => void;
   updateUserAttribute: (updatedAttributes: Partial<AppUser>) => void;
+  hasFetchedUser: boolean;
 }
 
 const initialUser: AppUser | null = null;
@@ -14,9 +17,25 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(initialUser);
+  const [hasFetchedUser, setHasFetchedUser] = useState(false);
+  const auth = useAuthHeader();
+
+  const getUserData = async () => {
+    const response = await getAppUser(auth());
+    const userData = response.data;
+    setUser(userData);
+    setHasFetchedUser(true);
+  };
+
+  React.useEffect(() => {
+    if (!hasFetchedUser) {
+      getUserData();
+    }
+  }, [hasFetchedUser]);
 
   const updateUser = useCallback((updatedUser: AppUser) => {
     setUser(updatedUser);
+    setHasFetchedUser(true);
   }, []);
 
   const updateUserAttribute = useCallback(
@@ -30,7 +49,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, setUser, updateUser, updateUserAttribute }}
+      value={{ user, setUser, updateUser, updateUserAttribute, hasFetchedUser }}
     >
       {children}
     </UserContext.Provider>
