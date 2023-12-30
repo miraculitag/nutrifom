@@ -1,21 +1,15 @@
 import React from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import {
-  Box,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import FoodTable from "../partials/FoodTable";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
 import KcalFoodChart from "../partials/KcalFoodChart";
-import {
-  getNutrilog, putAppUserKcalGoal,
-} from "../../api";
+import { getNutrilog } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
-import { NurtilogEntryRequest, NutritionData } from "../../types";
+import { NutritionData } from "../../types";
 import { useUser } from "../../userContext";
 import FoodSearch from "../partials/FoodSearch";
 import RecepieSearch from "../partials/RecepieSearch";
@@ -25,14 +19,18 @@ export const Nutrilog = () => {
   const auth = useAuthHeader();
   const { user } = useUser();
   const [kcalGoal, setKcalGoal] = React.useState<number>(0);
-  const [selectedFood, setSelectedFood] =
-    React.useState<NurtilogEntryRequest | null>(null);
+  const [selectedFood, setSelectedFood] = React.useState<any | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
+  const allNutrilogItems = [
+    ...(nutrilog?.products || []),
+    ...(nutrilog?.recipes || []),
+  ];
+  const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
 
   React.useEffect(() => {
     setLocalStates();
@@ -40,22 +38,32 @@ export const Nutrilog = () => {
 
   React.useEffect(() => {
     if (selectedDate) {
+      setSelectedFood(undefined);
       const formattedDate = selectedDate.format("YYYY-MM-DD");
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
         })
         .catch((error) => {
-          console.log("Fehler beim Abrufen des nutrilogs:", error);
+          console.error("Fehler beim Abrufen des nutrilogs:", error);
         });
     }
   }, [selectedDate]);
 
+  React.useEffect(() => {
+    if (selectedRow != null) {
+      setSelectedFood(allNutrilogItems[selectedRow]);
+    } else {
+      setSelectedFood(null);
+    }
+  }, [selectedRow]);
 
   const setLocalStates = () => {
     if (user) {
       setKcalGoal(
-        user.kcalGoal !== undefined && user.kcalGoal !== 0 ? user.kcalGoal : 2000
+        user.kcalGoal !== undefined && user.kcalGoal !== 0
+          ? user.kcalGoal
+          : 2000
       );
     }
     if (selectedDate) {
@@ -63,16 +71,19 @@ export const Nutrilog = () => {
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
-          console.log(response.data)
         })
         .catch((error) => {
-          console.log("Fehler beim Abrufen des nutrilogs (initial):", error);
+          console.error("Fehler beim Abrufen des nutrilogs (initial):", error);
         });
     }
   };
 
   const handleRowClick = (index: number) => {
-    setSelectedFood(nutrilog?.products[index] || null);
+    if (index === selectedRow) {
+      setSelectedRow(null);
+    } else {
+      setSelectedRow(index);
+    }
   };
 
   const handleChangeDateMinusOne = () => {
@@ -81,6 +92,7 @@ export const Nutrilog = () => {
       if (daysDifference < 7) {
         const newDate = selectedDate.subtract(1, "day");
         setSelectedDate(newDate);
+        setSelectedRow(null);
       }
     }
   };
@@ -89,11 +101,12 @@ export const Nutrilog = () => {
     if (selectedDate) {
       const newDate = selectedDate.add(1, "day");
       setSelectedDate(newDate);
-  };}
+      setSelectedRow(null);
+    }
+  };
 
   return (
     <Layout>
-      
       <Box
         sx={{
           display: "grid",
@@ -105,19 +118,22 @@ export const Nutrilog = () => {
         }}
       >
         <Box sx={{ gridArea: "Food" }}>
-        <FoodSearch/>
+          <FoodSearch />
         </Box>
-        
+
         <Box sx={{ gridArea: "Recepie" }}>
-          <RecepieSearch/>
+          <RecepieSearch />
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>
-          <KcalFoodChart totalKcal={kcalGoal} consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}/>
+          <KcalFoodChart
+            totalKcal={kcalGoal}
+            consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}
+          />
         </Box>
 
         <Box sx={{ gridArea: "Foodlog" }}>
-          <Box sx={{ display: "flex", marginBottom: "2%"}}>
+          <Box sx={{ display: "flex", marginBottom: "2%" }}>
             <Typography>Lebenmittel & Rezepte</Typography>
             {selectedDate &&
             !dayjs(selectedDate).isSame(sevenDaysAgo, "day") ? (
@@ -152,7 +168,11 @@ export const Nutrilog = () => {
               ></ArrowForwardIosIcon>
             )}
           </Box>
-
+          <FoodTable
+            nutrilogItems={allNutrilogItems}
+            onSelectRow={handleRowClick}
+            selectedRow={selectedRow}
+          ></FoodTable>
         </Box>
 
         <Box sx={{ gridArea: "Nutrition" }}>
@@ -160,16 +180,30 @@ export const Nutrilog = () => {
             <Typography>Nährwerte</Typography>
           </Box>
           <NutritionalTable
-            energy_kcal={Math.round(selectedFood ? selectedFood.energy_kcal_serving : nutrilog?.totalEnergyKcal || 0)}
-            proteins={Math.round(selectedFood ? selectedFood.proteins_serving : nutrilog?.totalProteins || 0)}
+            energy_kcal={Math.round(
+              selectedFood
+                ? selectedFood.energyKcal
+                : nutrilog?.totalEnergyKcal || 0
+            )}
+            proteins={Math.round(
+              selectedFood
+                ? selectedFood.proteins
+                : nutrilog?.totalProteins || 0
+            )}
             saturatedFat={Math.round(
-              selectedFood ? selectedFood.saturated_fat_serving : nutrilog?.totalSaturatedFat || 0
+              selectedFood
+                ? selectedFood.saturatedFat
+                : nutrilog?.totalSaturatedFat || 0
             )}
             unsaturatedFat={Math.round(
-              selectedFood ? selectedFood.unsaturated_fat_serving : nutrilog?.totalUnsaturatedFat || 0
+              selectedFood
+                ? selectedFood.unsaturatedFat
+                : nutrilog?.totalUnsaturatedFat || 0
             )}
             carbohydrates={Math.round(
-              selectedFood ? selectedFood.carbohydrates_serving : nutrilog?.totalCarbohydrates || 0
+              selectedFood
+                ? selectedFood.carbohydrates
+                : nutrilog?.totalCarbohydrates || 0
             )}
           />
         </Box>

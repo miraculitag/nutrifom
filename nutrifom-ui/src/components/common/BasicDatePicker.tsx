@@ -13,6 +13,7 @@ export interface BasicDatePickerProps {
   onChange: (value: Dayjs | null) => void;
   required: boolean;
   disablePast?: boolean;
+  disableFuture?: boolean;
   hasError?: boolean;
   errorText?: string;
 }
@@ -44,6 +45,7 @@ export const BasicDatePicker = (props: BasicDatePickerProps) => {
           label={props.label}
           onChange={props.onChange}
           disablePast={props.disablePast}
+          disableFuture={props.disableFuture}
           slotProps={{
             shortcuts: {
               items: shortcutsItems,

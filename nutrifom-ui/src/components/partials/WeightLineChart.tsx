@@ -41,13 +41,16 @@ export default function WeightLineChart() {
       (entry) => dayjs(entry.entryDate).format("YYYY-MM-DD") === date
     );
 
-    return weightData ? weightData.weight : null
-
+    return weightData ? weightData.weight : null;
   });
 
-const filteredDataPoints = dataPoints.map((value) => (value !== null ? value : 0));
-const maxValue = Math.max(...filteredDataPoints) >= 110 ? Math.max(...filteredDataPoints) * 1.1 : 110;
-
+  const filteredDataPoints = dataPoints.map((value) =>
+    value !== null ? value : 0
+  );
+  const maxValue =
+    Math.max(...filteredDataPoints) >= 110
+      ? Math.max(...filteredDataPoints) * 1.1
+      : 110;
 
   return (
     <>
@@ -65,13 +68,17 @@ const maxValue = Math.max(...filteredDataPoints) >= 110 ? Math.max(...filteredDa
               scaleType: "point",
             },
           ]}
-          yAxis={[{ 
-            min: 40, 
-            max: maxValue
-          }]}
+          yAxis={[
+            {
+              min: 40,
+              max: maxValue,
+            },
+          ]}
           series={[
-            {              
-              data:dataPoints,
+            {
+              data: dataPoints,
+              valueFormatter: (value) =>
+                value == null ? "n.a." : value.toString() + " kg",
               color: theme.palette.primary.main,
             },
           ]}

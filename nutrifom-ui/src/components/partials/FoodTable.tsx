@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -7,37 +6,48 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { NurtilogEntryRequest } from "../../types";
 
 export interface FoodTableProps {
-  nutrilogItems: NurtilogEntryRequest[];
+  nutrilogItems: any[] | undefined;
   onSelectRow: (index: number) => void;
+  selectedRow: number | null;
+}
+
+function getEntryName(entry: any): string {
+  if ("productCode" in entry && "productName" in entry) {
+    return entry.productName.concat(" [g]");;
+  } else if ("recipeId" in entry && "recipeTitle" in entry) {
+    return entry.recipeTitle.concat(" [Portion(en)]");
+  }
+  return "Unbekannter Name";
+}
+
+function getQuantity(entry: any): string {
+  if ("productCode" in entry && "productName" in entry) {
+    return entry.productQuantity;
+  } else if ("recipeId" in entry && "recipeTitle" in entry) {
+    return entry.portions;
+  }
+  return "Unbekannter Name";
 }
 
 
-
 export default function FoodTable(props: FoodTableProps) {
-  const { nutrilogItems, onSelectRow } = props;
-  const [selectedRow, setSelectedRow] = useState<number | null>(null);
-
-  const handleRowClick = (index: number) => {
-    setSelectedRow((prevIndex) => (prevIndex === index ? null : index));
-    onSelectRow(index);
-  };
+  const { nutrilogItems } = props;
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          {nutrilogItems.map((food, index) => (
+          {nutrilogItems?.map((entry, entryIndex) => (
             <TableRow
-              key={index}
-              onClick={() => handleRowClick(index)}
-              selected={index === selectedRow}
+              key={entryIndex}
+              onClick={() => props.onSelectRow(entryIndex)}
+              selected={entryIndex === props.selectedRow}
               sx={{ cursor: "pointer" }}
             >
-              <TableCell>{food.productName}{` [Gramm / Portionen]`}</TableCell>
-              <TableCell>{food.product_quantity}</TableCell>
+              <TableCell>{getEntryName(entry)}</TableCell>
+              <TableCell>{getQuantity(entry)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

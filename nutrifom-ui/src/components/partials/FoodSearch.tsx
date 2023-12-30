@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React from "react";
 import { Box, Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
@@ -20,18 +20,16 @@ export default function FoodSearch() {
     FoodEntry | undefined
   >();
 
-
   React.useEffect(() => {
     if (searchTextFood) {
       if (!selectedFood) {
         try {
           searchOFF(searchTextFood, auth()).then((response) => {
             setApiData(response.data);
-            console.log(response.data);
           });
         } catch (error) {
           console.log("Fehler beim Abrufen der offSearch:", error);
-        } 
+        }
       }
     }
   }, [searchTextFood]);
@@ -59,38 +57,38 @@ export default function FoodSearch() {
   return (
     <>
       <Box sx={{ marginBottom: "5%" }}>
-          <Autocomplete
-            onChange={(event: any, newValue: FoodEntry | null) => {
-              setSelectedFood(newValue || undefined);
-            }}
-            inputValue={searchTextFood}
-            onInputChange={(event, newInputValue) => {
-              setSearchTextFood(newInputValue);
-            }}
-            id="controllable-states-demo"
-            options={apiData}
-            getOptionLabel={(apiData) => apiData?.productName || ""}
-            isOptionEqualToValue={(option, value) =>
-              option?.productCode === value?.productCode
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Suche hier nach einem Lebensmittel..."
-                variant="standard"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                error={FoodSearchHasError}
-                required={true}
-                helperText={
-                  FoodSearchHasError
-                    ? "Du hast kein Lebensmittel eingegeben."
-                    : ""
-                }
-              />
-            )}
-          />
+        <Autocomplete
+          onChange={(event: any, newValue: FoodEntry | null) => {
+            setSelectedFood(newValue || undefined);
+          }}
+          inputValue={searchTextFood}
+          onInputChange={(event, newInputValue) => {
+            setSearchTextFood(newInputValue);
+          }}
+          id="controllable-states-demo"
+          options={apiData}
+          getOptionLabel={(apiData) => apiData?.productName || ""}
+          isOptionEqualToValue={(option, value) =>
+            option?.productCode === value?.productCode
+          }
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Suche hier nach einem Lebensmittel..."
+              variant="standard"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              error={FoodSearchHasError}
+              required={true}
+              helperText={
+                FoodSearchHasError
+                  ? "Du hast kein Lebensmittel eingegeben."
+                  : ""
+              }
+            />
+          )}
+        />
       </Box>
       <Box sx={{ marginBottom: "5%" }}>
         <FloatInputField

@@ -38,8 +38,9 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
   const theme = useTheme();
   const [remainingKcal, setRemainingKcal] = React.useState(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);
-  const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] = React.useState(0);
-  
+  const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] =
+    React.useState(0);
+
   React.useEffect(() => {
     if (props.totalKcal >= props.consumedKcal) {
       setRemainingKcal(props.totalKcal - props.consumedKcal);
@@ -51,22 +52,25 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
       setOverConsumedRemainingKcal(props.totalKcal - overConsumedKcal);
     }
   }, [props.totalKcal, props.consumedKcal, overConsumedKcal]);
-  
 
   const overconsumedData = [
-    {value: overConsumedKcal, color: "red"},
-    {value: overConsumedRemainingKcal, color: "white"}
+    { value: overConsumedKcal, color: "red" },
+    { value: overConsumedRemainingKcal, color: "white" },
   ];
 
   const data = [
-    { value: props.consumedKcal, label: "Verzehrt", color:theme.palette.primary.main },
-    { value: remainingKcal, label: "Verbleibend" , color: "lightgrey"},
+    {
+      value: props.consumedKcal,
+      label: "Verzehrt",
+      color: theme.palette.primary.main,
+    },
+    { value: remainingKcal, label: "Verbleibend", color: "lightgrey" },
   ];
 
   return (
     <>
       <PieChart
-       margin={{left: 60}}
+        margin={{ left: 60 }}
         series={[
           {
             data,
@@ -74,7 +78,7 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
             innerRadius: 50,
           },
           {
-            data: overconsumedData, 
+            data: overconsumedData,
             innerRadius: 70,
           },
         ]}
@@ -84,8 +88,9 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
         slotProps={{
           legend: {
             hidden: true,
-          }}}
-          tooltip={{ trigger: 'none', }}
+          },
+        }}
+        tooltip={{ trigger: "none" }}
       >
         <PieCenterLabel>
           {[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}
