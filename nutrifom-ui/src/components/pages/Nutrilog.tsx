@@ -17,24 +17,28 @@ import RecepieSearch from "../partials/RecepieSearch";
 export const Nutrilog = () => {
   const theme = useTheme();
   const auth = useAuthHeader();
-  const { user } = useUser();
   const [kcalGoal, setKcalGoal] = React.useState<number>(0);
   const [selectedFood, setSelectedFood] = React.useState<any | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
-
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const allNutrilogItems = [
-    ...(nutrilog?.products || []),
-    ...(nutrilog?.recipes || []),
-  ];
+  const [allNutrilogItems, setAllNutrilogItems] = React.useState([[],[]
+
+  ]);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
+  const { user, hasFetchedUser } = useUser();
 
   React.useEffect(() => {
-    setLocalStates();
-  }, []);
+    if (user) {
+      setKcalGoal(
+        user.kcalGoal !== undefined && user.kcalGoal !== 0
+          ? user.kcalGoal
+          : 2000
+      );
+    }
+  }, [user, hasFetchedUser]);
 
   React.useEffect(() => {
     if (selectedDate) {
@@ -43,6 +47,10 @@ export const Nutrilog = () => {
       getNutrilog(formattedDate, auth())
         .then((response) => {
           setNutrilog(response.data);
+          setAllNutrilogItems([
+            ...(response.data?.products || []),
+            ...(response.data?.recipes || []),
+          ]);
         })
         .catch((error) => {
           console.error("Fehler beim Abrufen des nutrilogs:", error);
@@ -58,26 +66,6 @@ export const Nutrilog = () => {
     }
   }, [selectedRow]);
 
-  const setLocalStates = () => {
-    if (user) {
-      setKcalGoal(
-        user.kcalGoal !== undefined && user.kcalGoal !== 0
-          ? user.kcalGoal
-          : 2000
-      );
-    }
-    if (selectedDate) {
-      const formattedDate = selectedDate.format("YYYY-MM-DD");
-      getNutrilog(formattedDate, auth())
-        .then((response) => {
-          setNutrilog(response.data);
-        })
-        .catch((error) => {
-          console.error("Fehler beim Abrufen des nutrilogs (initial):", error);
-        });
-    }
-  };
-
   const handleRowClick = (index: number) => {
     if (index === selectedRow) {
       setSelectedRow(null);
@@ -88,6 +76,7 @@ export const Nutrilog = () => {
 
   const handleChangeDateMinusOne = () => {
     if (selectedDate) {
+      
       const daysDifference = dayjs().diff(selectedDate, "day");
       if (daysDifference < 7) {
         const newDate = selectedDate.subtract(1, "day");
@@ -105,6 +94,20 @@ export const Nutrilog = () => {
     }
   };
 
+
+
+  const handleAddEntry = async () => {
+    if (selectedDate) {
+    const formattedDate = selectedDate.format("YYYY-MM-DD");
+    const response = await getNutrilog(formattedDate, auth());
+        setNutrilog(response.data);
+        setAllNutrilogItems([
+          ...(response.data?.products || []),
+          ...(response.data?.recipes || []),
+        ]);
+      }
+  };
+
   return (
     <Layout>
       <Box
@@ -118,11 +121,11 @@ export const Nutrilog = () => {
         }}
       >
         <Box sx={{ gridArea: "Food" }}>
-          <FoodSearch />
+          <FoodSearch selectedDate={selectedDate} onNutrilogUpdate={handleAddEntry} />
         </Box>
 
         <Box sx={{ gridArea: "Recepie" }}>
-          <RecepieSearch />
+          <RecepieSearch  selectedDate={selectedDate} onNutrilogUpdate={handleAddEntry} />
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>

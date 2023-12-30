@@ -3,11 +3,17 @@ import { Box, Autocomplete, TextField, CircularProgress } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 import { addProductToNutrilog, searchOFF } from "../../api";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import useAuthHeader from "react-auth-kit/dist/hooks/useAuthHeader";
-import { FoodEntry } from "../../types";
+import { FoodEntry, NutritionData } from "../../types";
 
-export default function FoodSearch() {
+interface FoodSearchProps {
+  onNutrilogUpdate: () => void;
+  selectedDate: Dayjs | null;
+}
+
+
+export default function FoodSearch(props: FoodSearchProps) {
   const auth = useAuthHeader();
   const currentDate = dayjs().format("YYYY-MM-DD");
   const [isButtonClicked] = React.useState(false);
@@ -34,13 +40,14 @@ export default function FoodSearch() {
     }
   }, [searchTextFood]);
 
-  const handleChangeSearchFoodTextAmount = () => {
+
+  const handleChangeSearchFoodTextAmount = async () => {
     setFoodAmountHasError(false);
     setFoodSearchHasError(false);
 
-    const dateString: string = currentDate;
+    const dateString: string = props.selectedDate?.format("YYYY-MM-DD") || currentDate;
 
-    addProductToNutrilog(
+    await addProductToNutrilog(
       {
         productCode: selectedFood?.productCode || "",
         entryDate: dateString,
@@ -52,6 +59,7 @@ export default function FoodSearch() {
         console.log("Error 403 while putting weight:", auth());
       }
     });
+    props.onNutrilogUpdate();    
   };
 
   return (

@@ -10,8 +10,9 @@ import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
 import { useAuthHeader } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
-
 export const Weight = () => {
+  
+
   const theme = useTheme();
   const auth = useAuthHeader();
   const [isButtonClicked] = React.useState(false);
@@ -29,7 +30,7 @@ export const Weight = () => {
     description:
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
-  const fourteenDaysAgo = dayjs().subtract(14, "day");
+
 
   const handleAddWeightClick = () => {
     setWeightHasError(false);

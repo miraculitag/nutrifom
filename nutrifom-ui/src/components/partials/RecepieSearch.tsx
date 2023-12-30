@@ -6,11 +6,16 @@ import {
   getRecipes,
 } from "../../api";
 import { useAuthHeader } from "react-auth-kit";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 import { Recipe } from "../../types";
 
-export default function RecepieSearch() {
+interface RecipeSearchProps {
+  onNutrilogUpdate: () => void;
+  selectedDate: Dayjs | null;
+}
+
+export default function RecepieSearch(props: RecipeSearchProps) {
   const auth = useAuthHeader();
   const [isButtonClicked] = React.useState(false);
   const currentDate = dayjs().format("YYYY-MM-DD");
@@ -33,7 +38,7 @@ export default function RecepieSearch() {
     setPortionAmountHasError(false);
     setRecepieSearchHasError(false);
 
-    const dateString: string = currentDate;
+    const dateString: string = props.selectedDate?.format("YYYY-MM-DD") || currentDate;
 
     addRecipeToNutrilog(
       {
@@ -47,6 +52,7 @@ export default function RecepieSearch() {
         console.log("Error 403 while putting weight:", auth());
       }
     });
+    props.onNutrilogUpdate();  
   };
 
   return (
