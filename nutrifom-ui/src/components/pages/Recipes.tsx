@@ -163,6 +163,7 @@ export const Recipes = () => {
                     sx={{
                       display: "flex",
                       flexDirection: "row",
+                      alignItems: "center",
                     }}
                   >
                     <Rating
@@ -172,9 +173,27 @@ export const Recipes = () => {
                       onChange={handleRatingChange(recipe.id)}
                     />
                     <Typography
-                      sx={{ color: "text.secondary", marginLeft: "1%" }}
+                      sx={{
+                        color: "text.secondary",
+                        marginLeft: "1%",
+                        fontSize: "75%",
+                        fontWeight: "bold",
+                      }}
                     >
-                      {"(" + recipe.averageRating + ")"}
+                      {recipe.averageRating === 0
+                        ? recipe.averageRating
+                        : recipe.averageRating.toFixed(1)}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "text.secondary",
+                        marginLeft: "1%",
+                        fontSize: "75%",
+                      }}
+                    >
+                      {recipe.ratingCount === 1
+                        ? "(" + recipe.ratingCount + " Bewertung)"
+                        : "(" + recipe.ratingCount + " Bewertungen)"}
                     </Typography>
                   </Box>
                   <Typography sx={{ color: "text.secondary" }}>

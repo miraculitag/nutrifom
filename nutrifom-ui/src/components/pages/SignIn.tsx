@@ -21,6 +21,7 @@ import { PalTable } from "../common/PalTable";
 import { TextInputField } from "../common/TextInputField";
 import { authenticateAppUser, registerAppUser } from "../../api";
 import { fieldErrorEnum } from "../../types";
+import { jwtDecode } from "jwt-decode";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
@@ -79,10 +80,13 @@ export const SignIn = () => {
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
       .then((response) => {
+        const decodedToken = jwtDecode(response.data.token);
+        const time = decodedToken.exp || 3600;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: 3600,
+          expiresIn: time,
+          authState: {},
         });
         navigate("/");
       })
@@ -111,10 +115,13 @@ export const SignIn = () => {
       password: passwordSignUp,
     })
       .then((response) => {
+        const decodedToken = jwtDecode(response.data.token);
+        const time = decodedToken.exp || 3600;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: 3600,
+          expiresIn: time,
+          authState: {},
         });
         navigate("/");
       })

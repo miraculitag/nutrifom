@@ -14,13 +14,13 @@ import { UserProvider } from "./userContext";
 
 export default function App() {
   return (
-    <UserProvider>
-      <AuthProvider
-        authType={"cookie"}
-        authName={"_auth"}
-        cookieDomain={window.location.hostname}
-        cookieSecure={true}
-      >
+    <AuthProvider
+      authType={"cookie"}
+      authName={"_auth"}
+      cookieDomain={window.location.hostname}
+      cookieSecure={true}
+    >
+      <UserProvider>
         <ThemeProvider theme={nutrifomTheme}>
           <Router>
             <Routes>
@@ -76,7 +76,7 @@ export default function App() {
             </Routes>
           </Router>
         </ThemeProvider>
-      </AuthProvider>
-    </UserProvider>
+      </UserProvider>
+    </AuthProvider>
   );
 }

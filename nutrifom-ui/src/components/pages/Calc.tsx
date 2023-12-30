@@ -38,15 +38,15 @@ export const Calc = () => {
   const [wpa, setWpa] = React.useState(0);
   const [wpaHasError, setWpaHasError] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
+  const { user, updateUserAttribute, hasFetchedUser } = useUser();
 
   React.useEffect(() => {
     checkDataSuffiency();
     setLocalStates();
-  }, []);
+  }, [hasFetchedUser]);
 
   const theme = useTheme();
   const auth = useAuthHeader();
-  const { user, updateUserAttribute } = useUser();
 
   const checkDataSuffiency = async () => {
     const weightResponse = await getWeightLast14Days(auth());

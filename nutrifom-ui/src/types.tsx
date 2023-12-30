@@ -79,6 +79,7 @@ export type Recipe = {
   description: string;
   uses: number;
   averageRating: number;
+  ratingCount: number;
   image: string;
   tag: string;
 };

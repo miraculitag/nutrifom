@@ -4,20 +4,9 @@ import { Alert, Box, Grid, Stack, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import { JustifiedTypography } from "../common/JustifiedTypography";
 import { Layout } from "../layout/Layout";
-import { getAppUser } from "../../api";
-import { useUser } from "../../userContext";
-import { useAuthHeader } from "react-auth-kit";
 
 export const Home = () => {
   const theme = useTheme();
-  const auth = useAuthHeader();
-  const { updateUser } = useUser();
-
-  React.useEffect(() => {
-    getAppUser(auth()).then((response) => {
-      updateUser(response.data);
-    });
-  }, [updateUser]);
 
   const aboutNutrifom =
     'Die nutrifom GmbH stellt ihre Kunden in den Vordergrund. Seit 2023 schafft die nutrifom GmbH neue Lösungen zur Unterstützung bei einer gesunden Ernährung. "nutrifom" die Webanwendung stellt hierbei das Erreichen deiner individuellen Ziele in den Fokus. Hier findest du eine Übersicht und eine Vorstellung der enthaltenen Features und außerdem einige hilfreiche Tipps für eine gesunde Ernährung. Falls du Hilfe benötigen solltest, kontaktiere uns gerne über das Kontaktfeld. Dieses findest du am unteren Seitenrand.';
