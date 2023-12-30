@@ -26,11 +26,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const userData = response.data;
     setUser(userData);
     setHasFetchedUser(true);
+    console.log(userData);
   };
 
   React.useEffect(() => {
     if (isAuthenticated() && !hasFetchedUser) {
       getUserData();
+    } else if (!isAuthenticated()) {
+      setUser(null);
+      setHasFetchedUser(false);
     }
   }, [hasFetchedUser, isAuthenticated()]);
 
