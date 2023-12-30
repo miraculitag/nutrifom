@@ -26,7 +26,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const userData = response.data;
     setUser(userData);
     setHasFetchedUser(true);
-    console.log(userData);
   };
 
   React.useEffect(() => {
