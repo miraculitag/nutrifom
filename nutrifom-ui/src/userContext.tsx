@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useCallback } from "react";
 import { AppUser } from "./types";
 import { getAppUser } from "./api";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
 
 interface UserContextProps {
   user: AppUser | null;
@@ -19,6 +19,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(initialUser);
   const [hasFetchedUser, setHasFetchedUser] = useState(false);
   const auth = useAuthHeader();
+  const isAuthenticated = useIsAuthenticated();
 
   const getUserData = async () => {
     const response = await getAppUser(auth());
@@ -28,10 +29,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   React.useEffect(() => {
-    if (!hasFetchedUser) {
+    if (isAuthenticated() && !hasFetchedUser) {
       getUserData();
     }
-  }, [hasFetchedUser]);
+  }, [hasFetchedUser, isAuthenticated()]);
 
   const updateUser = useCallback((updatedUser: AppUser) => {
     setUser(updatedUser);
