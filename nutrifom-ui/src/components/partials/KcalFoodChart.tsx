@@ -61,8 +61,7 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
   const data = [
     {
       value: props.consumedKcal,
-      label: "Verzehrt",
-      color: theme.palette.primary.main,
+      color: props.consumedKcal <= (props.totalKcal - 200) ? "red" : theme.palette.primary.main,
     },
     { value: remainingKcal, label: "Verbleibend", color: "lightgrey" },
   ];
@@ -74,12 +73,13 @@ export default function KalcFoodChart(props: KcalFoodChartProps) {
         series={[
           {
             data,
-            outerRadius: 70,
+            outerRadius: 75,
             innerRadius: 50,
           },
           {
             data: overconsumedData,
-            innerRadius: 70,
+            innerRadius: 80,
+            outerRadius: 65,
           },
         ]}
         sx={{

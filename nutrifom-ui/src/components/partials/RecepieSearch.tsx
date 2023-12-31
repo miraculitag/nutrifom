@@ -34,14 +34,14 @@ export default function RecepieSearch(props: RecipeSearchProps) {
     });
   }, []);
 
-  const handleChangeSearchPortionRecepieText = () => {
+  const handleChangeSearchPortionRecepieText = async () => {
     setPortionAmountHasError(false);
     setRecepieSearchHasError(false);
 
     const dateString: string =
       props.selectedDate?.format("YYYY-MM-DD") || currentDate;
 
-    addRecipeToNutrilog(
+    await addRecipeToNutrilog(
       {
         recipeId: selectedRecepie?.id || 0,
         entryDate: dateString,

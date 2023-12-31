@@ -27,9 +27,18 @@ export const Nutrilog = () => {
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const [allNutrilogItems, setAllNutrilogItems] = React.useState([[], []]);
+  const [allNutrilogItems, setAllNutrilogItems] = React.useState([
+    ...(nutrilog?.products || []),
+    ...(nutrilog?.recipes || []),
+  ]);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const { user, hasFetchedUser } = useUser();
+
+  
+  React.useEffect(() => {
+    handleUpdateNutrilog()
+  }, [selectedDate]);
+
 
   React.useEffect(() => {
     if (user) {
@@ -39,25 +48,7 @@ export const Nutrilog = () => {
           : 2000
       );
     }
-  }, [user, hasFetchedUser]);
-
-  React.useEffect(() => {
-    if (selectedDate) {
-      setSelectedFood(undefined);
-      const formattedDate = selectedDate.format("YYYY-MM-DD");
-      getNutrilog(formattedDate, auth(), signOut, navigate)
-        .then((response) => {
-          setNutrilog(response.data);
-          setAllNutrilogItems([
-            ...(response.data?.products || []),
-            ...(response.data?.recipes || []),
-          ]);
-        })
-        .catch((error) => {
-          console.error("Fehler beim Abrufen des nutrilogs:", error);
-        });
-    }
-  }, [selectedDate]);
+  }, [hasFetchedUser]);
 
   React.useEffect(() => {
     if (selectedRow != null) {
@@ -72,6 +63,23 @@ export const Nutrilog = () => {
       setSelectedRow(null);
     } else {
       setSelectedRow(index);
+    }
+  };
+
+  const handleUpdateNutrilog = async () => {
+    if (selectedDate) {
+      const formattedDate = selectedDate.format("YYYY-MM-DD");
+      const response = await getNutrilog(
+        formattedDate,
+        auth(),
+        signOut,
+        navigate
+      );
+      setNutrilog(response.data);
+      setAllNutrilogItems([
+        ...(response.data?.products || []),
+        ...(response.data?.recipes || []),
+      ]);
     }
   };
 
@@ -94,23 +102,6 @@ export const Nutrilog = () => {
     }
   };
 
-  const handleAddEntry = async () => {
-    if (selectedDate) {
-      const formattedDate = selectedDate.format("YYYY-MM-DD");
-      const response = await getNutrilog(
-        formattedDate,
-        auth(),
-        signOut,
-        navigate
-      );
-      setNutrilog(response.data);
-      setAllNutrilogItems([
-        ...(response.data?.products || []),
-        ...(response.data?.recipes || []),
-      ]);
-    }
-  };
-
   return (
     <Layout>
       <Box
@@ -126,14 +117,14 @@ export const Nutrilog = () => {
         <Box sx={{ gridArea: "Food" }}>
           <FoodSearch
             selectedDate={selectedDate}
-            onNutrilogUpdate={handleAddEntry}
+            onNutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 
         <Box sx={{ gridArea: "Recepie" }}>
           <RecepieSearch
             selectedDate={selectedDate}
-            onNutrilogUpdate={handleAddEntry}
+            onNutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 

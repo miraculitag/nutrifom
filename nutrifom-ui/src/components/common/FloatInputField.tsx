@@ -24,7 +24,7 @@ export const FloatInputField = (props: FloatInputFieldProps) => {
         background: "white",
       }}
       onChange={(e) => {
-        props.setValue(parseFloat(e.target.value));
+        props.setValue(parseFloat(e.target.value) || 0);
       }}
       InputProps={{
         endAdornment: (

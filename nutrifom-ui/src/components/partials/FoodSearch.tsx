@@ -5,7 +5,7 @@ import { BasicButton } from "../common/BasicButton";
 import { addProductToNutrilog, searchOFF } from "../../api";
 import dayjs, { Dayjs } from "dayjs";
 import useAuthHeader from "react-auth-kit/dist/hooks/useAuthHeader";
-import { FoodEntry, NutritionData } from "../../types";
+import { FoodEntry } from "../../types";
 import { useSignOut } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
 

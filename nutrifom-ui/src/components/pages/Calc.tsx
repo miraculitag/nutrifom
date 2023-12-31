@@ -42,7 +42,7 @@ export const Calc = () => {
   const { user, updateUserAttribute, hasFetchedUser } = useUser();
 
   React.useEffect(() => {
-    checkDataSuffiency();
+    checkDataSufficiency();
     setLocalStates();
   }, [hasFetchedUser]);
 
@@ -51,7 +51,7 @@ export const Calc = () => {
   const signOut = useSignOut();
   const navigate = useNavigate();
 
-  const checkDataSuffiency = async () => {
+  const checkDataSufficiency = async () => {
     const weightResponse = await getWeightLast14Days(auth(), signOut, navigate);
 
     const kcalResponse = await getKcalLast14Days(auth(), signOut, navigate);
@@ -78,7 +78,7 @@ export const Calc = () => {
   const infoTextDataBased = {
     title: "Berechnung des Kalorienbedarfs:",
     description:
-      "Dein Kalorienbedarf wird auf Grundlage deiner Nutriprotokolle und deines Gewichtsverlaufs der letzten eingetragenen 14 Tage berechnet. Achte am besten darauf, eine ähnliche Menge an Kohlenhydraten und Salz zu dir zunehmen, um Gewichtsschwankungen verursacht durch Wassereinlagerungen vorzubeugen. Achte außerdem darauf dein tägliches Kalorienziel bestmöglich einzuhalten. Beide Faktoren helfen bei einer möglichst genauen Berechnung deines Kalorienbedarfs!",
+      "Dein Kalorienbedarf wird auf Grundlage deiner Nutriprotokolle und deines Gewichtsverlaufs der letzten eingetragenen 14 Tage berechnet. Achte am besten darauf, eine ähnliche Menge an Kohlenhydraten und Salz zu dir zunehmen, um Gewichtsschwankungen, verursacht durch Wassereinlagerungen, vorzubeugen. Achte außerdem darauf, dein tägliches Kalorienziel bestmöglich einzuhalten. Beide Faktoren helfen bei einer möglichst genauen Berechnung deines Kalorienbedarfs!",
   };
 
   const infoTextFormula = {

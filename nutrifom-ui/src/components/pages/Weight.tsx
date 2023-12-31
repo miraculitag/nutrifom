@@ -11,6 +11,8 @@ import dayjs, { Dayjs } from "dayjs";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
 import { useNavigate } from "react-router-dom";
+
+
 export const Weight = () => {
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -31,6 +33,7 @@ export const Weight = () => {
     description:
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
+  const [weightUpdate, setWeightUpdate] = React.useState(0);
 
   const handleAddWeightClick = () => {
     setWeightHasError(false);
@@ -38,7 +41,6 @@ export const Weight = () => {
 
     const dateString: string =
       selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
-    if (currentWeight >= 0) {
       addWeightEntry(
         { weight: currentWeight, entryDate: dateString },
         auth(),
@@ -49,7 +51,8 @@ export const Weight = () => {
           console.log("Error 403 while putting weight:", auth());
         }
       });
-    }
+    setWeightUpdate((prevValue) => prevValue + 1);
+    console.log(weightUpdate)
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {
@@ -66,7 +69,7 @@ export const Weight = () => {
           width: "100%",
         }}
       >
-        <WeightLineChart />
+        <WeightLineChart weightUpdate={weightUpdate} />
         <Box
           sx={{
             display: "flex",
@@ -107,7 +110,7 @@ export const Weight = () => {
                 value={currentWeight}
                 setValue={setCurrentWeight}
                 hasError={weightHasError}
-                errorText="Dein Gewicht kann nicht negativ oder 0 sein."
+                errorText="Dein Gewicht kann nicht kleiner als 40 sein."
                 width="100%"
                 required={true}
               />
@@ -118,12 +121,12 @@ export const Weight = () => {
               isButtonClicked={isButtonClicked}
               onButtonClick={(e) => {
                 if (
-                  currentWeight <= 0 ||
+                  currentWeight < 40 ||
                   isNaN(currentWeight) ||
                   selectedDate === null ||
                   dayjs().diff(selectedDate, "day") >= 14
                 ) {
-                  if (currentWeight <= 0 || isNaN(currentWeight)) {
+                  if (currentWeight < 40 || isNaN(currentWeight)) {
                     setWeightHasError(true);
                   } else {
                     setWeightHasError(false);
