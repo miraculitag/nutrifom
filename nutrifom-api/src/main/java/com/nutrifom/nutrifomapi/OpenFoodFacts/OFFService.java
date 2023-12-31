@@ -87,7 +87,7 @@ public class OFFService {
             if (product.has("product_quantity")) {
                 Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
 
-                if (productQuantityDouble == null) {
+                if (productQuantityDouble == null || productQuantityDouble <= 0.0) {
                     // handle the error, for example, skip this product
                     continue;
                 }
