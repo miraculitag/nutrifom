@@ -8,13 +8,14 @@ import { JustifiedTypography } from "../common/JustifiedTypography";
 import { Layout } from "../layout/Layout";
 import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
+import { useNavigate } from "react-router-dom";
 export const Weight = () => {
-  
-
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const [isButtonClicked] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
@@ -31,7 +32,6 @@ export const Weight = () => {
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
 
-
   const handleAddWeightClick = () => {
     setWeightHasError(false);
     setDateHasError(false);
@@ -41,7 +41,9 @@ export const Weight = () => {
     if (currentWeight >= 0) {
       addWeightEntry(
         { weight: currentWeight, entryDate: dateString },
-        auth()
+        auth(),
+        signOut,
+        navigate
       ).catch((error) => {
         if (error.response.status === 403) {
           console.log("Error 403 while putting weight:", auth());

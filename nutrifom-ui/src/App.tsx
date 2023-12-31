@@ -20,9 +20,9 @@ export default function App() {
       cookieDomain={window.location.hostname}
       cookieSecure={true}
     >
-      <UserProvider>
-        <ThemeProvider theme={nutrifomTheme}>
-          <Router>
+      <ThemeProvider theme={nutrifomTheme}>
+        <Router>
+          <UserProvider>
             <Routes>
               <Route path="/signin" element={<SignIn />} />
               <Route
@@ -74,9 +74,9 @@ export default function App() {
                 }
               />
             </Routes>
-          </Router>
-        </ThemeProvider>
-      </UserProvider>
+          </UserProvider>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

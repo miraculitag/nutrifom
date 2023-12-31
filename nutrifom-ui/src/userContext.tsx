@@ -1,7 +1,8 @@
 import React, { createContext, useState, useContext, useCallback } from "react";
 import { AppUser } from "./types";
 import { getAppUser } from "./api";
-import { useAuthHeader, useIsAuthenticated } from "react-auth-kit";
+import { useAuthHeader, useIsAuthenticated, useSignOut } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 
 interface UserContextProps {
   user: AppUser | null;
@@ -20,9 +21,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [hasFetchedUser, setHasFetchedUser] = useState(false);
   const auth = useAuthHeader();
   const isAuthenticated = useIsAuthenticated();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
 
   const getUserData = async () => {
-    const response = await getAppUser(auth());
+    const response = await getAppUser(auth(), signOut, navigate);
     const userData = response.data;
     setUser(userData);
     setHasFetchedUser(true);

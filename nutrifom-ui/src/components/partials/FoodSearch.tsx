@@ -6,15 +6,18 @@ import { addProductToNutrilog, searchOFF } from "../../api";
 import dayjs, { Dayjs } from "dayjs";
 import useAuthHeader from "react-auth-kit/dist/hooks/useAuthHeader";
 import { FoodEntry, NutritionData } from "../../types";
+import { useSignOut } from "react-auth-kit";
+import { useNavigate } from "react-router-dom";
 
 interface FoodSearchProps {
   onNutrilogUpdate: () => void;
   selectedDate: Dayjs | null;
 }
 
-
 export default function FoodSearch(props: FoodSearchProps) {
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const currentDate = dayjs().format("YYYY-MM-DD");
   const [isButtonClicked] = React.useState(false);
   const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
@@ -30,9 +33,11 @@ export default function FoodSearch(props: FoodSearchProps) {
     if (searchTextFood) {
       if (!selectedFood) {
         try {
-          searchOFF(searchTextFood, auth()).then((response) => {
-            setApiData(response.data);
-          });
+          searchOFF(searchTextFood, auth(), signOut, navigate).then(
+            (response) => {
+              setApiData(response.data);
+            }
+          );
         } catch (error) {
           console.log("Fehler beim Abrufen der offSearch:", error);
         }
@@ -40,12 +45,12 @@ export default function FoodSearch(props: FoodSearchProps) {
     }
   }, [searchTextFood]);
 
-
   const handleChangeSearchFoodTextAmount = async () => {
     setFoodAmountHasError(false);
     setFoodSearchHasError(false);
 
-    const dateString: string = props.selectedDate?.format("YYYY-MM-DD") || currentDate;
+    const dateString: string =
+      props.selectedDate?.format("YYYY-MM-DD") || currentDate;
 
     await addProductToNutrilog(
       {
@@ -53,13 +58,15 @@ export default function FoodSearch(props: FoodSearchProps) {
         entryDate: dateString,
         productQuantity: currentFoodAmount,
       },
-      auth()
+      auth(),
+      signOut,
+      navigate
     ).catch((error) => {
       if (error.response.status === 403) {
         console.log("Error 403 while putting weight:", auth());
       }
     });
-    props.onNutrilogUpdate();    
+    props.onNutrilogUpdate();
   };
 
   return (

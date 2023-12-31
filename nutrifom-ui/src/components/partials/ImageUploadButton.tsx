@@ -2,10 +2,11 @@ import { FileUpload } from "@mui/icons-material";
 import { IconButton, LinearProgress, Tooltip, useTheme } from "@mui/material";
 import { styled } from "@mui/system";
 import React from "react";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { getAppUser, putAppUserImage } from "../../api";
 import { ErrorDialog } from "../common/ErrorDialog";
 import { useUser } from "../../userContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ImageUploadButton() {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
@@ -13,6 +14,9 @@ export default function ImageUploadButton() {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
   const { updateUser } = useUser();
 
   const StyledInput = styled("input")({
@@ -39,8 +43,8 @@ export default function ImageUploadButton() {
         formData.append("image", image);
         setIsUploading(true);
         try {
-          await putAppUserImage(formData, auth());
-          const updatedUser = await getAppUser(auth());
+          await putAppUserImage(formData, auth(), signOut, navigate);
+          const updatedUser = await getAppUser(auth(), signOut, navigate);
           updateUser(updatedUser.data);
         } catch (error) {
           console.error(error);

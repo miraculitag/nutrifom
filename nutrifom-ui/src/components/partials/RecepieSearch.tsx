@@ -1,14 +1,12 @@
 import { Autocomplete, Box, TextField } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-import {
-  addRecipeToNutrilog,
-  getRecipes,
-} from "../../api";
-import { useAuthHeader } from "react-auth-kit";
+import { addRecipeToNutrilog, getRecipes } from "../../api";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import dayjs, { Dayjs } from "dayjs";
 import React from "react";
 import { Recipe } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 interface RecipeSearchProps {
   onNutrilogUpdate: () => void;
@@ -17,6 +15,8 @@ interface RecipeSearchProps {
 
 export default function RecepieSearch(props: RecipeSearchProps) {
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const [isButtonClicked] = React.useState(false);
   const currentDate = dayjs().format("YYYY-MM-DD");
   const [recepieSearchHasError, setRecepieSearchHasError] =
@@ -29,7 +29,7 @@ export default function RecepieSearch(props: RecipeSearchProps) {
   const [selectedRecepie, setSelectedRecepie] = React.useState<Recipe>();
 
   React.useEffect(() => {
-    getRecipes(auth()).then((response) => {
+    getRecipes(auth(), signOut, navigate).then((response) => {
       setRecipes(response.data);
     });
   }, []);
@@ -38,7 +38,8 @@ export default function RecepieSearch(props: RecipeSearchProps) {
     setPortionAmountHasError(false);
     setRecepieSearchHasError(false);
 
-    const dateString: string = props.selectedDate?.format("YYYY-MM-DD") || currentDate;
+    const dateString: string =
+      props.selectedDate?.format("YYYY-MM-DD") || currentDate;
 
     addRecipeToNutrilog(
       {
@@ -46,13 +47,15 @@ export default function RecepieSearch(props: RecipeSearchProps) {
         entryDate: dateString,
         recipePortions: currentPortionAmount,
       },
-      auth()
+      auth(),
+      signOut,
+      navigate
     ).catch((error) => {
       if (error.response.status === 403) {
         console.log("Error 403 while putting weight:", auth());
       }
     });
-    props.onNutrilogUpdate();  
+    props.onNutrilogUpdate();
   };
 
   return (

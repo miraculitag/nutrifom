@@ -10,12 +10,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { FilterDialog } from "../common/FilterDialog";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
 import { getRecipeById, getRecipes, rateRecipe } from "../../api";
 import { Recipe } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 export const Recipes = () => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
@@ -25,7 +26,7 @@ export const Recipes = () => {
   const [shownRecipes, setShownRecipes] = React.useState(recipes);
 
   React.useEffect(() => {
-    getRecipes(auth()).then((response) => {
+    getRecipes(auth(), signOut, navigate).then((response) => {
       setRecipes(response.data);
       setShownRecipes(response.data);
     });
@@ -33,6 +34,9 @@ export const Recipes = () => {
 
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
   const filterHeading = "Rezeptkategorien";
   const filterOptions = ["Alle", "Aufbauen", "Definieren"];
 
@@ -43,7 +47,7 @@ export const Recipes = () => {
     };
 
   const refreshRecipe = (recipeId: number) => {
-    getRecipeById(recipeId, auth()).then((response) => {
+    getRecipeById(recipeId, auth(), signOut, navigate).then((response) => {
       const updatedRecipe = response.data;
       setRecipes((prevRecipes) => {
         const updatedRecipes = prevRecipes?.map((recipe) =>
@@ -64,11 +68,14 @@ export const Recipes = () => {
     (recipeId: number) =>
     (event: React.ChangeEvent<{}>, newRatingValue: number | null) => {
       if (newRatingValue !== null) {
-        rateRecipe({ recipeId: recipeId, score: newRatingValue }, auth()).then(
-          () => {
-            refreshRecipe(recipeId);
-          }
-        );
+        rateRecipe(
+          { recipeId: recipeId, score: newRatingValue },
+          auth(),
+          signOut,
+          navigate
+        ).then(() => {
+          refreshRecipe(recipeId);
+        });
       }
     };
 

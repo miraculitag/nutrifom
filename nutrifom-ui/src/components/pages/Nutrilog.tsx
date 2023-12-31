@@ -8,15 +8,18 @@ import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
 import KcalFoodChart from "../partials/KcalFoodChart";
 import { getNutrilog } from "../../api";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { NutritionData } from "../../types";
 import { useUser } from "../../userContext";
 import FoodSearch from "../partials/FoodSearch";
 import RecepieSearch from "../partials/RecepieSearch";
+import { useNavigate } from "react-router-dom";
 
 export const Nutrilog = () => {
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const [kcalGoal, setKcalGoal] = React.useState<number>(0);
   const [selectedFood, setSelectedFood] = React.useState<any | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
@@ -24,9 +27,7 @@ export const Nutrilog = () => {
   );
   const sevenDaysAgo = dayjs().subtract(7, "day");
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const [allNutrilogItems, setAllNutrilogItems] = React.useState([[],[]
-
-  ]);
+  const [allNutrilogItems, setAllNutrilogItems] = React.useState([[], []]);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const { user, hasFetchedUser } = useUser();
 
@@ -44,7 +45,7 @@ export const Nutrilog = () => {
     if (selectedDate) {
       setSelectedFood(undefined);
       const formattedDate = selectedDate.format("YYYY-MM-DD");
-      getNutrilog(formattedDate, auth())
+      getNutrilog(formattedDate, auth(), signOut, navigate)
         .then((response) => {
           setNutrilog(response.data);
           setAllNutrilogItems([
@@ -76,7 +77,6 @@ export const Nutrilog = () => {
 
   const handleChangeDateMinusOne = () => {
     if (selectedDate) {
-      
       const daysDifference = dayjs().diff(selectedDate, "day");
       if (daysDifference < 7) {
         const newDate = selectedDate.subtract(1, "day");
@@ -94,18 +94,21 @@ export const Nutrilog = () => {
     }
   };
 
-
-
   const handleAddEntry = async () => {
     if (selectedDate) {
-    const formattedDate = selectedDate.format("YYYY-MM-DD");
-    const response = await getNutrilog(formattedDate, auth());
-        setNutrilog(response.data);
-        setAllNutrilogItems([
-          ...(response.data?.products || []),
-          ...(response.data?.recipes || []),
-        ]);
-      }
+      const formattedDate = selectedDate.format("YYYY-MM-DD");
+      const response = await getNutrilog(
+        formattedDate,
+        auth(),
+        signOut,
+        navigate
+      );
+      setNutrilog(response.data);
+      setAllNutrilogItems([
+        ...(response.data?.products || []),
+        ...(response.data?.recipes || []),
+      ]);
+    }
   };
 
   return (
@@ -121,11 +124,17 @@ export const Nutrilog = () => {
         }}
       >
         <Box sx={{ gridArea: "Food" }}>
-          <FoodSearch selectedDate={selectedDate} onNutrilogUpdate={handleAddEntry} />
+          <FoodSearch
+            selectedDate={selectedDate}
+            onNutrilogUpdate={handleAddEntry}
+          />
         </Box>
 
         <Box sx={{ gridArea: "Recepie" }}>
-          <RecepieSearch  selectedDate={selectedDate} onNutrilogUpdate={handleAddEntry} />
+          <RecepieSearch
+            selectedDate={selectedDate}
+            onNutrilogUpdate={handleAddEntry}
+          />
         </Box>
 
         <Box sx={{ gridArea: "PieChart", height: "100%" }}>

@@ -3,17 +3,20 @@ import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/de";
 import { useTheme } from "@mui/material";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { getWeightHistory } from "../../api";
 import { useState } from "react";
 import React from "react";
 import { WeightRequest } from "../../types";
+import { useNavigate } from "react-router-dom";
 
 dayjs.extend(localizedFormat);
 
 export default function WeightLineChart() {
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const [weightHistory, setWeightHistory] = useState<WeightRequest[]>([]);
 
   const customize = {
@@ -23,7 +26,7 @@ export default function WeightLineChart() {
   };
 
   React.useEffect(() => {
-    getWeightHistory(auth())
+    getWeightHistory(auth(), signOut, navigate)
       .then((response) => {
         setWeightHistory(response.data);
       })

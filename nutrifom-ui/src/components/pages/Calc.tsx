@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuthHeader } from "react-auth-kit";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import {
   Box,
   IconButton,
@@ -25,6 +25,7 @@ import {
   putAppUserWpa,
 } from "../../api";
 import { useUser } from "../../userContext";
+import { useNavigate } from "react-router-dom";
 
 export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
@@ -47,11 +48,13 @@ export const Calc = () => {
 
   const theme = useTheme();
   const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
 
   const checkDataSuffiency = async () => {
-    const weightResponse = await getWeightLast14Days(auth());
+    const weightResponse = await getWeightLast14Days(auth(), signOut, navigate);
 
-    const kcalResponse = await getKcalLast14Days(auth());
+    const kcalResponse = await getKcalLast14Days(auth(), signOut, navigate);
 
     const weightData = weightResponse.data;
     const kcalData = kcalResponse.data;
@@ -115,7 +118,7 @@ export const Calc = () => {
   };
 
   const saveKcalReqAsKcalGoal = (kcalGoal: number) => {
-    putAppUserKcalGoal(kcalGoal, auth());
+    putAppUserKcalGoal(kcalGoal, auth(), signOut, navigate);
     updateUserAttribute({ kcalGoal: kcalGoal });
   };
 
@@ -130,7 +133,7 @@ export const Calc = () => {
   };
 
   const calcKcalMethodA = () => {
-    putAppUserGoal(goal, auth());
+    putAppUserGoal(goal, auth(), signOut, navigate);
     updateUserAttribute({ goal: goal });
 
     const weightsWeek1 = weightFor14Days.slice(0, 7);
@@ -166,9 +169,9 @@ export const Calc = () => {
       return 0;
     }
     setWpaHasError(false);
-    putAppUserPal(pal, auth());
-    putAppUserWpa(wpa, auth());
-    putAppUserGoal(goal, auth());
+    putAppUserPal(pal, auth(), signOut, navigate);
+    putAppUserWpa(wpa, auth(), signOut, navigate);
+    putAppUserGoal(goal, auth(), signOut, navigate);
 
     updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
 
