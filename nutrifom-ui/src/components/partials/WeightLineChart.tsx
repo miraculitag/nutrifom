@@ -12,7 +12,11 @@ import { useNavigate } from "react-router-dom";
 
 dayjs.extend(localizedFormat);
 
-export default function WeightLineChart() {
+interface WeightLineChartProps {
+  weightUpdate: number;
+}
+
+export default function WeightLineChart(props: WeightLineChartProps) {
   const theme = useTheme();
   const auth = useAuthHeader();
   const signOut = useSignOut();
@@ -33,7 +37,7 @@ export default function WeightLineChart() {
       .catch((error) => {
         console.log("Fehler:", error);
       });
-  }, [auth]);
+  }, [props.weightUpdate]);
 
   const last14Days = Array.from({ length: 14 }, (_, index) =>
     dayjs().subtract(index, "day").format("YYYY-MM-DD")
