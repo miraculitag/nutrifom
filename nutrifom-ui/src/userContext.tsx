@@ -19,17 +19,11 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(initialUser);
   const [hasFetchedUser, setHasFetchedUser] = useState(false);
+
   const auth = useAuthHeader();
-  const isAuthenticated = useIsAuthenticated();
   const signOut = useSignOut();
   const navigate = useNavigate();
-
-  const getUserData = async () => {
-    const response = await getAppUser(auth(), signOut, navigate);
-    const userData = response.data;
-    setUser(userData);
-    setHasFetchedUser(true);
-  };
+  const isAuthenticated = useIsAuthenticated();
 
   React.useEffect(() => {
     if (isAuthenticated() && !hasFetchedUser) {
@@ -39,6 +33,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setHasFetchedUser(false);
     }
   }, [hasFetchedUser, isAuthenticated()]);
+
+  const getUserData = async () => {
+    const response = await getAppUser(auth(), signOut, navigate);
+    const userData = response.data;
+    setUser(userData);
+    setHasFetchedUser(true);
+  };
 
   const updateUser = useCallback((updatedUser: AppUser) => {
     setUser(updatedUser);

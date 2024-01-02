@@ -31,12 +31,6 @@ export const SignIn = () => {
 
   const [emailSignIn, setEmailSignIn] = React.useState("");
   const [emailSignUp, setEmailSignUp] = React.useState("");
-  const [emailSignUpError, setEmailSignUpError] = React.useState(
-    "Gib eine gültige E-Mail-Adresse an."
-  );
-  const [passwordSignInError, setPasswordSignInError] = React.useState(
-    "Gib ein Passwort an."
-  );
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
   const [name, setName] = React.useState("");
@@ -48,6 +42,12 @@ export const SignIn = () => {
   const [pal, setPal] = React.useState("Bitte wählen");
   const [wpa, setWpa] = React.useState(0);
 
+  const [emailSignUpError, setEmailSignUpError] = React.useState(
+    "Gib eine gültige E-Mail-Adresse an."
+  );
+  const [passwordSignInError, setPasswordSignInError] = React.useState(
+    "Gib ein Passwort an."
+  );
   const [fieldErrors, setFieldErrors] = React.useState<fieldErrorEnum[]>([]);
 
   const signIn = useSignIn();

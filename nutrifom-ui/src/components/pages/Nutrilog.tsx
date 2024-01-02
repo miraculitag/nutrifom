@@ -34,11 +34,9 @@ export const Nutrilog = () => {
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const { user, hasFetchedUser } = useUser();
 
-  
   React.useEffect(() => {
-    handleUpdateNutrilog()
+    handleUpdateNutrilog();
   }, [selectedDate]);
-
 
   React.useEffect(() => {
     if (user) {
@@ -183,7 +181,7 @@ export const Nutrilog = () => {
             <Typography>Nährwerte</Typography>
           </Box>
           <NutritionalTable
-            energy_kcal={Math.round(
+            energyKcal={Math.round(
               selectedFood
                 ? selectedFood.energyKcal
                 : nutrilog?.totalEnergyKcal || 0

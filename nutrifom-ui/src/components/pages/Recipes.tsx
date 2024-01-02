@@ -249,7 +249,7 @@ export const Recipes = () => {
                   <Typography>Nährwerte pro Portion:</Typography>
                   <Box sx={{ paddingTop: "5%", paddingBottom: "5%" }}>
                     <NutritionalTable
-                      energy_kcal={Math.round(
+                      energyKcal={Math.round(
                         recipe.energyKcal / recipe.portions
                       )}
                       proteins={Math.round(recipe.proteins / recipe.portions)}

@@ -3,10 +3,9 @@ import { Avatar, Box, Grid, TextField, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import ImageUploadButton from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
-
 import { useUser } from "../../userContext";
 
-export const User = () => {
+export const UserProfile = () => {
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
   const { user } = useUser();
 

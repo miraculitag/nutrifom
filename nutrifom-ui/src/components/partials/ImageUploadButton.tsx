@@ -11,12 +11,13 @@ import { useNavigate } from "react-router-dom";
 export default function ImageUploadButton() {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
+
   const inputRef = React.useRef<HTMLInputElement>(null);
+
   const theme = useTheme();
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-
   const { updateUser } = useUser();
 
   const StyledInput = styled("input")({

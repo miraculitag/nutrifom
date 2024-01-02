@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 
 export interface NutritionalTableProps {
-  energy_kcal: number;
+  energyKcal: number;
   proteins: number;
   saturatedFat: number;
   unsaturatedFat: number;
@@ -16,12 +16,12 @@ export interface NutritionalTableProps {
 }
 
 export const NutritionalTable = (props: NutritionalTableProps) => {
-  function createData(name: string, value: number) {
+  const createData = (name: string, value: number) => {
     return { name, value };
-  }
+  };
 
   const rows = [
-    createData("Energie [kcal]:", props.energy_kcal),
+    createData("Energie [kcal]:", props.energyKcal),
     createData("Eiweiß [g]:", props.proteins),
     createData("Fett [g]:", props.saturatedFat + props.unsaturatedFat),
     createData("davon gesättigte Fettsäuren [g]:", props.saturatedFat),

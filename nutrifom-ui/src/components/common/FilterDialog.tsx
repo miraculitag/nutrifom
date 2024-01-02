@@ -23,6 +23,7 @@ export interface FilterDialogProps {
 export const FilterDialog = (props: FilterDialogProps) => {
   const { onClose, valueFilter: valueProp, open, ...other } = props;
   const [valueFilter, setValueFilter] = React.useState(valueProp);
+
   const radioGroupRef = React.useRef<HTMLElement>(null);
 
   React.useEffect(() => {
@@ -76,7 +77,7 @@ export const FilterDialog = (props: FilterDialogProps) => {
       </DialogContent>
       <DialogActions>
         <Button autoFocus onClick={handleCancel}>
-          Cancel
+          Abbrechen
         </Button>
         <Button onClick={handleOk}>Ok</Button>
       </DialogActions>

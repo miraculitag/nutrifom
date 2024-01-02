@@ -39,17 +39,17 @@ export const Calc = () => {
   const [wpa, setWpa] = React.useState(0);
   const [wpaHasError, setWpaHasError] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
+
+  const theme = useTheme();
+  const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
   const { user, updateUserAttribute, hasFetchedUser } = useUser();
 
   React.useEffect(() => {
     checkDataSufficiency();
     setLocalStates();
   }, [hasFetchedUser]);
-
-  const theme = useTheme();
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
 
   const checkDataSufficiency = async () => {
     const weightResponse = await getWeightLast14Days(auth(), signOut, navigate);
@@ -109,7 +109,7 @@ export const Calc = () => {
       case "sehr aktiv":
         return 2.2;
       default:
-        return 1.65; //tbd
+        return 1.65;
     }
   };
 

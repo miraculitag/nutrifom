@@ -1,8 +1,7 @@
-import React from "react";
 import nutrifomTheme from "./theme/nutrifomTheme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./components/pages/Home";
-import { User } from "./components/pages/User";
+import { UserProfile } from "./components/pages/UserProfile";
 import { Nutrilog } from "./components/pages/Nutrilog";
 import { Weight } from "./components/pages/Weight";
 import { Calc } from "./components/pages/Calc";
@@ -37,7 +36,7 @@ export default function App() {
                 path="/user"
                 element={
                   <RequireAuth loginPath="/signin">
-                    <User />
+                    <UserProfile />
                   </RequireAuth>
                 }
               />
