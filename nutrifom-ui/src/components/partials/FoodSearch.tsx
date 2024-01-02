@@ -14,7 +14,7 @@ interface FoodSearchProps {
   selectedDate: Dayjs | null;
 }
 
-export default function FoodSearch(props: FoodSearchProps) {
+export const FoodSearch = (props: FoodSearchProps) => {
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
@@ -89,7 +89,7 @@ export default function FoodSearch(props: FoodSearchProps) {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Suche hier nach einem Lebensmittel..."
+              label="Lebensmittel suchen"
               variant="standard"
               InputLabelProps={{
                 shrink: true,

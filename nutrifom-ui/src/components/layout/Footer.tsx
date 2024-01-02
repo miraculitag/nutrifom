@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CopyrightIcon from "@mui/icons-material/Copyright";
 
-export const Footer = (testParams: any) => {
+export const Footer = () => {
   return (
     <AppBar sx={{ position: "static", marginTop: "2%" }}>
       <Toolbar

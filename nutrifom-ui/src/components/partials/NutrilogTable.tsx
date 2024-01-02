@@ -7,7 +7,7 @@ import {
   Paper,
 } from "@mui/material";
 
-export interface FoodTableProps {
+export interface NutrilogTableProps {
   nutrilogItems: any[] | undefined;
   onSelectRow: (index: number) => void;
   selectedRow: number | null;
@@ -32,7 +32,7 @@ function getQuantity(entry: any): string {
 }
 
 
-export default function FoodTable(props: FoodTableProps) {
+export const NutrilogTable = (props: NutrilogTableProps) => {
   const { nutrilogItems } = props;
 
   return (

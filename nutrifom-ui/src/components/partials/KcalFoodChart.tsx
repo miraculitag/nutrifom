@@ -34,7 +34,7 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function KalcFoodChart(props: KcalFoodChartProps) {
+export const KcalFoodChart = (props: KcalFoodChartProps) => {
   const theme = useTheme();
   const [remainingKcal, setRemainingKcal] = React.useState(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);

@@ -13,7 +13,7 @@ interface RecipeSearchProps {
   selectedDate: Dayjs | null;
 }
 
-export default function RecepieSearch(props: RecipeSearchProps) {
+export const RecipeSearch = (props: RecipeSearchProps) => {
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
@@ -74,7 +74,7 @@ export default function RecepieSearch(props: RecipeSearchProps) {
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Suche hier nach einem Rezept..."
+              label="Rezept suchen"
               variant="standard"
               InputLabelProps={{
                 shrink: true,

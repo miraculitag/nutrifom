@@ -3,17 +3,17 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Typography, useTheme } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import FoodTable from "../partials/FoodTable";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
-import KcalFoodChart from "../partials/KcalFoodChart";
 import { getNutrilog } from "../../api";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { NutritionData } from "../../types";
 import { useUser } from "../../userContext";
-import FoodSearch from "../partials/FoodSearch";
-import RecepieSearch from "../partials/RecepieSearch";
 import { useNavigate } from "react-router-dom";
+import { NutrilogTable } from "../partials/NutrilogTable";
+import { FoodSearch } from "../partials/FoodSearch";
+import { RecipeSearch } from "../partials/RecepieSearch";
+import { KcalFoodChart } from "../partials/KcalFoodChart";
 
 export const Nutrilog = () => {
   const theme = useTheme();
@@ -122,7 +122,7 @@ export const Nutrilog = () => {
         </Box>
 
         <Box sx={{ gridArea: "Recepie" }}>
-          <RecepieSearch
+          <RecipeSearch
             selectedDate={selectedDate}
             onNutrilogUpdate={handleUpdateNutrilog}
           />
@@ -171,11 +171,11 @@ export const Nutrilog = () => {
               ></ArrowForwardIosIcon>
             )}
           </Box>
-          <FoodTable
+          <NutrilogTable
             nutrilogItems={allNutrilogItems}
             onSelectRow={handleRowClick}
             selectedRow={selectedRow}
-          ></FoodTable>
+          />
         </Box>
 
         <Box sx={{ gridArea: "Nutrition" }}>

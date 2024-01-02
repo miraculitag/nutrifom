@@ -16,7 +16,7 @@ interface WeightLineChartProps {
   weightUpdate: number;
 }
 
-export default function WeightLineChart(props: WeightLineChartProps) {
+export const WeightLineChart = (props: WeightLineChartProps) => {
   const theme = useTheme();
   const auth = useAuthHeader();
   const signOut = useSignOut();
@@ -28,17 +28,6 @@ export default function WeightLineChart(props: WeightLineChartProps) {
     legend: { hidden: true },
     margin: { top: 5 },
   };
-
-  React.useEffect(() => {
-    getWeightHistory(auth(), signOut, navigate)
-      .then((response) => {
-        setWeightHistory(response.data);
-      })
-      .catch((error) => {
-        console.log("Fehler:", error);
-      });
-  }, [props.weightUpdate]);
-
   const last14Days = Array.from({ length: 14 }, (_, index) =>
     dayjs().subtract(index, "day").format("YYYY-MM-DD")
   ).reverse();
@@ -54,10 +43,21 @@ export default function WeightLineChart(props: WeightLineChartProps) {
   const filteredDataPoints = dataPoints.map((value) =>
     value !== null ? value : 0
   );
+
   const maxValue =
     Math.max(...filteredDataPoints) >= 110
       ? Math.max(...filteredDataPoints) * 1.1
       : 110;
+
+  React.useEffect(() => {
+    getWeightHistory(auth(), signOut, navigate)
+      .then((response) => {
+        setWeightHistory(response.data);
+      })
+      .catch((error) => {
+        console.log("Fehler:", error);
+      });
+  }, [props.weightUpdate]);
 
   return (
     <>
@@ -94,4 +94,4 @@ export default function WeightLineChart(props: WeightLineChartProps) {
       )}
     </>
   );
-}
+};

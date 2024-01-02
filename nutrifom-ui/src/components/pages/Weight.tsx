@@ -1,7 +1,6 @@
 import React from "react";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { FloatInputField } from "../common/FloatInputField";
-import WeightLineChart from "../partials/WeightLineChart";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import { JustifiedTypography } from "../common/JustifiedTypography";
@@ -11,6 +10,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { WeightLineChart } from "../partials/WeightLineChart";
 
 
 export const Weight = () => {
@@ -35,24 +35,26 @@ export const Weight = () => {
   };
   const [weightUpdate, setWeightUpdate] = React.useState(0);
 
-  const handleAddWeightClick = () => {
+  const handleAddWeightClick = async () => {
     setWeightHasError(false);
     setDateHasError(false);
 
     const dateString: string =
       selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
-      addWeightEntry(
+      await addWeightEntry(
         { weight: currentWeight, entryDate: dateString },
         auth(),
         signOut,
         navigate
-      ).catch((error) => {
+      ).then(() => {
+        setWeightUpdate((prevValue) => prevValue + 1);
+      })
+      .catch((error) => {
         if (error.response.status === 403) {
           console.log("Error 403 while putting weight:", auth());
         }
       });
-    setWeightUpdate((prevValue) => prevValue + 1);
-    console.log(weightUpdate)
+    
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {
