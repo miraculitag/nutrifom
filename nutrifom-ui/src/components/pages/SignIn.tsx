@@ -1,17 +1,13 @@
-import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Container, Link, Stack, Typography } from "@mui/material";
+import { GoogleLogin } from "@react-oauth/google";
 import dayjs, { Dayjs } from "dayjs";
+import { jwtDecode } from "jwt-decode";
+import React from "react";
 import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
+import { authenticateAppUser, registerAppUser } from "../../api";
+import { fieldErrorEnum } from "../../types";
 import { BasicButton } from "../common/BasicButton";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { DropDownMenu } from "../common/DropDownMenu";
@@ -19,9 +15,6 @@ import { FloatInputField } from "../common/FloatInputField";
 import { InfoAlert } from "../common/InfoAlert";
 import { PalTable } from "../common/PalTable";
 import { TextInputField } from "../common/TextInputField";
-import { authenticateAppUser, registerAppUser } from "../../api";
-import { fieldErrorEnum } from "../../types";
-import { jwtDecode } from "jwt-decode";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
@@ -133,6 +126,17 @@ export const SignIn = () => {
           );
         }
       });
+  };
+
+  const handleGoogleLogin = (response: any) => {
+    // Verarbeiten der Google Login Response
+    const googleIDToken = response.credential;
+    console.log(googleIDToken);
+    // Verwenden Sie googleIDToken für die Authentifizierung/Registrierung in Ihrem Backend
+  };
+
+  const handleGoogleLoginError = () => {
+    // Fehlerbehandlung für Google Login
   };
 
   const handleGoogleSignInButtonClick = () => {};
@@ -392,7 +396,14 @@ export const SignIn = () => {
                     }
               }
             />
-            <Button
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={handleGoogleLoginError}
+              theme="filled_black"
+              text="signin_with"
+            />
+
+            {/* <Button
               variant="outlined"
               onClick={
                 onSignInPage
@@ -415,7 +426,8 @@ export const SignIn = () => {
               <Typography sx={{ fontSize: "inherit", marginLeft: "5%" }}>
                 Weiter mit Google
               </Typography>
-            </Button>
+            </Button> */}
+
             <Box
               sx={{
                 display: "flex",
