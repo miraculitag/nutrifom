@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
-import { FilterDialog } from "../common/FilterDialog";
+import { FilterDialog } from "../dialogs/FilterDialog";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
 import { getRecipeById, getRecipes, rateRecipe } from "../../api";

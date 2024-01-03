@@ -14,10 +14,11 @@ const nutrifomTheme = {
     secondary: {
       main: purple[100],
     },
+    warning: {
+      main: "#ff0000",
+      light: "#fff0f0",
+    },
   },
 };
 
 export default createTheme(nutrifomTheme);
-
-
-

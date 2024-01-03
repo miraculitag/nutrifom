@@ -76,10 +76,10 @@ export const FilterDialog = (props: FilterDialogProps) => {
         </RadioGroup>
       </DialogContent>
       <DialogActions>
+        <Button onClick={handleOk}>Ok</Button>
         <Button autoFocus onClick={handleCancel}>
           Abbrechen
         </Button>
-        <Button onClick={handleOk}>Ok</Button>
       </DialogActions>
     </Dialog>
   );

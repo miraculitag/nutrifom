@@ -4,7 +4,7 @@ import { styled } from "@mui/system";
 import React from "react";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { getAppUser, putAppUserImage } from "../../api";
-import { ErrorDialog } from "../common/ErrorDialog";
+import { ErrorDialog } from "../dialogs/ErrorDialog";
 import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
 
@@ -84,7 +84,6 @@ export default function ImageUploadButton() {
         />
       )}
       <ErrorDialog
-        keepMounted
         open={openErrorDialog}
         setOpen={setOpenErrorDialog}
         heading={"Überschreitung der Bildgröße"}

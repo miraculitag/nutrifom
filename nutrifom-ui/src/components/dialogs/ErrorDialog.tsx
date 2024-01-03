@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 
 export interface ErrorDialogProps {
-  keepMounted: boolean;
   heading: string;
   errorMessage: string;
   open: boolean;
