@@ -3,20 +3,29 @@ package com.nutrifom.nutrifomapi.AppUser;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.Weight.WeightEntryRepository;
 import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
+import com.nutrifom.nutrifomapi.token.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class AppUserService {
     private final AppUserRepository appUserRepository;
 
+    private final WeightEntryRepository weightEntryRepository;
+
+    private final TokenRepository tokenRepository;
+
     @Autowired
-    public AppUserService(AppUserRepository appUserRepository) {
+    public AppUserService(AppUserRepository appUserRepository, WeightEntryRepository weightEntryRepository, TokenRepository tokenRepository) {
         this.appUserRepository = appUserRepository;
+        this.weightEntryRepository = weightEntryRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     public ResponseEntity<String> getAppUserKcalGoal(int id) throws CustomAuthenticationException {
@@ -112,11 +121,33 @@ public class AppUserService {
         return imageData;
     }
 
+
+    @Transactional
     public void deleteAppUser(int id) throws CustomAuthenticationException {
         Optional<AppUser> foundUser = appUserRepository.findById(id);
         if (!foundUser.isPresent()) {
             throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
         }
-        appUserRepository.deleteById(foundUser.get().getId());
+        try {
+            weightEntryRepository.deleteByAppUserId(id);
+        } catch (Exception e) {
+            // Protokollieren Sie die Ausnahme und werfen Sie sie erneut
+            System.out.println("Fehler beim Löschen von WeightEntries: " + e.getMessage());
+            throw e;
+        }
+        try {
+            tokenRepository.deleteByAppUserId(id);
+        } catch (Exception e) {
+            // Protokollieren Sie die Ausnahme und werfen Sie sie erneut
+            System.out.println("Fehler beim Löschen von Tokens: " + e.getMessage());
+            throw e;
+        }
+        try {
+            appUserRepository.deleteById(foundUser.get().getId());
+        } catch (Exception e) {
+            // Protokollieren Sie die Ausnahme und werfen Sie sie erneut
+            System.out.println("Fehler beim Löschen des Benutzers: " + e.getMessage());
+            throw e;
+        }
     }
 }
