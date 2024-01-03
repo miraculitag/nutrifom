@@ -1,6 +1,6 @@
 export type AuthenticateRequest = {
   email: string;
-  password: string;
+  password?: string;
   googleIDToken?: string;
 };
 
@@ -14,7 +14,7 @@ export type RegisterRequest = {
   pal: string;
   wpa: number;
   email: string;
-  password: string;
+  password?: string;
   image?: string;
   googleIDToken?: string;
 };
@@ -36,8 +36,6 @@ export type AddRecipeRequest = {
   recipeId: number;
   entryDate: string;
 };
-
-
 
 export type AddProductToNutrilog = {
   productCode: string;

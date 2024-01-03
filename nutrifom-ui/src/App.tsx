@@ -10,72 +10,75 @@ import { ThemeProvider } from "@mui/material";
 import { AuthProvider, RequireAuth } from "react-auth-kit";
 import { SignIn } from "./components/pages/SignIn";
 import { UserProvider } from "./userContext";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function App() {
   return (
-    <AuthProvider
-      authType={"cookie"}
-      authName={"_auth"}
-      cookieDomain={window.location.hostname}
-      cookieSecure={true}
-    >
-      <ThemeProvider theme={nutrifomTheme}>
-        <Router>
-          <UserProvider>
-            <Routes>
-              <Route path="/signin" element={<SignIn />} />
-              <Route
-                path="/"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <Home />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/user"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <UserProfile />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/nutrilog"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <Nutrilog />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/weight"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <Weight />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/calc"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <Calc />
-                  </RequireAuth>
-                }
-              />
-              <Route
-                path="/recipes"
-                element={
-                  <RequireAuth loginPath="/signin">
-                    <Recipes />
-                  </RequireAuth>
-                }
-              />
-            </Routes>
-          </UserProvider>
-        </Router>
-      </ThemeProvider>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId="286231394640-t7gi95sph1bu8v19sq8khp83c0bi3h61.apps.googleusercontent.com">
+      <AuthProvider
+        authType={"cookie"}
+        authName={"_auth"}
+        cookieDomain={window.location.hostname}
+        cookieSecure={true}
+      >
+        <ThemeProvider theme={nutrifomTheme}>
+          <Router>
+            <UserProvider>
+              <Routes>
+                <Route path="/signin" element={<SignIn />} />
+                <Route
+                  path="/"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <Home />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/user"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <UserProfile />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/nutrilog"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <Nutrilog />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/weight"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <Weight />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/calc"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <Calc />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/recipes"
+                  element={
+                    <RequireAuth loginPath="/signin">
+                      <Recipes />
+                    </RequireAuth>
+                  }
+                />
+              </Routes>
+            </UserProvider>
+          </Router>
+        </ThemeProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
