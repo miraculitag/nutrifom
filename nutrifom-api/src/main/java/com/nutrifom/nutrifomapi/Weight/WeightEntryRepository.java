@@ -12,5 +12,7 @@ public interface WeightEntryRepository extends JpaRepository<WeightEntry, Intege
     List<WeightEntry> findByAppUserIdOrderByEntryDateDesc(Integer userId);
     Optional<WeightEntry> findByAppUserIdAndEntryDate(Integer appUserId, LocalDate entryDate);
 
+    void deleteByAppUserId(Integer userId);
+
 
 }
