@@ -20,8 +20,9 @@ import { InfoAlert } from "../common/InfoAlert";
 import { PalTable } from "../common/PalTable";
 import { TextInputField } from "../common/TextInputField";
 import { authenticateAppUser, registerAppUser } from "../../api";
-import { fieldErrorEnum } from "../../types";
+import { RegisterRequest, fieldErrorEnum } from "../../types";
 import { jwtDecode } from "jwt-decode";
+import { GoogleLogin } from "@react-oauth/google";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
@@ -33,6 +34,7 @@ export const SignIn = () => {
   const [emailSignUp, setEmailSignUp] = React.useState("");
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
   const [passwordSignUp, setPasswordSignUp] = React.useState("");
+  const [googleIDTokenSignUp, setGoogleIDTokenSignUp] = React.useState("");
   const [name, setName] = React.useState("");
   const [initialWeight, setWeight] = React.useState(0);
   const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
@@ -41,6 +43,9 @@ export const SignIn = () => {
   const [gender, setGender] = React.useState("Bitte wählen");
   const [pal, setPal] = React.useState("Bitte wählen");
   const [wpa, setWpa] = React.useState(0);
+
+  const [isPasswordSignUpHidden, setIsPasswordSignUpHidden] =
+    React.useState(false);
 
   const [emailSignUpError, setEmailSignUpError] = React.useState(
     "Gib eine gültige E-Mail-Adresse an."
@@ -63,19 +68,6 @@ export const SignIn = () => {
   ];
   const goals = ["Bitte wählen", "Aufbauen", "Definieren", "Halten"];
   const genders = ["Bitte wählen", "Männlich", "Weiblich", "Divers"];
-  /* const [isGoogleSignInButtonClicked, setIsGoogleSignInButtonClicked] =
-    React.useState(false);
-  const [isGoogleSignUpButtonClicked, setIsGoogleSignUpButtonClicked] =
-    React.useState(false);*/ //tdb
-
-  /* const isAuthenticated = useIsAuthenticated();
-
-  React.useEffect(() => {
-    console.log("isAuthenticated" + isAuthenticated());
-    if (isAuthenticated()) {
-      navigate("/");
-    }
-  }, [isAuthenticated]);*/
 
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
@@ -102,7 +94,7 @@ export const SignIn = () => {
 
   const handleSignUpButtonClick = () => {
     const formattedDob = dob!.format("YYYY-MM-DD");
-    registerAppUser({
+    let signUpData: RegisterRequest = {
       name: name,
       initialWeight: initialWeight,
       dob: formattedDob,
@@ -112,8 +104,15 @@ export const SignIn = () => {
       pal: pal,
       wpa: wpa,
       email: emailSignUp,
-      password: passwordSignUp,
-    })
+    };
+
+    if (googleIDTokenSignUp) {
+      signUpData.googleIDToken = googleIDTokenSignUp;
+    } else if (!googleIDTokenSignUp && passwordSignUp !== "") {
+      signUpData.password = passwordSignUp;
+    }
+
+    registerAppUser(signUpData)
       .then((response) => {
         const decodedToken = jwtDecode(response.data.token);
         const time = decodedToken.exp || 3600;
@@ -135,8 +134,51 @@ export const SignIn = () => {
       });
   };
 
-  const handleGoogleSignInButtonClick = () => {};
-  const handleGoogleSignUpButtonClick = () => {};
+  const handleGoogleSignIn = (response: any) => {
+    const googleIDToken = response.credential;
+
+    const customizedPayload: { email: string } = jwtDecode(response.credential);
+
+    const googleEmail = customizedPayload.email;
+
+    authenticateAppUser({
+      email: googleEmail,
+      googleIDToken: googleIDToken,
+    })
+      .then((response) => {
+        const decodedToken = jwtDecode(response.data.token);
+        const time = decodedToken.exp || 3600;
+        signIn({
+          token: response.data.token,
+          tokenType: "Bearer",
+          expiresIn: time,
+          authState: {},
+        });
+        navigate("/");
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          alert(
+            "Es gibt noch keinen nutrifom Account zu deinem Google Account."
+          );
+        }
+      });
+  };
+  const handleGoogleSignInError = () => {};
+
+  const handleGoogleSignUp = (response: any) => {
+    const googleIDToken = response.credential;
+
+    const customizedPayload: { email: string } = jwtDecode(response.credential);
+
+    const googleEmail = customizedPayload.email;
+
+    setGoogleIDTokenSignUp(googleIDToken);
+    setEmailSignUp(googleEmail);
+    setIsPasswordSignUpHidden(true);
+  };
+
+  const handleGoogleSignUpError = () => {};
 
   const validateEmail = (email: string): boolean => {
     const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -185,7 +227,7 @@ export const SignIn = () => {
     if (!validateEmail(emailSignUp)) {
       setFieldErrors((error) => [...error, fieldErrorEnum.EMAILSIGNUP]);
     }
-    if (passwordSignUp === "") {
+    if (!isPasswordSignUpHidden && passwordSignUp === "") {
       setFieldErrors((error) => [...error, fieldErrorEnum.PASSWORDSIGNUP]);
     }
   };
@@ -331,23 +373,32 @@ export const SignIn = () => {
                   : emailSignUpError
               }
             />
-            <TextInputField
-              label="Passwort"
-              width="100%"
-              value={onSignInPage ? passwordSignIn : passwordSignUp}
-              setValue={onSignInPage ? setPasswordSignIn : setPasswordSignUp}
-              required={true}
-              type="password"
-              autoComplete="current-password"
-              hasError={
-                onSignInPage
-                  ? fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNIN)
-                  : fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNUP)
-              }
-              errorText={
-                onSignInPage ? passwordSignInError : "Gib ein Passwort an."
-              }
-            />
+            {onSignInPage && (
+              <TextInputField
+                label="Passwort"
+                width="100%"
+                value={passwordSignIn}
+                setValue={setPasswordSignIn}
+                required={true}
+                type="password"
+                autoComplete="current-password"
+                hasError={fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNIN)}
+                errorText={passwordSignInError}
+              />
+            )}
+            {!onSignInPage && !isPasswordSignUpHidden && (
+              <TextInputField
+                label="Passwort"
+                width="100%"
+                value={passwordSignUp}
+                setValue={setPasswordSignUp}
+                required={true}
+                type="password"
+                autoComplete="current-password"
+                hasError={fieldErrors.includes(fieldErrorEnum.PASSWORDSIGNUP)}
+                errorText={"Gib ein Passwort an."}
+              />
+            )}
           </Stack>
           <Box sx={{ marginTop: "5%" }}>
             <BasicButton
@@ -383,7 +434,7 @@ export const SignIn = () => {
                         pal === "Bitte wählen" ||
                         wpa < 0 ||
                         !validateEmail(emailSignUp) ||
-                        passwordSignUp === ""
+                        (!isPasswordSignUpHidden && passwordSignUp === "")
                       ) {
                         handleFieldErrorsBeforeSignUp();
                       } else {
@@ -392,30 +443,28 @@ export const SignIn = () => {
                     }
               }
             />
-            <Button
-              variant="outlined"
-              onClick={
-                onSignInPage
-                  ? handleGoogleSignInButtonClick
-                  : handleGoogleSignUpButtonClick
-              }
+            <Box
               sx={{
-                color: "black",
-                backgroundColor: "primary.light",
                 marginTop: "5%",
                 width: "100%",
               }}
             >
-              <img
-                src="./assets/img/googlelogo.png"
-                alt="Google Logo"
-                width="5%"
-                height="5%"
+              <GoogleLogin
+                onSuccess={
+                  onSignInPage ? handleGoogleSignIn : handleGoogleSignUp
+                }
+                onError={
+                  onSignInPage
+                    ? handleGoogleSignInError
+                    : handleGoogleSignUpError
+                }
+                theme="outline"
+                text="continue_with"
+                width="1000"
+                type="standard"
+                locale="de"
               />
-              <Typography sx={{ fontSize: "inherit", marginLeft: "5%" }}>
-                Weiter mit Google
-              </Typography>
-            </Button>
+            </Box>
             <Box
               sx={{
                 display: "flex",
@@ -428,7 +477,9 @@ export const SignIn = () => {
                 {onSignInPage ? "Noch keinen Account?" : ""}
               </Typography>
               <Link
-                onClick={() => setOnSignInPage(!onSignInPage)}
+                onClick={() => {
+                  setOnSignInPage(!onSignInPage);
+                }}
                 sx={{ "&:hover": { cursor: "pointer" } }}
               >
                 <Typography>
