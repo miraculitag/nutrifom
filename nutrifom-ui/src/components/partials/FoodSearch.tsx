@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Autocomplete, TextField, CircularProgress } from "@mui/material";
+import { Box, Autocomplete, TextField } from "@mui/material";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 import { addProductToNutrilog, searchOFF } from "../../api";
@@ -39,7 +39,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
         );
       }
     }
-  }, [searchTextFood]);
+  }, [searchTextFood, auth, signOut, navigate, selectedFood]);
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 

@@ -29,7 +29,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     getRecipes(auth(), signOut, navigate).then((response) => {
       setRecipes(response.data);
     });
-  }, []);
+  }, [auth, signOut, navigate]);
 
   const handleChangeSearchPortionRecepieText = async () => {
     setPortionAmountHasError(false);
