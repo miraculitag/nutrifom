@@ -14,20 +14,17 @@ interface RecipeSearchProps {
 }
 
 export const RecipeSearch = (props: RecipeSearchProps) => {
+  const [isButtonClicked] = React.useState(false);
+  const [recipes, setRecipes] = React.useState<any[]>([]);
+  const [selectedRecepie, setSelectedRecepie] = React.useState<Recipe>();
+  const [recepieSearchHasError, setRecepieSearchHasError] = React.useState(false);
+  const [portionAmountHasError, setPortionAmountHasError] = React.useState(false);
+  const [currentPortionAmount, setCurrentPortionAmount] = React.useState(0);
+ 
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-  const [isButtonClicked] = React.useState(false);
-  const currentDate = dayjs().format("YYYY-MM-DD");
-  const [recepieSearchHasError, setRecepieSearchHasError] =
-    React.useState(false);
-  const [currentPortionAmount, setCurrentPortionAmount] =
-    React.useState<number>(0);
-  const [portionAmountHasError, setPortionAmountHasError] =
-    React.useState(false);
-  const [recipes, setRecipes] = React.useState<any[]>([]);
-  const [selectedRecepie, setSelectedRecepie] = React.useState<Recipe>();
-
+  
   React.useEffect(() => {
     getRecipes(auth(), signOut, navigate).then((response) => {
       setRecipes(response.data);
@@ -39,7 +36,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     setRecepieSearchHasError(false);
 
     const dateString: string =
-      props.selectedDate?.format("YYYY-MM-DD") || currentDate;
+      props.selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD");
 
     await addRecipeToNutrilog(
       {
@@ -50,11 +47,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
       auth(),
       signOut,
       navigate
-    ).catch((error) => {
-      if (error.response.status === 403) {
-        console.log("Error 403 while putting weight:", auth());
-      }
-    });
+    )
     props.onNutrilogUpdate();
   };
 

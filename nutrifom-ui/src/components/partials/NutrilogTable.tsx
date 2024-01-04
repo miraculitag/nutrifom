@@ -13,33 +13,29 @@ export interface NutrilogTableProps {
   selectedRow: number | null;
 }
 
-function getEntryName(entry: any): string {
-  if ("productCode" in entry && "productName" in entry) {
-    return entry.productName.concat(" [g]");;
-  } else if ("recipeId" in entry && "recipeTitle" in entry) {
-    return entry.recipeTitle.concat(" [Portion(en)]");
-  }
-  return "Unbekannter Name";
-}
-
-function getQuantity(entry: any): string {
-  if ("productCode" in entry && "productName" in entry) {
-    return entry.productQuantity;
-  } else if ("recipeId" in entry && "recipeTitle" in entry) {
-    return entry.portions;
-  }
-  return "Unbekannter Name";
-}
-
-
 export const NutrilogTable = (props: NutrilogTableProps) => {
-  const { nutrilogItems } = props;
+
+  const getEntryName = (entry: any): string => {
+    if ("productCode" in entry && "productName" in entry) {
+      return `${entry.productName} [g]`;
+    } else {
+      return `${entry.recipeTitle} [Portion(en)]`;
+    }
+  };
+
+  const getQuantity = (entry: any): string => {
+    if ("productCode" in entry && "productName" in entry) {
+      return entry.productQuantity;
+    } else {
+      return entry.portions;
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          {nutrilogItems?.map((entry, entryIndex) => (
+          {props.nutrilogItems?.map((entry, entryIndex) => (
             <TableRow
               key={entryIndex}
               onClick={() => props.onSelectRow(entryIndex)}
@@ -54,4 +50,4 @@ export const NutrilogTable = (props: NutrilogTableProps) => {
       </Table>
     </TableContainer>
   );
-}
+};

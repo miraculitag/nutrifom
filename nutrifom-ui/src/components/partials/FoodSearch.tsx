@@ -15,35 +15,33 @@ interface FoodSearchProps {
 }
 
 export const FoodSearch = (props: FoodSearchProps) => {
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
-  const currentDate = dayjs().format("YYYY-MM-DD");
-  const [isButtonClicked] = React.useState(false);
-  const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
-  const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
-  const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
-  const [apiData, setApiData] = React.useState<FoodEntry[]>([]);
   const [searchTextFood, setSearchTextFood] = React.useState("");
+  const [currentFoodAmount, setCurrentFoodAmount] = React.useState(0);
+  const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
+  const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
+  const [isButtonClicked] = React.useState(false);
   const [selectedFood, setSelectedFood] = React.useState<
     FoodEntry | undefined
   >();
+  const [apiData, setApiData] = React.useState<FoodEntry[]>([]);
+
+  const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     if (searchTextFood) {
       if (!selectedFood) {
-        try {
-          searchOFF(searchTextFood, auth(), signOut, navigate).then(
-            (response) => {
-              setApiData(response.data);
-            }
-          );
-        } catch (error) {
-          console.log("Fehler beim Abrufen der offSearch:", error);
-        }
+        searchOFF(searchTextFood, auth(), signOut, navigate).then(
+          (response) => {
+            setApiData(response.data);
+          }
+        );
       }
     }
   }, [searchTextFood]);
+
+  const currentDate = dayjs().format("YYYY-MM-DD");
 
   const handleChangeSearchFoodTextAmount = async () => {
     setFoodAmountHasError(false);
@@ -56,7 +54,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
       {
         productCode: selectedFood?.productCode || "",
         entryDate: dateString,
-        productQuantity: currentFoodAmount,
+        productQuantity:currentFoodAmount,
       },
       auth(),
       signOut,
@@ -144,4 +142,4 @@ export const FoodSearch = (props: FoodSearchProps) => {
       />
     </>
   );
-}
+};

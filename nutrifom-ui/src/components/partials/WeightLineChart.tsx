@@ -17,17 +17,26 @@ interface WeightLineChartProps {
 }
 
 export const WeightLineChart = (props: WeightLineChartProps) => {
+  const [weightHistory, setWeightHistory] = useState<WeightRequest[]>([]);
+
   const theme = useTheme();
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-  const [weightHistory, setWeightHistory] = useState<WeightRequest[]>([]);
+
+  React.useEffect(() => {
+    getWeightHistory(auth(), signOut, navigate)
+      .then((response) => {
+        setWeightHistory(response.data);
+      })
+  }, [props.weightUpdate]);
 
   const customize = {
     height: 540,
     legend: { hidden: true },
     margin: { top: 5 },
   };
+  
   const last14Days = Array.from({ length: 14 }, (_, index) =>
     dayjs().subtract(index, "day").format("YYYY-MM-DD")
   ).reverse();
@@ -36,7 +45,6 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
     const weightData = weightHistory.find(
       (entry) => dayjs(entry.entryDate).format("YYYY-MM-DD") === date
     );
-
     return weightData ? weightData.weight : null;
   });
 
@@ -48,16 +56,6 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
     Math.max(...filteredDataPoints) >= 110
       ? Math.max(...filteredDataPoints) * 1.1
       : 110;
-
-  React.useEffect(() => {
-    getWeightHistory(auth(), signOut, navigate)
-      .then((response) => {
-        setWeightHistory(response.data);
-      })
-      .catch((error) => {
-        console.log("Fehler:", error);
-      });
-  }, [props.weightUpdate]);
 
   return (
     <>
@@ -88,10 +86,11 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
                 value == null ? "n.a." : value.toString() + " kg",
               color: theme.palette.primary.main,
             },
-          ]}
+          ]}          
           {...customize}
         />
       )}
     </>
   );
 };
+

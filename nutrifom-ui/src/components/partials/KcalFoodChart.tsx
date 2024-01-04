@@ -14,10 +14,12 @@ const StyledText = styled("text")(({ theme }) => ({
   fontFamily: theme.typography.fontFamily,
 }));
 
-function PieCenterLabel({ children }: { children: React.ReactNode }) {
-  const { width, height, left, top } = useDrawingArea();
-  const lineHeight = 20;
+const PieCenterLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const textLines = React.Children.toArray(children);
+
+  const { width, height, left, top } = useDrawingArea();
+
+  const lineHeight = 20;
 
   return (
     <StyledText x={left + width / 2} y={top + height / 2 - lineHeight / 2}>
@@ -32,14 +34,16 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
       ))}
     </StyledText>
   );
-}
+};
+
 
 export const KcalFoodChart = (props: KcalFoodChartProps) => {
-  const theme = useTheme();
   const [remainingKcal, setRemainingKcal] = React.useState(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);
   const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] =
     React.useState(0);
+
+  const theme = useTheme();
 
   React.useEffect(() => {
     if (props.totalKcal >= props.consumedKcal) {
@@ -61,9 +65,13 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
   const data = [
     {
       value: props.consumedKcal,
-      color: props.consumedKcal <= (props.totalKcal - 200) ? "red" : theme.palette.primary.main,
+      color: theme.palette.primary.main,
     },
-    { value: remainingKcal, label: "Verbleibend", color: "lightgrey" },
+    { 
+      value: remainingKcal, 
+      label: "Verbleibend", 
+      color: "lightgrey"
+     },
   ];
 
   return (
@@ -98,4 +106,4 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
       </PieChart>
     </>
   );
-}
+};

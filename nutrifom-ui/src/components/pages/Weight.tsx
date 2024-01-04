@@ -14,26 +14,31 @@ import { WeightLineChart } from "../partials/WeightLineChart";
 
 
 export const Weight = () => {
-  const theme = useTheme();
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
-  const [isButtonClicked] = React.useState(false);
+
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const [dateHasError, setDateHasError] = React.useState(false);
-  const [currentWeight, setCurrentWeight] = React.useState<number>(0);
   const [weightHasError, setWeightHasError] = React.useState(false);
+  const [isButtonClicked] = React.useState(false);
+  const [currentWeight, setCurrentWeight] = React.useState(0);
+  const [weightUpdate, setWeightUpdate] = React.useState(0);  
   const [dateErrorText, setDateErrorText] = React.useState(
     "Du muss ein Datum auswählen."
   );
+  
+
+  const theme = useTheme();
+  const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
   const infoText = {
     title: "Gewichtsveränderung:",
     description:
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
-  const [weightUpdate, setWeightUpdate] = React.useState(0);
+
 
   const handleAddWeightClick = async () => {
     setWeightHasError(false);
@@ -49,12 +54,6 @@ export const Weight = () => {
       ).then(() => {
         setWeightUpdate((prevValue) => prevValue + 1);
       })
-      .catch((error) => {
-        if (error.response.status === 403) {
-          console.log("Error 403 while putting weight:", auth());
-        }
-      });
-    
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {
