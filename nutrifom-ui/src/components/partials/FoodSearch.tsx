@@ -59,11 +59,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
       auth(),
       signOut,
       navigate
-    ).catch((error) => {
-      if (error.response.status === 403) {
-        console.log("Error 403 while putting weight:", auth());
-      }
-    });
+    )
     props.onNutrilogUpdate();
   };
 
