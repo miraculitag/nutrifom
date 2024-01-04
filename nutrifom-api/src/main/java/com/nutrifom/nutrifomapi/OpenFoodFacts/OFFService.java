@@ -82,41 +82,56 @@ public class OFFService {
             }
 
 
-
             String code = product.path("code").asText();
-            if (product.has("product_quantity")) {
-                Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
-
-                if (productQuantityDouble == null || productQuantityDouble <= 0.0) {
-                    // handle the error, for example, skip this product
-                    continue;
-                }
-                
-                JsonNode nutriments = product.path("nutriments");
-
-                double proteins = roundToOneDecimalPlace(nutriments.path("proteins").asDouble());
-                double carbohydrates = roundToOneDecimalPlace(
-                        nutriments.path("carbohydrates").asDouble());
-                double energyKcal = roundToOneDecimalPlace(
-                        nutriments.path("energy-kcal").asDouble());
-                double fat = roundToOneDecimalPlace(nutriments.path("fat").asDouble());
-                double saturatedFat = roundToOneDecimalPlace(
-                        nutriments.path("saturated-fat").asDouble());
-                double unsaturatedFat = fat - saturatedFat;
-
-                Product p = new Product();
-                p.setProductCode(code);
-                p.setProductName(productName);
-                p.setProductQuantity(productQuantityDouble);
-                p.setProteins(proteins);
-                p.setCarbohydrates(carbohydrates);
-                p.setEnergyKcal(energyKcal);
-                p.setSaturatedFat(saturatedFat);
-                p.setUnsaturatedFat(unsaturatedFat);
-
-                productList.add(p);
-                productNames.add(productName);
+            if (!product.has("product_quantity")) {
+                continue;
             }
+            Double productQuantityDouble = convertToDouble(product.path("product_quantity").asText());
+
+            if (productQuantityDouble == null || productQuantityDouble <= 0.0) {
+                // handle the error, for example, skip this product
+                continue;
+            }
+
+            JsonNode nutriments = product.path("nutriments");
+
+            double proteins = roundToOneDecimalPlace(nutriments.path("proteins").asDouble());
+            double carbohydrates = roundToOneDecimalPlace(
+                    nutriments.path("carbohydrates").asDouble());
+            double energyKcal = roundToOneDecimalPlace(
+                    nutriments.path("energy-kcal").asDouble());
+            double fat = roundToOneDecimalPlace(nutriments.path("fat").asDouble());
+            double saturatedFat = roundToOneDecimalPlace(
+                    nutriments.path("saturated-fat").asDouble());
+            double unsaturatedFat = fat - saturatedFat;
+
+            double proteinsPer100g = nutriments.path("proteins_100g").asDouble();
+            double carbohydratesPer100g = nutriments.path("carbohydrates_100g").asDouble();
+            double energyKcalPer100g = nutriments.path("energy-kcal_100g").asDouble();
+            double saturatedFatPer100g = nutriments.path("saturated-fat_100g").asDouble();
+            double unsaturatedFatPer100g = nutriments.path("fat_100g").asDouble() - saturatedFatPer100g;
+            double fatPer100g = nutriments.path("fat_100g").asDouble();
+
+            double adjustedProteins = validateAndAdjustNutrient(proteins, proteinsPer100g, productQuantityDouble);
+            double adjustedCarbohydrates = validateAndAdjustNutrient(carbohydrates, carbohydratesPer100g, productQuantityDouble);
+            double adjustedEnergyKcal = validateAndAdjustNutrient(energyKcal, energyKcalPer100g, productQuantityDouble);
+            double adjustedSaturatedFat = validateAndAdjustNutrient(saturatedFat, saturatedFatPer100g, productQuantityDouble);
+            double adjustedUnsaturatedFat = validateAndAdjustNutrient(unsaturatedFat, unsaturatedFatPer100g, productQuantityDouble);
+
+
+
+            Product p = new Product();
+            p.setProductCode(code);
+            p.setProductName(productName);
+            p.setProductQuantity(productQuantityDouble);
+            p.setProteins(adjustedProteins);
+            p.setCarbohydrates(adjustedCarbohydrates);
+            p.setEnergyKcal(adjustedEnergyKcal);
+            p.setSaturatedFat(adjustedSaturatedFat);
+            p.setUnsaturatedFat(adjustedUnsaturatedFat);
+
+            productList.add(p);
+            productNames.add(productName);
         }
 
         return productList;
@@ -139,16 +154,36 @@ public class OFFService {
         }
 
         JsonNode productNode = root.path("products").get(0);
+        JsonNode nutriments = productNode.path("nutriments");
+
+        double proteinsPer100g = nutriments.path("proteins_100g").asDouble();
+        double carbohydratesPer100g = nutriments.path("carbohydrates_100g").asDouble();
+        double energyKcalPer100g = nutriments.path("energy-kcal_100g").asDouble();
+        double saturatedFatPer100g = nutriments.path("saturated-fat_100g").asDouble();
+        double unsaturatedFatPer100g = nutriments.path("fat_100g").asDouble() - saturatedFatPer100g;
+        double fatPer100g = nutriments.path("fat_100g").asDouble();
+
         Product product = new Product();
         product.setProductCode(productNode.path("code").asText());
         product.setProductName(productNode.path("product_name").asText());
         product.setProductQuantity(productNode.path("product_quantity").asDouble());
-        product.setProteins(productNode.path("nutriments").path("proteins").asDouble());
-        product.setCarbohydrates(productNode.path("nutriments").path("carbohydrates").asDouble());
-        product.setEnergyKcal(productNode.path("nutriments").path("energy-kcal").asDouble());
-        product.setSaturatedFat(productNode.path("nutriments").path("saturated-fat").asDouble());
-        product.setUnsaturatedFat(productNode.path("nutriments").path("fat").asDouble() - product.getSaturatedFat());
+        product.setProteins(validateAndAdjustNutrient(product.getProteins(), proteinsPer100g, product.getProductQuantity()));
+        product.setCarbohydrates(validateAndAdjustNutrient(product.getCarbohydrates(), carbohydratesPer100g, product.getProductQuantity()));
+        product.setEnergyKcal(validateAndAdjustNutrient(product.getEnergyKcal(), energyKcalPer100g, product.getProductQuantity()));
+        product.setSaturatedFat(validateAndAdjustNutrient(product.getSaturatedFat(), saturatedFatPer100g, product.getProductQuantity()));
+        product.setUnsaturatedFat(validateAndAdjustNutrient(product.getUnsaturatedFat(), unsaturatedFatPer100g, product.getProductQuantity()));
 
         return product;
     }
+
+    public double validateAndAdjustNutrient(double nutrientValue, double nutrientValuePer100g, double productQuantity) {
+        if (productQuantity > 0) {
+            double expectedNutrientValue = (nutrientValuePer100g * productQuantity) / 100;
+            if (Math.abs(expectedNutrientValue - nutrientValue) > 1e-2) { // Ein kleiner Toleranzbereich
+                return roundToOneDecimalPlace(expectedNutrientValue);
+            }
+        }
+        return nutrientValue;
+    }
+
 }
