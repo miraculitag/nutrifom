@@ -5,6 +5,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  CircularProgress,
   IconButton,
   Rating,
   Typography,
@@ -24,12 +25,18 @@ export const Recipes = () => {
   const [openFilterDialog, setOpenFilterDialog] = React.useState(false);
   const [recipes, setRecipes] = React.useState<Recipe[]>();
   const [shownRecipes, setShownRecipes] = React.useState(recipes);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    getRecipes(auth(), signOut, navigate).then((response) => {
-      setRecipes(response.data);
-      setShownRecipes(response.data);
-    });
+    setIsLoading(true);
+    getRecipes(auth(), signOut, navigate)
+      .then((response) => {
+        setRecipes(response.data);
+        setShownRecipes(response.data);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   const theme = useTheme();
@@ -129,6 +136,19 @@ export const Recipes = () => {
           onClose={handleClose}
           valueFilter={filterValue}
         />
+        {isLoading && (
+          <CircularProgress
+            sx={{
+              display: "flex",
+              margin: "auto",
+              height: 5,
+              borderRadius: 5,
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: theme.palette.primary.main,
+              },
+            }}
+          />
+        )}
         {shownRecipes?.map((recipe) => (
           <Accordion
             key={recipe.id}
