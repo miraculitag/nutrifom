@@ -1,9 +1,12 @@
-import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Avatar, Box, Container, Link, Stack, Typography } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
+import { jwtDecode } from "jwt-decode";
+import React from "react";
 import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
+import { authenticateAppUser, registerAppUser } from "../../api";
+import { RegisterRequest, fieldErrorEnum } from "../../types";
 import { BasicButton } from "../common/BasicButton";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { DropDownMenu } from "../common/DropDownMenu";
@@ -11,10 +14,6 @@ import { FloatInputField } from "../common/FloatInputField";
 import { InfoAlert } from "../common/InfoAlert";
 import { PalTable } from "../common/PalTable";
 import { TextInputField } from "../common/TextInputField";
-import { authenticateAppUser, registerAppUser } from "../../api";
-import { RegisterRequest, fieldErrorEnum } from "../../types";
-import { jwtDecode } from "jwt-decode";
-import { GoogleLogin } from "@react-oauth/google";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
