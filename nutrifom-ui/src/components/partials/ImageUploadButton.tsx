@@ -43,15 +43,15 @@ export default function ImageUploadButton() {
         const formData = new FormData();
         formData.append("image", image);
         setIsUploading(true);
-        try {
-          await putAppUserImage(formData, auth(), signOut, navigate);
-          const updatedUser = await getAppUser(auth(), signOut, navigate);
-          updateUser(updatedUser.data);
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsUploading(false);
-        }
+
+        putAppUserImage(formData, auth(), signOut, navigate)
+          .then(() => getAppUser(auth(), signOut, navigate))
+          .then((updatedUser) => {
+            updateUser(updatedUser.data);
+          })
+          .finally(() => {
+            setIsUploading(false);
+          });
       }
     }
   };

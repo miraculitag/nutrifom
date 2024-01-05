@@ -12,22 +12,21 @@ import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
 import { NutrilogTable } from "../partials/NutrilogTable";
 import { FoodSearch } from "../partials/FoodSearch";
-import { RecipeSearch } from "../partials/RecepieSearch";
+import { RecipeSearch } from "../partials/RecipeSearch";
 import { KcalFoodChart } from "../partials/KcalFoodChart";
 
-export const Nutrilog = () => {  
+export const Nutrilog = () => {
   const [kcalGoal, setKcalGoal] = React.useState<number>(0);
   const [selectedFood, setSelectedFood] = React.useState<any | null>(null);
   const [selectedRow, setSelectedRow] = React.useState<number | null>(null);
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
-  );  
-  const [nutrilog, setNutrilog] = React.useState<NutritionData>();  
+  );
+  const [nutrilog, setNutrilog] = React.useState<NutritionData>();
   const [allNutrilogItems, setAllNutrilogItems] = React.useState([
     ...(nutrilog?.products || []),
     ...(nutrilog?.recipes || []),
   ]);
-    
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -35,11 +34,9 @@ export const Nutrilog = () => {
   const navigate = useNavigate();
   const { user, hasFetchedUser } = useUser();
 
-  
   React.useEffect(() => {
-    handleUpdateNutrilog()
+    handleUpdateNutrilog();
   }, [selectedDate]);
-
 
   React.useEffect(() => {
     if (user) {
