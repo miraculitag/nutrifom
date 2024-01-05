@@ -25,6 +25,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const isAuthenticated = useIsAuthenticated();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     if (isAuthenticated() && !hasFetchedUser) {
       getUserData();
@@ -32,7 +33,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setHasFetchedUser(false);
     }
-  }, [hasFetchedUser, isAuthenticated()]);
+  }, [hasFetchedUser, isAuthenticated]);
 
   const getUserData = async () => {
     const response = await getAppUser(auth(), signOut, navigate);
