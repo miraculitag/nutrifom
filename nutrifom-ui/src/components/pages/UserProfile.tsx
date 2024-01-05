@@ -48,7 +48,7 @@ export const UserProfile = () => {
         processImage();
       }
     }
-  }, [user?.image]);
+  }, [user?.image, user]);
 
   const userData = [
     { label: "Username", data: user?.name },

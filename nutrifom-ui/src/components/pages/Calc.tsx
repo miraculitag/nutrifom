@@ -46,6 +46,7 @@ export const Calc = () => {
   const navigate = useNavigate();
   const { user, updateUserAttribute, hasFetchedUser } = useUser();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     checkDataSufficiency();
     setLocalStates();

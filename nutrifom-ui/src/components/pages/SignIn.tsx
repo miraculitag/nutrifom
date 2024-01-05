@@ -1,14 +1,6 @@
 import React from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Link,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Container, Link, Stack, Typography } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import { useSignIn } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
@@ -26,10 +18,7 @@ import { GoogleLogin } from "@react-oauth/google";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState(true);
-  const [isSignInButtonClicked, setSignInButtonClicked] = React.useState(false);
-  const [isSignUpButtonClicked, setSignUpButtonClicked] = React.useState(false);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
-
   const [emailSignIn, setEmailSignIn] = React.useState("");
   const [emailSignUp, setEmailSignUp] = React.useState("");
   const [passwordSignIn, setPasswordSignIn] = React.useState("");
@@ -404,9 +393,6 @@ export const SignIn = () => {
             <BasicButton
               label={onSignInPage ? "Einloggen" : "Registrieren"}
               width={"100%"}
-              isButtonClicked={
-                onSignInPage ? isSignInButtonClicked : isSignUpButtonClicked
-              }
               onButtonClick={
                 onSignInPage
                   ? () => {

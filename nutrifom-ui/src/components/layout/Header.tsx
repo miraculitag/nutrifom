@@ -37,7 +37,7 @@ export const Header = () => {
         processImage();
       }
     }
-  }, [user?.image]);
+  }, [user?.image, user]);
 
   const handleSignOutButtonClick = () => {
     signOut();

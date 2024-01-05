@@ -27,6 +27,12 @@ export const Recipes = () => {
   const [shownRecipes, setShownRecipes] = React.useState(recipes);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const theme = useTheme();
+  const auth = useAuthHeader();
+  const signOut = useSignOut();
+  const navigate = useNavigate();
+
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     setIsLoading(true);
     getRecipes(auth(), signOut, navigate)
@@ -38,11 +44,6 @@ export const Recipes = () => {
         setIsLoading(false);
       });
   }, []);
-
-  const theme = useTheme();
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
 
   const filterHeading = "Rezeptkategorien";
   const filterOptions = ["Alle", "Aufbauen", "Definieren"];

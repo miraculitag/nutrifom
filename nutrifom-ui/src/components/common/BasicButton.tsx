@@ -3,8 +3,8 @@ import { Button, useTheme } from "@mui/material";
 export interface BasicButtonProps {
   label: string;
   width: string;
-  isButtonClicked: boolean;
   onButtonClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  isButtonClicked?: boolean;
 }
 
 export const BasicButton = (props: BasicButtonProps) => {
