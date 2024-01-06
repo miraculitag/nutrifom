@@ -109,34 +109,34 @@ export const Nutrilog = () => {
         sx={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gridTemplateAreas: `"Food Recepie PieChart"
-        "Foodlog Foodlog Nutrition"`,
+          gridTemplateAreas: `"FoodSearch RecepieSearch KcalFoodChart"
+        "NutrilogTable NutrilogTable NutritionalTable"`,
           columnGap: 5,
           rowGap: 8,
         }}
       >
-        <Box sx={{ gridArea: "Food" }}>
+        <Box sx={{ gridArea: "FoodSearch" }}>
           <FoodSearch
             selectedDate={selectedDate}
             onNutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 
-        <Box sx={{ gridArea: "Recepie" }}>
+        <Box sx={{ gridArea: "RecepieSearch" }}>
           <RecipeSearch
             selectedDate={selectedDate}
             onNutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 
-        <Box sx={{ gridArea: "PieChart", height: "100%" }}>
+        <Box sx={{ gridArea: "KcalFoodChart", height: "100%" }}>
           <KcalFoodChart
             totalKcal={kcalGoal}
             consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}
           />
         </Box>
 
-        <Box sx={{ gridArea: "Foodlog" }}>
+        <Box sx={{ gridArea: "NutrilogTable" }}>
           <Box sx={{ display: "flex", marginBottom: "2%" }}>
             <Typography>Lebenmittel & Rezepte</Typography>
             {selectedDate &&
@@ -179,7 +179,7 @@ export const Nutrilog = () => {
           />
         </Box>
 
-        <Box sx={{ gridArea: "Nutrition" }}>
+        <Box sx={{ gridArea: "NutritionalTable" }}>
           <Box sx={{ marginBottom: "2%" }}>
             <Typography>Nährwerte</Typography>
           </Box>

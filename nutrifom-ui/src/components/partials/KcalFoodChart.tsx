@@ -1,41 +1,12 @@
 import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { styled, useTheme } from "@mui/material/styles";
-import { useDrawingArea } from "@mui/x-charts";
+import { useTheme } from "@mui/material/styles";
+import { KcalFoodChartLabel } from "./KcalFoodChartLabel";
 
 export interface KcalFoodChartProps {
   totalKcal: number;
   consumedKcal: number;
 }
-
-const StyledText = styled("text")(({ theme }) => ({
-  textAnchor: "middle",
-  dominantBaseline: "central",
-  fontFamily: theme.typography.fontFamily,
-}));
-
-const PieCenterLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const textLines = React.Children.toArray(children);
-
-  const { width, height, left, top } = useDrawingArea();
-
-  const lineHeight = 20;
-
-  return (
-    <StyledText x={left + width / 2} y={top + height / 2 - lineHeight / 2}>
-      {textLines.map((line, index) => (
-        <tspan
-          key={index}
-          dy={index === 0 ? 0 : lineHeight}
-          x={left + width / 2}
-        >
-          {line}
-        </tspan>
-      ))}
-    </StyledText>
-  );
-};
-
 
 export const KcalFoodChart = (props: KcalFoodChartProps) => {
   const [remainingKcal, setRemainingKcal] = React.useState(0);
@@ -68,8 +39,7 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
       color: theme.palette.primary.main,
     },
     { 
-      value: remainingKcal, 
-      label: "Verbleibend", 
+      value: remainingKcal,
       color: "lightgrey"
      },
   ];
@@ -100,9 +70,7 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
         }}
         tooltip={{ trigger: "none" }}
       >
-        <PieCenterLabel>
-          {[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}
-        </PieCenterLabel>
+        <KcalFoodChartLabel label={[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]} />
       </PieChart>
     </>
   );
