@@ -16,8 +16,8 @@ interface RecipeSearchProps {
 export const RecipeSearch = (props: RecipeSearchProps) => {
   const [isButtonClicked] = React.useState(false);
   const [recipes, setRecipes] = React.useState<any[]>([]);
-  const [selectedRecepie, setSelectedRecepie] = React.useState<Recipe>();
-  const [recepieSearchHasError, setRecepieSearchHasError] = React.useState(false);
+  const [selectedRecipe, setSelectedRecipe] = React.useState<Recipe>();
+  const [recipeSearchHasError, setRecipeSearchHasError] = React.useState(false);
   const [portionAmountHasError, setPortionAmountHasError] = React.useState(false);
   const [currentPortionAmount, setCurrentPortionAmount] = React.useState(0);
  
@@ -32,16 +32,16 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     });
   }, []);
 
-  const handleChangeSearchPortionRecepieText = async () => {
+  const handleChangeSearchPortionRecipeText = async () => {
     setPortionAmountHasError(false);
-    setRecepieSearchHasError(false);
+    setRecipeSearchHasError(false);
 
     const dateString: string =
       props.selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD");
 
     await addRecipeToNutrilog(
       {
-        recipeId: selectedRecepie?.id || 0,
+        recipeId: selectedRecipe?.id || 0,
         entryDate: dateString,
         recipePortions: currentPortionAmount,
       },
@@ -57,7 +57,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
       <Box sx={{ marginBottom: "5%" }}>
         <Autocomplete
           onChange={(event: any, newValue: Recipe | null) => {
-            setSelectedRecepie(newValue || undefined);
+            setSelectedRecipe(newValue || undefined);
           }}
           id="controllable-states-demo"
           options={recipes}
@@ -73,10 +73,10 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
               InputLabelProps={{
                 shrink: true,
               }}
-              error={recepieSearchHasError}
+              error={recipeSearchHasError}
               required={true}
               helperText={
-                recepieSearchHasError ? "Du hast kein Rezept ausgewählt." : ""
+                recipeSearchHasError ? "Du hast kein Rezept ausgewählt." : ""
               }
             />
           )}
@@ -102,20 +102,20 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
           if (
             currentPortionAmount <= 0 ||
             isNaN(currentPortionAmount) ||
-            !selectedRecepie
+            !selectedRecipe
           ) {
             if (currentPortionAmount <= 0 || isNaN(currentPortionAmount)) {
               setPortionAmountHasError(true);
             } else {
               setPortionAmountHasError(false);
             }
-            if (!selectedRecepie) {
-              setRecepieSearchHasError(true);
+            if (!selectedRecipe) {
+              setRecipeSearchHasError(true);
             } else {
-              setRecepieSearchHasError(false);
+              setRecipeSearchHasError(false);
             }
           } else {
-            handleChangeSearchPortionRecepieText();
+            handleChangeSearchPortionRecipeText();
           }
         }}
       />
