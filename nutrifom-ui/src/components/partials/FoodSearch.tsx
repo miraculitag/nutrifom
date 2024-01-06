@@ -28,18 +28,22 @@ export const FoodSearch = (props: FoodSearchProps) => {
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-
+  
+/* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-    if (searchTextFood) {
-      if (!selectedFood) {
-        searchOFF(searchTextFood, auth(), signOut, navigate).then(
-          (response) => {
-            setApiData(response.data);
-          }
-        );
-      }
-    }
-  }, [searchTextFood, auth, signOut, navigate, selectedFood]);
+      if (searchTextFood && !selectedFood)  {
+        const timeoutId = setTimeout(async () => {
+          const response = await searchOFF(
+            searchTextFood,
+            auth(),
+            signOut,
+            navigate
+          );
+          setApiData(response.data);
+        }, 400);
+        return () => clearTimeout(timeoutId);
+    }    
+  }, [searchTextFood]);
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
@@ -54,12 +58,12 @@ export const FoodSearch = (props: FoodSearchProps) => {
       {
         productCode: selectedFood?.productCode || "",
         entryDate: dateString,
-        productQuantity:currentFoodAmount,
+        productQuantity: currentFoodAmount,
       },
       auth(),
       signOut,
       navigate
-    )
+    );
     props.onNutrilogUpdate();
   };
 

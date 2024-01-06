@@ -25,11 +25,12 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
   const signOut = useSignOut();
   const navigate = useNavigate();
   
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     getRecipes(auth(), signOut, navigate).then((response) => {
       setRecipes(response.data);
     });
-  }, [auth, signOut, navigate]);
+  }, []);
 
   const handleChangeSearchPortionRecepieText = async () => {
     setPortionAmountHasError(false);

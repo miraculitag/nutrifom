@@ -24,6 +24,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
   const signOut = useSignOut();
   const navigate = useNavigate();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     getWeightHistory(auth(), signOut, navigate)
       .then((response) => {

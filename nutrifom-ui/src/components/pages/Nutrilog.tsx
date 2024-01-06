@@ -34,6 +34,7 @@ export const Nutrilog = () => {
   const navigate = useNavigate();
   const { user, hasFetchedUser } = useUser();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     handleUpdateNutrilog();
   }, [selectedDate]);
@@ -46,7 +47,7 @@ export const Nutrilog = () => {
           : 2000
       );
     }
-  }, [hasFetchedUser]);
+  }, [user, hasFetchedUser]);
 
   React.useEffect(() => {
     if (selectedRow != null) {
@@ -54,7 +55,7 @@ export const Nutrilog = () => {
     } else {
       setSelectedFood(null);
     }
-  }, [selectedRow]);
+  }, [selectedRow, allNutrilogItems]);
 
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
