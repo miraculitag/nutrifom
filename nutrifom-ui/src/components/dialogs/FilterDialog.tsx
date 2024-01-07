@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {
   Button,
   Dialog,
@@ -11,7 +11,6 @@ import {
 } from "@mui/material";
 
 export interface FilterDialogProps {
-  id: string;
   keepMounted: boolean;
   heading: string;
   options: string[];
@@ -21,16 +20,9 @@ export interface FilterDialogProps {
 }
 
 export const FilterDialog = (props: FilterDialogProps) => {
-  const { onClose, valueFilter: valueProp, open, ...other } = props;
-  const [valueFilter, setValueFilter] = React.useState(valueProp);
+  const [valueFilter, setValueFilter] = React.useState(props.valueFilter);
 
   const radioGroupRef = React.useRef<HTMLElement>(null);
-
-  React.useEffect(() => {
-    if (!open) {
-      setValueFilter(valueProp);
-    }
-  }, [valueProp, open]);
 
   const handleEntering = () => {
     if (radioGroupRef.current != null) {
@@ -39,15 +31,15 @@ export const FilterDialog = (props: FilterDialogProps) => {
   };
 
   const handleCancel = () => {
-    onClose();
+    props.onClose();
   };
 
   const handleOk = () => {
-    onClose(valueFilter);
+    props.onClose(valueFilter);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValueFilter((event.target as HTMLInputElement).value);
+    setValueFilter(event.target.value);
   };
 
   return (
@@ -55,8 +47,7 @@ export const FilterDialog = (props: FilterDialogProps) => {
       sx={{ "& .MuiDialog-paper": { width: "80%", maxHeight: 435 } }}
       maxWidth="xs"
       TransitionProps={{ onEntering: handleEntering }}
-      open={open}
-      {...other}
+      open={props.open}
     >
       <DialogTitle>{props.heading}</DialogTitle>
       <DialogContent dividers>

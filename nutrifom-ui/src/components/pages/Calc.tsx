@@ -29,16 +29,17 @@ import { useNavigate } from "react-router-dom";
 
 export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
-    React.useState(false);
+    React.useState<boolean>(false);
   const [kcalRequirement, setKcalRequirement] = React.useState<number>(0);
   const [weightFor14Days, setWeightFor14Days] = React.useState<number[]>([]);
   const [kcalFor14Days, setKcalFor14Days] = React.useState<number[]>([]);
-  const [dataFor14Days, setDataFor14Days] = React.useState(false);
-  const [pal, setPal] = React.useState("");
-  const [goal, setGoal] = React.useState("");
-  const [wpa, setWpa] = React.useState(0);
-  const [wpaHasError, setWpaHasError] = React.useState(false);
-  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
+  const [dataFor14Days, setDataFor14Days] = React.useState<boolean>(false);
+  const [pal, setPal] = React.useState<string>("");
+  const [goal, setGoal] = React.useState<string>("");
+  const [wpa, setWpa] = React.useState<number>(0);
+  const [wpaHasError, setWpaHasError] = React.useState<boolean>(false);
+  const [isPalInfoIconClicked, setIsPalInfoIconClicked] =
+    React.useState<boolean>(false);
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -122,6 +123,21 @@ export const Calc = () => {
     putAppUserKcalGoal(kcalGoal, auth(), signOut, navigate);
     updateUserAttribute({ kcalGoal: kcalGoal });
   };
+  const calcUserAge = (dob: string) => {
+    const currentDate = new Date();
+    const userDob = new Date(dob);
+    const yearDiff = currentDate.getFullYear() - userDob.getFullYear();
+    const monthDiff = currentDate.getMonth() - userDob.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && currentDate.getDate() < userDob.getDate())
+    ) {
+      return yearDiff - 1;
+    } else {
+      return yearDiff;
+    }
+  };
 
   const calcGoalDependentPart = (goal: string) => {
     if (goal === "Aufbauen") {
@@ -176,13 +192,10 @@ export const Calc = () => {
 
     updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
 
-    const currentDate = new Date();
-    const userDob = new Date(user.dob); //tbd
-    const userAge = currentDate.getFullYear() - userDob.getFullYear();
-
+    const userAge = calcUserAge(user.dob);
     let basalMetabolicRate;
 
-    if (user.gender === "weiblich") {
+    if (user.gender === "Weiblich") {
       basalMetabolicRate =
         65.51 + 9.6 * user.initialWeight + 1.85 * user.height - 4.68 * userAge;
     } else {

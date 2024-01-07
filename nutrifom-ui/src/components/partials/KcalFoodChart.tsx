@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useTheme } from "@mui/material/styles";
 import { KcalFoodChartLabel } from "./KcalFoodChartLabel";
@@ -38,10 +38,10 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
       value: props.consumedKcal,
       color: theme.palette.primary.main,
     },
-    { 
+    {
       value: remainingKcal,
-      color: "lightgrey"
-     },
+      color: "lightgrey",
+    },
   ];
 
   return (
@@ -70,7 +70,9 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
         }}
         tooltip={{ trigger: "none" }}
       >
-        <KcalFoodChartLabel label={[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]} />
+        <KcalFoodChartLabel
+          label={[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}
+        />
       </PieChart>
     </>
   );

@@ -10,7 +10,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function ImageUploadButton() {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
-  const [openErrorDialog, setOpenErrorDialog] = React.useState(false);
+  const [isErrorDialogOpen, setIsErrorDialogOpen] =
+    React.useState<boolean>(false);
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -38,7 +39,7 @@ export default function ImageUploadButton() {
       const fileSizeInMB = image.size / (1024 * 1024);
 
       if (fileSizeInMB > 1) {
-        setOpenErrorDialog(true);
+        setIsErrorDialogOpen(true);
       } else {
         const formData = new FormData();
         formData.append("image", image);
@@ -84,8 +85,8 @@ export default function ImageUploadButton() {
         />
       )}
       <ErrorDialog
-        open={openErrorDialog}
-        setOpen={setOpenErrorDialog}
+        open={isErrorDialogOpen}
+        setOpen={setIsErrorDialogOpen}
         heading={"Überschreitung der Bildgröße"}
         errorMessage={
           "Die Bilddatei ist zu groß. Bitte wähle eine Bilddatei, die maximal ein MB groß ist."

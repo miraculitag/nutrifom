@@ -10,16 +10,16 @@ export const Home = () => {
   const aboutNutrifom =
     'Die nutrifom GmbH stellt die Bedürfnisse ihrer Kunden in den Vordergrund. Seit 2023 schafft die nutrifom GmbH neue Lösungen zur Unterstützung bei einer gesunden Ernährung. "nutrifom" die Webanwendung stellt hierbei das Erreichen deiner individuellen Ziele in den Fokus. Hier findest du eine Übersicht und eine Vorstellung der enthaltenen Features und außerdem einige hilfreiche Tipps für eine gesunde Ernährung. Falls du Hilfe benötigen solltest, kontaktiere uns gerne über das Kontaktfeld. Dieses findest du am unteren Seitenrand.';
 
-  const aboutNutrifomNutrilog =
+  const aboutNutrilog =
     "Das Nutriprotokoll dient der Protokollierung deiner Ernährung. Sowohl Speisen als auch Getränke kannst du hier eintragen. Auswählen kannst du hierbei aus einer großen Datenbank an Nahrungsmitteln. Auch Rezepte, welche du in unserem Rezeptbereich entdeckt und nachgekocht hast, kannst du hier portionsweise eintragen. Deine tägliche Kalorienbilanz wird übersichtlich dargestellt, wobei du auch die Zusammensetzung deiner Ernährung einsehen kannst.";
 
-  const aboutNutrifomWeight =
+  const aboutWeight =
     "Der Gewichtsbereich dient der Protokollierung deines Gewichts. Täglich kannst du hier dein Gewicht eintragen und deinen Gewichtsverlauf beobachten. Auch zur Berechnung deines individuellen Energiebedarfs ist dein Gewichtsverlauf hilfreich.";
 
-  const aboutNutrifomCalc =
+  const aboutCalc =
     "Der Bedarfsrechner dient zur Berechnung deines Energiebedarfs. Dein Energiebedarf ist sehr individuell und hängt neben Parametern wie Alter, Größe, Geschlecht oder Gewicht auch von individuellen Gegebenheiten ab. Beispiele hierfür sind die Körpergewichtszusammensetzung, der Hormonhaushalt oder Stress. Daher verwendet der Bedarfsrechner zu Beginn eine standardisierte Formel, später, wenn ausreichend Daten vorhanden sind, jedoch dein individuelles Nutri- und Gewichtsprotokoll. Darüber hinaus hast du die Möglichkeit, dein individuelles Ziel bezüglich deines Körpergewichts anzugeben, welches dann bei der Berechnung berücksichtigt wird.";
 
-  const aboutNutrifomRecipes =
+  const aboutRecipes =
     'Im Rezeptbereich steht dir eine Auswahl an gesunden Rezepten zur Verfügung. Die Nährwerte der Gerichte sind übersichtlich dargestellt und können dir dabei helfen, dein individuelles Kalorienziel zu erreichen. Rezepte mit einer höheren Kaloriendichte werden hierbei unter der Kategorie "Aufbauen" gelistet, während Rezepte mit niedrigerer Kaloriendichte der Kategorie "Definieren" zugeordnet sind. Beachte: Auch die Rezepte mit höherer Kaloriendichte sind gesund!';
 
   const infoTextMicros =
@@ -38,25 +38,25 @@ export const Home = () => {
     {
       title: "Nutriprotokoll",
       url: "/nutrilog",
-      description: aboutNutrifomNutrilog,
+      description: aboutNutrilog,
       image: "./assets/img/nutrilog.jpg",
     },
     {
       title: "Gewicht",
       url: "/weight",
-      description: aboutNutrifomWeight,
+      description: aboutWeight,
       image: "./assets/img/weight.jpg",
     },
     {
       title: "Bedarfsrechner",
       url: "/calc",
-      description: aboutNutrifomCalc,
+      description: aboutCalc,
       image: "./assets/img/calc.jpg",
     },
     {
       title: "Rezepte",
       url: "/recipes",
-      description: aboutNutrifomRecipes,
+      description: aboutRecipes,
       image: "./assets/img/recipes.jpg",
     },
   ];

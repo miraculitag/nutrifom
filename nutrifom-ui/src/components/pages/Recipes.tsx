@@ -21,8 +21,9 @@ import { useNavigate } from "react-router-dom";
 
 export const Recipes = () => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
-  const [filterValue, setFilterValue] = React.useState("Alle");
-  const [openFilterDialog, setOpenFilterDialog] = React.useState(false);
+  const [filterValue, setFilterValue] = React.useState<string>("Alle");
+  const [isFilterDialogOpen, setIsFilterDialogOpen] =
+    React.useState<boolean>(false);
   const [recipes, setRecipes] = React.useState<Recipe[]>();
   const [shownRecipes, setShownRecipes] = React.useState(recipes);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -48,7 +49,7 @@ export const Recipes = () => {
   const filterHeading = "Rezeptkategorien";
   const filterOptions = ["Alle", "Aufbauen", "Definieren"];
 
-  const handleChange =
+  const handleRecipeExpansion =
     (recipeId: string) =>
     (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? recipeId : false);
@@ -97,8 +98,8 @@ export const Recipes = () => {
     }
   };
 
-  const handleClose = (newFilterValue?: string) => {
-    setOpenFilterDialog(false);
+  const handleFilterDialogClose = (newFilterValue?: string) => {
+    setIsFilterDialogOpen(false);
 
     if (newFilterValue) {
       setFilterValue(newFilterValue);
@@ -123,18 +124,17 @@ export const Recipes = () => {
   return (
     <Layout>
       <Box>
-        <IconButton onClick={() => setOpenFilterDialog(true)}>
+        <IconButton onClick={() => setIsFilterDialogOpen(true)}>
           <FilterAlt
             sx={{ fontSize: "150%", color: theme.palette.primary.main }}
           />
         </IconButton>
         <FilterDialog
-          id="filterRecipes"
           keepMounted
           heading={filterHeading}
           options={filterOptions}
-          open={openFilterDialog}
-          onClose={handleClose}
+          open={isFilterDialogOpen}
+          onClose={handleFilterDialogClose}
           valueFilter={filterValue}
         />
         {isLoading && (
@@ -154,7 +154,7 @@ export const Recipes = () => {
           <Accordion
             key={recipe.id}
             expanded={expanded === recipe.id.toString()}
-            onChange={handleChange(recipe.id.toString())}
+            onChange={handleRecipeExpansion(recipe.id.toString())}
           >
             <AccordionSummary
               expandIcon={

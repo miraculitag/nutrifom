@@ -21,7 +21,8 @@ import { ConfirmationDialog } from "../dialogs/ConfirmationDialog";
 export const UserProfile = () => {
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
   const [openConfirmationDialog, setOpenConfirmationDialog] =
-    React.useState(false);
+    React.useState<boolean>(false);
+
   const theme = useTheme();
   const auth = useAuthHeader();
   const signOut = useSignOut();

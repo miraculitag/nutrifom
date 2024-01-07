@@ -17,29 +17,32 @@ import { TextInputField } from "../common/TextInputField";
 import { GoogleLogin } from "@react-oauth/google";
 
 export const SignIn = () => {
-  const [onSignInPage, setOnSignInPage] = React.useState(true);
-  const [isPalInfoIconClicked, setIsPalInfoIconClicked] = React.useState(false);
-  const [emailSignIn, setEmailSignIn] = React.useState("");
-  const [emailSignUp, setEmailSignUp] = React.useState("");
-  const [passwordSignIn, setPasswordSignIn] = React.useState("");
-  const [passwordSignUp, setPasswordSignUp] = React.useState("");
-  const [googleIDTokenSignUp, setGoogleIDTokenSignUp] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [initialWeight, setWeight] = React.useState(0);
-  const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
-  const [goal, setGoal] = React.useState("Bitte wählen");
-  const [height, setHeight] = React.useState(0);
-  const [gender, setGender] = React.useState("Bitte wählen");
-  const [pal, setPal] = React.useState("Bitte wählen");
-  const [wpa, setWpa] = React.useState(0);
+  const [onSignInPage, setOnSignInPage] = React.useState<boolean>(true);
+  const [isPalInfoIconClicked, setIsPalInfoIconClicked] =
+    React.useState<boolean>(false);
 
+  const [emailSignIn, setEmailSignIn] = React.useState<string>("");
+  const [emailSignUp, setEmailSignUp] = React.useState<string>("");
+  const [passwordSignIn, setPasswordSignIn] = React.useState<string>("");
+  const [passwordSignUp, setPasswordSignUp] = React.useState<string>("");
+  const [googleIDTokenSignUp, setGoogleIDTokenSignUp] =
+    React.useState<string>("");
   const [isPasswordSignUpHidden, setIsPasswordSignUpHidden] =
-    React.useState(false);
+    React.useState<boolean>(false);
 
-  const [emailSignUpError, setEmailSignUpError] = React.useState(
+  const [name, setName] = React.useState<string>("");
+  const [initialWeight, setWeight] = React.useState<number>(0);
+  const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
+  const [goal, setGoal] = React.useState<string>("Bitte wählen");
+  const [height, setHeight] = React.useState<number>(0);
+  const [gender, setGender] = React.useState<string>("Bitte wählen");
+  const [pal, setPal] = React.useState<string>("Bitte wählen");
+  const [wpa, setWpa] = React.useState<number>(0);
+
+  const [emailSignUpError, setEmailSignUpError] = React.useState<string>(
     "Gib eine gültige E-Mail-Adresse an."
   );
-  const [passwordSignInError, setPasswordSignInError] = React.useState(
+  const [passwordSignInError, setPasswordSignInError] = React.useState<string>(
     "Gib ein Passwort an."
   );
   const [fieldErrors, setFieldErrors] = React.useState<fieldErrorEnum[]>([]);
@@ -61,15 +64,16 @@ export const SignIn = () => {
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
       .then((response) => {
-        const decodedToken = jwtDecode(response.data.token);
-        const time = decodedToken.exp || 3600;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: time,
+          expiresIn: 36000,
           authState: {},
         });
         navigate("/");
+        window.scrollTo({
+          top: 0,
+        });
       })
       .catch((error) => {
         if (error.response.status === 404) {
@@ -103,15 +107,16 @@ export const SignIn = () => {
 
     registerAppUser(signUpData)
       .then((response) => {
-        const decodedToken = jwtDecode(response.data.token);
-        const time = decodedToken.exp || 3600;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: time,
+          expiresIn: 36000,
           authState: {},
         });
         navigate("/");
+        window.scrollTo({
+          top: 0,
+        });
       })
       .catch((error) => {
         if (error.response.status === 400) {
@@ -136,7 +141,7 @@ export const SignIn = () => {
     })
       .then((response) => {
         const decodedToken = jwtDecode(response.data.token);
-        const time = decodedToken.exp || 3600;
+        const time = decodedToken.exp || 36000;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
@@ -153,7 +158,6 @@ export const SignIn = () => {
         }
       });
   };
-  const handleGoogleSignInError = () => {};
 
   const handleGoogleSignUp = (response: any) => {
     const googleIDToken = response.credential;
@@ -166,8 +170,6 @@ export const SignIn = () => {
     setEmailSignUp(googleEmail);
     setIsPasswordSignUpHidden(true);
   };
-
-  const handleGoogleSignUpError = () => {};
 
   const validateEmail = (email: string): boolean => {
     const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -438,11 +440,6 @@ export const SignIn = () => {
               <GoogleLogin
                 onSuccess={
                   onSignInPage ? handleGoogleSignIn : handleGoogleSignUp
-                }
-                onError={
-                  onSignInPage
-                    ? handleGoogleSignInError
-                    : handleGoogleSignUpError
                 }
                 theme="outline"
                 text="continue_with"
