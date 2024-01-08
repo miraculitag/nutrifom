@@ -99,7 +99,7 @@ export const SignIn = () => {
 
     if (googleIDTokenSignUp) {
       signUpData.googleIDToken = googleIDTokenSignUp;
-    } else if (!googleIDTokenSignUp && passwordSignUp !== "") {
+    } else {
       signUpData.password = passwordSignUp;
     }
 
