@@ -123,6 +123,7 @@ export const Calc = () => {
     putAppUserKcalGoal(kcalGoal, auth(), signOut, navigate);
     updateUserAttribute({ kcalGoal: kcalGoal });
   };
+
   const calcUserAge = (dob: string) => {
     const currentDate = new Date();
     const userDob = new Date(dob);
@@ -209,7 +210,7 @@ export const Calc = () => {
     return basalMetabolicRate * physicalActivity;
   };
 
-  const calcKcal = () => {
+  const handleCalcKcalButtonClick = () => {
     setIsCalcKcalButtonClicked(true);
     let newKcalRequirement;
 
@@ -286,9 +287,11 @@ export const Calc = () => {
             isButtonClicked={isCalcKcalButtonClicked}
             onButtonClick={
               dataFor14Days
-                ? () => calcKcal()
+                ? () => handleCalcKcalButtonClick()
                 : () => {
-                    wpa < 0 ? setWpaHasError(true) : calcKcal();
+                    wpa < 0
+                      ? setWpaHasError(true)
+                      : handleCalcKcalButtonClick();
                   }
             }
           />
