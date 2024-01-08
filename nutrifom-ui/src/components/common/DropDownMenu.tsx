@@ -1,4 +1,3 @@
-import { InfoOutlined } from "@mui/icons-material";
 import {
   useTheme,
   FormControl,
@@ -6,6 +5,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
 
 export interface DropDownProps {
   title: string;

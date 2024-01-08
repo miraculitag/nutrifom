@@ -1,10 +1,11 @@
 import React from "react";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { useNavigate } from "react-router-dom";
+import { useSignIn } from "react-auth-kit";
+import { GoogleLogin } from "@react-oauth/google";
 import { Avatar, Box, Container, Link, Stack, Typography } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import dayjs, { Dayjs } from "dayjs";
 import { jwtDecode } from "jwt-decode";
-import { useSignIn } from "react-auth-kit";
-import { useNavigate } from "react-router-dom";
 import { authenticateAppUser, registerAppUser } from "../../api";
 import { RegisterRequest, fieldErrorEnum } from "../../types";
 import { BasicButton } from "../common/BasicButton";
@@ -14,13 +15,11 @@ import { FloatInputField } from "../common/FloatInputField";
 import { InfoAlert } from "../common/InfoAlert";
 import { PalTable } from "../common/PalTable";
 import { TextInputField } from "../common/TextInputField";
-import { GoogleLogin } from "@react-oauth/google";
 
 export const SignIn = () => {
   const [onSignInPage, setOnSignInPage] = React.useState<boolean>(true);
   const [isPalInfoIconClicked, setIsPalInfoIconClicked] =
     React.useState<boolean>(false);
-
   const [emailSignIn, setEmailSignIn] = React.useState<string>("");
   const [emailSignUp, setEmailSignUp] = React.useState<string>("");
   const [passwordSignIn, setPasswordSignIn] = React.useState<string>("");
@@ -29,7 +28,6 @@ export const SignIn = () => {
     React.useState<string>("");
   const [isPasswordSignUpHidden, setIsPasswordSignUpHidden] =
     React.useState<boolean>(false);
-
   const [name, setName] = React.useState<string>("");
   const [initialWeight, setWeight] = React.useState<number>(0);
   const [dob, setDob] = React.useState<Dayjs | null>(dayjs(new Date()));
@@ -172,7 +170,7 @@ export const SignIn = () => {
   };
 
   const validateEmail = (email: string): boolean => {
-    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; //Regex from ChatGPT 3.5
     return emailRegex.test(email);
   };
 

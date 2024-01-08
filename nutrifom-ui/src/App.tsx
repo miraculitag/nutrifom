@@ -1,16 +1,16 @@
-import nutrifomTheme from "./theme/nutrifomTheme";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider, RequireAuth } from "react-auth-kit";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { ThemeProvider } from "@mui/material";
+import nutrifomTheme from "./theme/nutrifomTheme";
 import { Home } from "./components/pages/Home";
 import { UserProfile } from "./components/pages/UserProfile";
 import { Nutrilog } from "./components/pages/Nutrilog";
 import { Weight } from "./components/pages/Weight";
 import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
-import { ThemeProvider } from "@mui/material";
-import { AuthProvider, RequireAuth } from "react-auth-kit";
 import { SignIn } from "./components/pages/SignIn";
 import { UserProvider } from "./userContext";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function App() {
   return (

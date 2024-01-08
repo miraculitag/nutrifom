@@ -1,8 +1,8 @@
-import React, { createContext, useState, useContext, useCallback } from "react";
-import { AppUser } from "./types";
-import { getAppUser } from "./api";
+import React from "react";
 import { useAuthHeader, useIsAuthenticated, useSignOut } from "react-auth-kit";
 import { useNavigate } from "react-router-dom";
+import { AppUser } from "./types";
+import { getAppUser } from "./api";
 
 interface UserContextProps {
   user: AppUser | null;
@@ -12,13 +12,15 @@ interface UserContextProps {
   hasFetchedUser: boolean;
 }
 
-const initialUser: AppUser | null = null;
+const initialUser: AppUser | null = null; //Idea from ChatGPT 3.5
 
-const UserContext = createContext<UserContextProps | undefined>(undefined);
+const UserContext = React.createContext<UserContextProps | undefined>(
+  undefined
+);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<AppUser | null>(initialUser);
-  const [hasFetchedUser, setHasFetchedUser] = useState(false);
+  const [user, setUser] = React.useState<AppUser | null>(initialUser);
+  const [hasFetchedUser, setHasFetchedUser] = React.useState<boolean>(false); //Idea from ChatGPT 3.5
 
   const auth = useAuthHeader();
   const signOut = useSignOut();
@@ -42,12 +44,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setHasFetchedUser(true);
   };
 
-  const updateUser = useCallback((updatedUser: AppUser) => {
+  const updateUser = React.useCallback((updatedUser: AppUser) => {
     setUser(updatedUser);
     setHasFetchedUser(true);
   }, []);
 
-  const updateUserAttribute = useCallback(
+  const updateUserAttribute = React.useCallback(
+    //Structure from ChatGPT 3.5
     (updatedAttributes: Partial<AppUser>) => {
       if (user) {
         setUser({ ...user, ...updatedAttributes });
@@ -66,7 +69,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useUser = (): UserContextProps => {
-  const context = useContext(UserContext);
+  //Structure from ChatGPT 3.5
+  const context = React.useContext(UserContext);
   if (!context) {
     throw new Error("useUser must be used within a UserProvider");
   }

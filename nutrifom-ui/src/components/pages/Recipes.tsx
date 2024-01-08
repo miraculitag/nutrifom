@@ -1,5 +1,6 @@
 import React from "react";
-import { ExpandMore, FilterAlt } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import {
   Accordion,
   AccordionDetails,
@@ -11,13 +12,12 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
+import { ExpandMore, FilterAlt } from "@mui/icons-material";
+import { getRecipeById, getRecipes, rateRecipe } from "../../api";
+import { Recipe } from "../../types";
 import { FilterDialog } from "../dialogs/FilterDialog";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
-import { getRecipeById, getRecipes, rateRecipe } from "../../api";
-import { Recipe } from "../../types";
-import { useNavigate } from "react-router-dom";
 
 export const Recipes = () => {
   const [expanded, setExpanded] = React.useState<string | false>(false);
@@ -56,6 +56,7 @@ export const Recipes = () => {
     };
 
   const refreshRecipe = (recipeId: number) => {
+    //Structure from ChatGPT 3.5
     getRecipeById(recipeId, auth(), signOut, navigate).then((response) => {
       const updatedRecipe = response.data;
       setRecipes((prevRecipes) => {
@@ -73,20 +74,21 @@ export const Recipes = () => {
     });
   };
 
-  const handleRatingChange =
-    (recipeId: number) =>
-    (event: React.ChangeEvent<{}>, newRatingValue: number | null) => {
-      if (newRatingValue !== null) {
-        rateRecipe(
-          { recipeId: recipeId, score: newRatingValue },
-          auth(),
-          signOut,
-          navigate
-        ).then(() => {
-          refreshRecipe(recipeId);
-        });
-      }
-    };
+  const handleRatingChange = //Structure from ChatGPT 3.5
+
+      (recipeId: number) =>
+      (event: React.ChangeEvent<{}>, newRatingValue: number | null) => {
+        if (newRatingValue !== null) {
+          rateRecipe(
+            { recipeId: recipeId, score: newRatingValue },
+            auth(),
+            signOut,
+            navigate
+          ).then(() => {
+            refreshRecipe(recipeId);
+          });
+        }
+      };
 
   const filterRecipes = (filter: String) => {
     if (filter === "Aufbauen") {
@@ -108,6 +110,7 @@ export const Recipes = () => {
   };
 
   const formatImage = (image: string) => {
+    //Structure from ChatGPT 3.5
     const byteCharacters = atob(image);
     const byteNumbers = new Array(byteCharacters.length);
 

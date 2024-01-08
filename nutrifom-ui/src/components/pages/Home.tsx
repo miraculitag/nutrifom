@@ -1,6 +1,6 @@
+import { Link } from "react-router-dom";
 import { TaskAlt } from "@mui/icons-material";
 import { Alert, Box, Grid, Stack, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
 import { JustifiedTypography } from "../common/JustifiedTypography";
 import { Layout } from "../layout/Layout";
 
@@ -92,7 +92,7 @@ export const Home = () => {
               container
               key={index}
               sx={{
-                flexDirection: index % 2 === 0 ? "row" : "row-reverse",
+                flexDirection: index % 2 === 0 ? "row" : "row-reverse", //Idea from ChatGPT 3.5
                 alignItems: "center",
                 marginTop: "-4%",
               }}

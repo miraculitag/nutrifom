@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import {
   Box,
@@ -25,7 +26,6 @@ import {
   putAppUserWpa,
 } from "../../api";
 import { useUser } from "../../userContext";
-import { useNavigate } from "react-router-dom";
 
 export const Calc = () => {
   const [isCalcKcalButtonClicked, setIsCalcKcalButtonClicked] =
@@ -130,6 +130,7 @@ export const Calc = () => {
     const monthDiff = currentDate.getMonth() - userDob.getMonth();
 
     if (
+      //Structure from ChatGPT 3.5
       monthDiff < 0 ||
       (monthDiff === 0 && currentDate.getDate() < userDob.getDate())
     ) {
@@ -234,7 +235,7 @@ export const Calc = () => {
           <Box
             sx={{
               display: "flex",
-              alignItems: "baseline",
+              alignItems: "baseline", //Idea from ChatGPT 3.5
               justifyContent: "space-around",
               paddingTop: "5%",
             }}

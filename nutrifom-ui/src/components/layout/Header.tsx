@@ -1,3 +1,6 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useSignOut } from "react-auth-kit";
 import {
   AppBar,
   Avatar,
@@ -6,9 +9,6 @@ import {
   IconButton,
   Toolbar,
 } from "@mui/material";
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useSignOut } from "react-auth-kit";
 import { useUser } from "../../userContext";
 
 export const Header = () => {
@@ -21,6 +21,7 @@ export const Header = () => {
     if (user) {
       if (user.image && user.image.length > 0) {
         const processImage = () => {
+          //Structure from ChatGPT 3.5
           const byteCharacters = atob(user.image);
           const byteNumbers = new Array(byteCharacters.length);
 

@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import {
   Avatar,
   Box,
@@ -8,15 +10,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import dayjs from "dayjs";
-import ImageUploadButton from "../partials/ImageUploadButton";
-import { Layout } from "../layout/Layout";
-import { useUser } from "../../userContext";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
-import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import { useUser } from "../../userContext";
 import { deleteAppUser } from "../../api";
 import { ConfirmationDialog } from "../dialogs/ConfirmationDialog";
+import ImageUploadButton from "../partials/ImageUploadButton";
+import { Layout } from "../layout/Layout";
 
 export const UserProfile = () => {
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
@@ -33,6 +33,7 @@ export const UserProfile = () => {
     if (user) {
       if (user.image && user.image.length > 0) {
         const processImage = () => {
+          //Structure from ChatGPT 3.5
           const byteCharacters = atob(user.image);
           const byteNumbers = new Array(byteCharacters.length);
 

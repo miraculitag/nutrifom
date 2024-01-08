@@ -1,12 +1,12 @@
-import { FileUpload } from "@mui/icons-material";
-import { IconButton, LinearProgress, Tooltip, useTheme } from "@mui/material";
-import { styled } from "@mui/system";
 import React from "react";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
-import { getAppUser, putAppUserImage } from "../../api";
-import { ErrorDialog } from "../dialogs/ErrorDialog";
-import { useUser } from "../../userContext";
 import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
+import { IconButton, LinearProgress, Tooltip, useTheme } from "@mui/material";
+import { FileUpload } from "@mui/icons-material";
+import { styled } from "@mui/system";
+import { getAppUser, putAppUserImage } from "../../api";
+import { useUser } from "../../userContext";
+import { ErrorDialog } from "../dialogs/ErrorDialog";
 
 export default function ImageUploadButton() {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);

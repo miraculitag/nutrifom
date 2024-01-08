@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import {
   AddProductToNutrilog,
   AddRecipeRequest,
@@ -8,7 +9,6 @@ import {
   RegisterRequest,
   WeightRequest,
 } from "./types";
-import { jwtDecode } from "jwt-decode";
 
 export const axiosInstance = axios.create({
   timeout: 20000,
