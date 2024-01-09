@@ -65,7 +65,9 @@ export const UserProfile = () => {
   };
 
   const deleteUserProfile = () => {
-    deleteAppUser(auth(), signOut, navigate).then(() => navigate("/signin"));
+    deleteAppUser(auth(), signOut, navigate)
+      .then(() => signOut())
+      .then(() => navigate("/signin"));
   };
 
   return (
