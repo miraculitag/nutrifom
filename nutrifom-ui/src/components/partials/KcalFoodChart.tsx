@@ -22,9 +22,9 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
       setOverConsumedKcal(0);
       setOverConsumedRemainingKcal(0);
     } else {
-      setRemainingKcal(0);
       setOverConsumedKcal(props.consumedKcal - props.totalKcal);
       setOverConsumedRemainingKcal(props.totalKcal - overConsumedKcal);
+      setRemainingKcal(0);
     }
   }, [props.totalKcal, props.consumedKcal, overConsumedKcal]);
 
