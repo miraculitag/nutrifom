@@ -21,7 +21,7 @@ public class RegisterRequest {
     private int initialWeight;
     private String goal;
     private byte[] image;
-    private String GoogleIDToken;
+    private String googleIdToken;
     private String email;
     private String password;
 
