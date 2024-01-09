@@ -10,4 +10,6 @@ public interface RatingRepository extends JpaRepository<Rating, Integer> {
     List<Rating> findByRecipeId(Integer recipeId);
 
     Integer countByRecipeId(Integer recipeId);
+    void deleteByAppUserId(Integer userId);
+    List<Rating> findByAppUserId(Integer userId);
 }
