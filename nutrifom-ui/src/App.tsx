@@ -1,16 +1,27 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider, RequireAuth } from "react-auth-kit";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider } from "@mui/material";
-import nutrifomTheme from "./theme/nutrifomTheme";
-import { Home } from "./components/pages/Home";
-import { UserProfile } from "./components/pages/UserProfile";
-import { Nutrilog } from "./components/pages/Nutrilog";
-import { Weight } from "./components/pages/Weight";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthProvider, RequireAuth, useIsAuthenticated } from "react-auth-kit";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import { Calc } from "./components/pages/Calc";
+import { Home } from "./components/pages/Home";
+import { Nutrilog } from "./components/pages/Nutrilog";
 import { Recipes } from "./components/pages/Recipes";
 import { SignIn } from "./components/pages/SignIn";
+import { UserProfile } from "./components/pages/UserProfile";
+import { Weight } from "./components/pages/Weight";
+import nutrifomTheme from "./theme/nutrifomTheme";
 import { UserProvider } from "./userContext";
+
+const PrivateRoute = ({ Component }: { Component: React.ComponentType }) => {
+  const isAuthenticated = useIsAuthenticated();
+  const auth = isAuthenticated();
+  return auth ? <Component /> : <Navigate to="/signin" />;
+};
 
 export default function App() {
   return (
@@ -26,14 +37,7 @@ export default function App() {
             <UserProvider>
               <Routes>
                 <Route path="/signin" element={<SignIn />} />
-                <Route
-                  path="/"
-                  element={
-                    <RequireAuth loginPath="/signin">
-                      <Home />
-                    </RequireAuth>
-                  }
-                />
+                <Route path="/" element={<PrivateRoute Component={Home} />} />
                 <Route
                   path="/user"
                   element={
