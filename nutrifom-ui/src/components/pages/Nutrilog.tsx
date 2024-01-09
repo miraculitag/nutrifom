@@ -85,6 +85,7 @@ export const Nutrilog = () => {
   };
 
   const handleChangeDateMinusOne = () => {
+    //Structure from ChatGPT 3.5
     if (selectedDate) {
       const daysDifference = dayjs().diff(selectedDate, "day");
       if (daysDifference < 7) {

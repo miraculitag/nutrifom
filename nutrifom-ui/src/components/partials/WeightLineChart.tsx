@@ -35,6 +35,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
     margin: { top: 5 },
   };
   
+  //Structure from ChatGPT 3.5
   const last14Days = Array.from({ length: 14 }, (_, index) =>
     dayjs().subtract(index, "day").format("YYYY-MM-DD")
   ).reverse();
@@ -50,6 +51,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
     value !== null ? value : 0
   );
 
+  //Idea from ChatGPT 3.5
   const maxValue =
     Math.max(...filteredDataPoints) >= 110
       ? Math.max(...filteredDataPoints) * 1.1

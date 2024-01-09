@@ -15,6 +15,7 @@ export interface NutrilogTableProps {
 
 export const NutrilogTable = (props: NutrilogTableProps) => {
 
+  //Structure from ChatGPT 3.5
   const getEntryName = (entry: any): string => {
     if ("productCode" in entry && "productName" in entry) {
       return `${entry.productName} [g]`;
@@ -23,6 +24,7 @@ export const NutrilogTable = (props: NutrilogTableProps) => {
     }
   };
 
+  //Structure from ChatGPT 3.5
   const getQuantity = (entry: any): string => {
     if ("productCode" in entry && "productName" in entry) {
       return entry.productQuantity;
