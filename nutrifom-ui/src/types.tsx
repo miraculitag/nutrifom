@@ -1,7 +1,7 @@
 export type AuthenticateRequest = {
   email: string;
   password?: string;
-  googleIDToken?: string;
+  googleIdToken?: string;
 };
 
 export type RegisterRequest = {
@@ -16,7 +16,7 @@ export type RegisterRequest = {
   email: string;
   password?: string;
   image?: string;
-  googleIDToken?: string;
+  googleIdToken?: string;
 };
 
 export type ImageRequest = {

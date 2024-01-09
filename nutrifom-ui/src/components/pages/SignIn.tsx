@@ -24,7 +24,7 @@ export const SignIn = () => {
   const [emailSignUp, setEmailSignUp] = React.useState<string>("");
   const [passwordSignIn, setPasswordSignIn] = React.useState<string>("");
   const [passwordSignUp, setPasswordSignUp] = React.useState<string>("");
-  const [googleIDTokenSignUp, setGoogleIDTokenSignUp] =
+  const [googleIdTokenSignUp, setGoogleIdTokenSignUp] =
     React.useState<string>("");
   const [isPasswordSignUpHidden, setIsPasswordSignUpHidden] =
     React.useState<boolean>(false);
@@ -97,8 +97,8 @@ export const SignIn = () => {
       email: emailSignUp,
     };
 
-    if (googleIDTokenSignUp) {
-      signUpData.googleIDToken = googleIDTokenSignUp;
+    if (googleIdTokenSignUp) {
+      signUpData.googleIdToken = googleIdTokenSignUp;
     } else {
       signUpData.password = passwordSignUp;
     }
@@ -127,7 +127,7 @@ export const SignIn = () => {
   };
 
   const handleGoogleSignIn = (response: any) => {
-    const googleIDToken = response.credential;
+    const googleIdToken = response.credential;
 
     const customizedPayload: { email: string } = jwtDecode(response.credential);
 
@@ -135,7 +135,7 @@ export const SignIn = () => {
 
     authenticateAppUser({
       email: googleEmail,
-      googleIDToken: googleIDToken,
+      googleIdToken: googleIdToken,
     })
       .then((response) => {
         const decodedToken = jwtDecode(response.data.token);
@@ -158,13 +158,13 @@ export const SignIn = () => {
   };
 
   const handleGoogleSignUp = (response: any) => {
-    const googleIDToken = response.credential;
+    const googleIdToken = response.credential;
 
     const customizedPayload: { email: string } = jwtDecode(response.credential);
 
     const googleEmail = customizedPayload.email;
 
-    setGoogleIDTokenSignUp(googleIDToken);
+    setGoogleIdTokenSignUp(googleIdToken);
     setEmailSignUp(googleEmail);
     setIsPasswordSignUpHidden(true);
   };
