@@ -47,8 +47,8 @@ public class AuthenticationService {
             throw new CustomAuthenticationException("User already exists", HttpStatus.BAD_REQUEST);
         }
 
-        if (request.getGoogleIDToken() != null) {
-            if (!verifyGoogleIDToken(request.getGoogleIDToken())) {
+        if (request.getGoogleIdToken() != null) {
+            if (!verifyGoogleIDToken(request.getGoogleIdToken())) {
                 // Token ist ungültig
                 throw new CustomAuthenticationException("Invalid GoogleID Token", HttpStatus.BAD_REQUEST);
             }
@@ -108,11 +108,11 @@ public class AuthenticationService {
             throw new CustomAuthenticationException("User does not exist", HttpStatus.NOT_FOUND);
         }
         try {
-            if (request.getGoogleIDToken() != null) {
+            if (request.getGoogleIdToken() != null) {
                 GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(TRANSPORT, JSON_FACTORY)
                         .setAudience(Collections.singletonList(CLIENT_ID))
                         .build();
-                GoogleIdToken idToken = verifier.verify(request.getGoogleIDToken());
+                GoogleIdToken idToken = verifier.verify(request.getGoogleIdToken());
                 if (idToken != null) {
                     GoogleIdToken.Payload payload = idToken.getPayload();
                     String email = payload.getEmail();
