@@ -115,6 +115,21 @@ public class RecipeService {
         }
     }
 
+    public HttpStatus decrementRecipeUses(Integer recipeId, Integer count) throws CustomAuthenticationException {
+        try {
+            Recipe recipe = recipeRepository.findById(recipeId)
+                    .orElseThrow(() -> new CustomAuthenticationException("Recipe not found", HttpStatus.NOT_FOUND));
+
+            recipe.setUses(recipe.getUses() - count);
+
+            return HttpStatus.OK;
+        } catch (CustomAuthenticationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CustomAuthenticationException("Error while decrementing recipe uses", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public HttpStatus updateRecipeImage(int id, MultipartFile file) throws CustomAuthenticationException {
         Recipe existingRecipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new CustomAuthenticationException("Recipe with id " + id + " doesn't exist", HttpStatus.NOT_FOUND));

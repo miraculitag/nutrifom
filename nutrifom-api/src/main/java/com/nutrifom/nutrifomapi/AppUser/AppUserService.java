@@ -1,8 +1,15 @@
 package com.nutrifom.nutrifomapi.AppUser;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
+import com.nutrifom.nutrifomapi.Nutrilog.Nutrilog;
+import com.nutrifom.nutrifomapi.Nutrilog.NutrilogRepository;
+import com.nutrifom.nutrifomapi.Rating.Rating;
+import com.nutrifom.nutrifomapi.Rating.RatingRepository;
+import com.nutrifom.nutrifomapi.Recipe.Recipe;
+import com.nutrifom.nutrifomapi.Recipe.RecipeRepository;
 import com.nutrifom.nutrifomapi.Weight.WeightEntryRepository;
 import com.nutrifom.nutrifomapi.auth.CustomAuthenticationException;
 import com.nutrifom.nutrifomapi.token.TokenRepository;
@@ -20,12 +27,18 @@ public class AppUserService {
     private final WeightEntryRepository weightEntryRepository;
 
     private final TokenRepository tokenRepository;
+    private final NutrilogRepository nutrilogRepository;
+    private final RatingRepository ratingRepository;
+    private final RecipeRepository recipeRepository;
 
     @Autowired
-    public AppUserService(AppUserRepository appUserRepository, WeightEntryRepository weightEntryRepository, TokenRepository tokenRepository) {
+    public AppUserService(AppUserRepository appUserRepository, WeightEntryRepository weightEntryRepository, TokenRepository tokenRepository, NutrilogRepository nutrilogRepository, RatingRepository ratingRepository, RecipeRepository recipeRepository) {
         this.appUserRepository = appUserRepository;
         this.weightEntryRepository = weightEntryRepository;
         this.tokenRepository = tokenRepository;
+        this.nutrilogRepository = nutrilogRepository;
+        this.ratingRepository = ratingRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public ResponseEntity<String> getAppUserKcalGoal(int id) throws CustomAuthenticationException {
@@ -125,8 +138,34 @@ public class AppUserService {
     @Transactional
     public void deleteAppUser(int id) throws CustomAuthenticationException {
         Optional<AppUser> foundUser = appUserRepository.findById(id);
+
         if (!foundUser.isPresent()) {
             throw new CustomAuthenticationException("User with id " + id + " doesn't exist", HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            List<Rating> ratings = ratingRepository.findByAppUserId(id);
+
+            for (Rating rating : ratings) {
+                Recipe recipe = rating.getRecipe();
+                ratingRepository.delete(rating);
+                double averageRating = ratingRepository.findByRecipeId(recipe.getId()).stream()
+                        .mapToDouble(Rating::getScore)
+                        .average()
+                        .orElse(0.0);
+                // Round the average rating to one decimal place
+                averageRating = Math.round(averageRating * 10.0) / 10.0;
+                // Set the new average rating
+                recipe.setAverageRating(averageRating);
+                // Update the rating count
+                Integer ratingCount = ratingRepository.countByRecipeId(recipe.getId());
+                recipe.setRatingCount(ratingCount);
+                // Save the updated recipe
+                recipeRepository.save(recipe);
+            }
+        } catch (Exception e) {
+            System.out.println("Fehler beim Löschen von Ratings: " + e.getMessage());
+            throw e;
         }
         try {
             weightEntryRepository.deleteByAppUserId(id);
@@ -142,6 +181,26 @@ public class AppUserService {
             System.out.println("Fehler beim Löschen von Tokens: " + e.getMessage());
             throw e;
         }
+
+        try {
+            List<Recipe> recipes = recipeRepository.findAll();
+            for (Recipe recipe : recipes) {
+                List<Nutrilog> nutrilogs = nutrilogRepository.findByAppUserIdAndRecipe_Id(id, recipe.getId());
+                int count = nutrilogs.size();
+                recipe.setUses(recipe.getUses() - count);
+                recipeRepository.save(recipe);
+            }
+        } catch (Exception e) {
+            System.out.println("Fehler beim Aktualisieren der Uses: " + e.getMessage());
+            throw e;
+        }
+        try {
+            nutrilogRepository.deleteByAppUserId(id);
+        } catch (Exception e) {
+            System.out.println("Fehler beim Löschen von Nutrilogs: " + e.getMessage());
+            throw e;
+        }
+
         try {
             appUserRepository.deleteById(foundUser.get().getId());
         } catch (Exception e) {
