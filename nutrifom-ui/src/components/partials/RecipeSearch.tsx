@@ -1,12 +1,13 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Autocomplete, Box, TextField } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import { addRecipeToNutrilog, getRecipes } from "../../api";
+import { Recipe } from "../../types";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-import { addRecipeToNutrilog, getRecipes } from "../../api";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
-import dayjs, { Dayjs } from "dayjs";
-import React from "react";
-import { Recipe } from "../../types";
-import { useNavigate } from "react-router-dom";
+
 
 interface RecipeSearchProps {
   onNutrilogUpdate: () => void;
@@ -14,12 +15,12 @@ interface RecipeSearchProps {
 }
 
 export const RecipeSearch = (props: RecipeSearchProps) => {
-  const [isButtonClicked] = React.useState(false);
+  const [isButtonClicked] = React.useState<boolean>(false);
   const [recipes, setRecipes] = React.useState<any[]>([]);
   const [selectedRecipe, setSelectedRecipe] = React.useState<Recipe>();
-  const [recipeSearchHasError, setRecipeSearchHasError] = React.useState(false);
-  const [portionAmountHasError, setPortionAmountHasError] = React.useState(false);
-  const [currentPortionAmount, setCurrentPortionAmount] = React.useState(0);
+  const [recipeSearchHasError, setRecipeSearchHasError] = React.useState<boolean>(false);
+  const [portionAmountHasError, setPortionAmountHasError] = React.useState<boolean>(false);
+  const [currentPortionAmount, setCurrentPortionAmount] = React.useState<number>(0);
  
   const auth = useAuthHeader();
   const signOut = useSignOut();

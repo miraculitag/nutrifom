@@ -1,23 +1,20 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
+import { useTheme } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/de";
-import { useTheme } from "@mui/material";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { getWeightHistory } from "../../api";
-import { useState } from "react";
-import React from "react";
 import { WeightRequest } from "../../types";
-import { useNavigate } from "react-router-dom";
 
-dayjs.extend(localizedFormat);
 
 interface WeightLineChartProps {
   weightUpdate: number;
 }
 
 export const WeightLineChart = (props: WeightLineChartProps) => {
-  const [weightHistory, setWeightHistory] = useState<WeightRequest[]>([]);
+  const [weightHistory, setWeightHistory] = React.useState<WeightRequest[]>([]);
 
   const theme = useTheme();
   const auth = useAuthHeader();

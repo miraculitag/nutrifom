@@ -1,13 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Box, Autocomplete, TextField } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import { addProductToNutrilog, searchOFF } from "../../api";
+import { FoodEntry } from "../../types";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-import { addProductToNutrilog, searchOFF } from "../../api";
-import dayjs, { Dayjs } from "dayjs";
-import useAuthHeader from "react-auth-kit/dist/hooks/useAuthHeader";
-import { FoodEntry } from "../../types";
-import { useSignOut } from "react-auth-kit";
-import { useNavigate } from "react-router-dom";
 
 interface FoodSearchProps {
   onNutrilogUpdate: () => void;
@@ -15,10 +14,12 @@ interface FoodSearchProps {
 }
 
 export const FoodSearch = (props: FoodSearchProps) => {
-  const [searchTextFood, setSearchTextFood] = React.useState("");
-  const [currentFoodAmount, setCurrentFoodAmount] = React.useState(0);
-  const [foodAmountHasError, setFoodAmountHasError] = React.useState(false);
-  const [FoodSearchHasError, setFoodSearchHasError] = React.useState(false);
+  const [searchTextFood, setSearchTextFood] = React.useState<string>("");
+  const [currentFoodAmount, setCurrentFoodAmount] = React.useState<number>(0);
+  const [foodAmountHasError, setFoodAmountHasError] =
+    React.useState<boolean>(false);
+  const [FoodSearchHasError, setFoodSearchHasError] =
+    React.useState<boolean>(false);
   const [isButtonClicked] = React.useState(false);
   const [selectedFood, setSelectedFood] = React.useState<
     FoodEntry | undefined
@@ -28,21 +29,21 @@ export const FoodSearch = (props: FoodSearchProps) => {
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-  
-/* eslint-disable react-hooks/exhaustive-deps */
+
+  /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-      if (searchTextFood && !selectedFood)  {
-        const timeoutId = setTimeout(async () => {
-          const response = await searchOFF(
-            searchTextFood,
-            auth(),
-            signOut,
-            navigate
-          );
-          setApiData(response.data);
-        }, 400);
-        return () => clearTimeout(timeoutId);
-    }    
+    if (searchTextFood && !selectedFood) {
+      const timeoutId = setTimeout(async () => {
+        const response = await searchOFF(
+          searchTextFood,
+          auth(),
+          signOut,
+          navigate
+        );
+        setApiData(response.data);
+      }, 400);
+      return () => clearTimeout(timeoutId);
+    }
   }, [searchTextFood]);
 
   const currentDate = dayjs().format("YYYY-MM-DD");
