@@ -1,15 +1,15 @@
 import React from "react";
-import { BasicDatePicker } from "../common/BasicDatePicker";
-import { FloatInputField } from "../common/FloatInputField";
+import { useNavigate } from "react-router-dom";
+import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import { JustifiedTypography } from "../common/JustifiedTypography";
-import { Layout } from "../layout/Layout";
-import { BasicButton } from "../common/BasicButton";
 import dayjs, { Dayjs } from "dayjs";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { addWeightEntry } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { JustifiedTypography } from "../common/JustifiedTypography";
+import { BasicDatePicker } from "../common/BasicDatePicker";
+import { FloatInputField } from "../common/FloatInputField";
+import { BasicButton } from "../common/BasicButton";
+import { Layout } from "../layout/Layout";
 import { WeightLineChart } from "../partials/WeightLineChart";
 
 
@@ -18,12 +18,12 @@ export const Weight = () => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
-  const [dateHasError, setDateHasError] = React.useState(false);
-  const [weightHasError, setWeightHasError] = React.useState(false);
-  const [isButtonClicked] = React.useState(false);
-  const [currentWeight, setCurrentWeight] = React.useState(0);
-  const [weightUpdate, setWeightUpdate] = React.useState(0);  
-  const [dateErrorText, setDateErrorText] = React.useState(
+  const [dateHasError, setDateHasError] = React.useState<boolean>(false);
+  const [weightHasError, setWeightHasError] = React.useState<boolean>(false);
+  const [isButtonClicked] = React.useState<boolean>(false);
+  const [currentWeight, setCurrentWeight] = React.useState<number>(0);
+  const [weightUpdate, setWeightUpdate] = React.useState<number>(0);  
+  const [dateErrorText, setDateErrorText] = React.useState<string>(
     "Du muss ein Datum auswählen."
   );
   

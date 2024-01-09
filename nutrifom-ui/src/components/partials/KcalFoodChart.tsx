@@ -9,10 +9,10 @@ export interface KcalFoodChartProps {
 }
 
 export const KcalFoodChart = (props: KcalFoodChartProps) => {
-  const [remainingKcal, setRemainingKcal] = React.useState(0);
-  const [overConsumedKcal, setOverConsumedKcal] = React.useState(0);
+  const [remainingKcal, setRemainingKcal] = React.useState<number>(0);
+  const [overConsumedKcal, setOverConsumedKcal] = React.useState<number>(0);
   const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] =
-    React.useState(0);
+    React.useState<number>(0);
 
   const theme = useTheme();
 
