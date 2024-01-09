@@ -40,6 +40,8 @@ export const Header = () => {
     }
   }, [user?.image, user]);
 
+  const isScreenLarge = window.innerWidth > 2000;
+
   const handleSignOutButtonClick = () => {
     signOut();
     navigate("/signin");
@@ -58,7 +60,7 @@ export const Header = () => {
         sx={{
           float: "right",
           padding: "1%",
-          marginTop: "-6.5%",
+          marginTop: isScreenLarge ? "-4%" : "-6.5%",
           marginRight: "1%",
         }}
       >
