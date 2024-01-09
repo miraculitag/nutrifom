@@ -90,7 +90,7 @@ export const Recipes = () => {
         }
       };
 
-  const filterRecipes = (filter: String) => {
+  const filterRecipes = (filter: string) => {
     if (filter === "Aufbauen") {
       setShownRecipes(recipes?.filter((recipe) => recipe.tag === "Aufbauen"));
     } else if (filter === "Definieren") {
