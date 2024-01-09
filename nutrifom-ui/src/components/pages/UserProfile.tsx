@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { useUser } from "../../userContext";
 import { deleteAppUser } from "../../api";
 import { ConfirmationDialog } from "../dialogs/ConfirmationDialog";
-import ImageUploadButton from "../partials/ImageUploadButton";
+import { ImageUploadButton } from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
 
 export const UserProfile = () => {

@@ -29,7 +29,7 @@ const checkTokenExpiration = (
 ) => {
   const decodedToken = jwtDecode(token);
   const expTime = decodedToken.exp;
-  const currentTime = Math.floor(Date.now() / 1000);
+  const currentTime = Math.floor(Date.now() / 1000); //Idea from ChatGPT 3.5
 
   if (expTime && currentTime >= expTime) {
     if (!alertDisplayed) {

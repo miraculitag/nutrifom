@@ -8,7 +8,7 @@ import { getAppUser, putAppUserImage } from "../../api";
 import { useUser } from "../../userContext";
 import { ErrorDialog } from "../dialogs/ErrorDialog";
 
-export default function ImageUploadButton() {
+export const ImageUploadButton = () => {
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const [isErrorDialogOpen, setIsErrorDialogOpen] =
     React.useState<boolean>(false);
@@ -94,4 +94,4 @@ export default function ImageUploadButton() {
       />
     </>
   );
-}
+};
