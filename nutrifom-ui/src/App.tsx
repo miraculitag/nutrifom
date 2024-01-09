@@ -1,5 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider, RequireAuth } from "react-auth-kit";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, RequireAuth, useIsAuthenticated } from "react-auth-kit";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ThemeProvider } from "@mui/material";
 import nutrifomTheme from "./theme/nutrifomTheme";
@@ -11,6 +16,11 @@ import { Calc } from "./components/pages/Calc";
 import { Recipes } from "./components/pages/Recipes";
 import { SignIn } from "./components/pages/SignIn";
 import { UserProvider } from "./userContext";
+
+const PrivateRoute = ({ Component }: { Component: React.ComponentType }) => {
+  const isAuthenticated = useIsAuthenticated();
+  return isAuthenticated() ? <Component /> : <Navigate to="/signin" />;
+};
 
 export default function App() {
   return (
@@ -26,14 +36,7 @@ export default function App() {
             <UserProvider>
               <Routes>
                 <Route path="/signin" element={<SignIn />} />
-                <Route
-                  path="/"
-                  element={
-                    <RequireAuth loginPath="/signin">
-                      <Home />
-                    </RequireAuth>
-                  }
-                />
+                <Route path="/" element={<PrivateRoute Component={Home} />} />
                 <Route
                   path="/user"
                   element={
