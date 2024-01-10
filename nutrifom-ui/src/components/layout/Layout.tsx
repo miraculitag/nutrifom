@@ -2,7 +2,11 @@ import { Box } from "@mui/material";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 
-export const Layout = (props: any) => {
+export interface LayoutProps {
+  children: JSX.Element;
+}
+
+export const Layout = (props: LayoutProps) => {
   return (
     <>
       <Box

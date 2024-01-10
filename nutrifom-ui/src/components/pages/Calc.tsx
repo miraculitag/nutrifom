@@ -223,148 +223,150 @@ export const Calc = () => {
 
   return (
     <Layout>
-      <Box
-        sx={{
-          margin: "auto",
-          width: "50%",
-          justifyContent: "center",
-        }}
-      >
-        {dataFor14Days ? (
-          ""
-        ) : (
+      <>
+        <Box
+          sx={{
+            margin: "auto",
+            width: "50%",
+            justifyContent: "center",
+          }}
+        >
+          {dataFor14Days ? (
+            ""
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "baseline", //Idea from ChatGPT 3.5
+                justifyContent: "space-around",
+                paddingTop: "5%",
+              }}
+            >
+              <DropDownMenu
+                title={"alltägliches körperliches Aktivitätslevel"}
+                width={"42%"}
+                options={palCatergories}
+                value={pal}
+                setValue={setPal}
+                infoIcon={true}
+                isInfoIconClicked={isPalInfoIconClicked}
+                setIsInfoIconClicked={setIsPalInfoIconClicked}
+                required={false}
+              />
+              <FloatInputField
+                label={"sportliche Aktivität in Stunden/Woche"}
+                suffix={"h/w"}
+                width={"42%"}
+                value={wpa}
+                setValue={setWpa}
+                hasError={wpaHasError}
+                errorText={"Die sportliche Akivität kann nicht negativ sein."}
+                required={false}
+              />
+            </Box>
+          )}
+
           <Box
             sx={{
               display: "flex",
-              alignItems: "baseline", //Idea from ChatGPT 3.5
+              alignItems: "baseline",
               justifyContent: "space-around",
               paddingTop: "5%",
             }}
           >
             <DropDownMenu
-              title={"alltägliches körperliches Aktivitätslevel"}
+              title={"persönliches Ziel"}
               width={"42%"}
-              options={palCatergories}
-              value={pal}
-              setValue={setPal}
-              infoIcon={true}
-              isInfoIconClicked={isPalInfoIconClicked}
-              setIsInfoIconClicked={setIsPalInfoIconClicked}
+              options={goals}
+              value={goal}
+              setValue={setGoal}
               required={false}
             />
-            <FloatInputField
-              label={"sportliche Aktivität in Stunden/Woche"}
-              suffix={"h/w"}
-              width={"42%"}
-              value={wpa}
-              setValue={setWpa}
-              hasError={wpaHasError}
-              errorText={"Die sportliche Akivität kann nicht negativ sein."}
-              required={false}
+            <BasicButton
+              label="Kalorienbedarf Berechnen"
+              width="42%"
+              isButtonClicked={isCalcKcalButtonClicked}
+              onButtonClick={
+                dataFor14Days
+                  ? () => handleCalcKcalButtonClick()
+                  : () => {
+                      wpa < 0
+                        ? setWpaHasError(true)
+                        : handleCalcKcalButtonClick();
+                    }
+              }
             />
           </Box>
-        )}
-
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-around",
-            paddingTop: "5%",
-          }}
-        >
-          <DropDownMenu
-            title={"persönliches Ziel"}
-            width={"42%"}
-            options={goals}
-            value={goal}
-            setValue={setGoal}
-            required={false}
-          />
-          <BasicButton
-            label="Kalorienbedarf Berechnen"
-            width="42%"
-            isButtonClicked={isCalcKcalButtonClicked}
-            onButtonClick={
-              dataFor14Days
-                ? () => handleCalcKcalButtonClick()
-                : () => {
-                    wpa < 0
-                      ? setWpaHasError(true)
-                      : handleCalcKcalButtonClick();
-                  }
-            }
-          />
         </Box>
-      </Box>
-      {isCalcKcalButtonClicked ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            margin: "auto",
-            justifyContent: "center",
-            paddingTop: "5%",
-          }}
-        >
-          <Typography sx={{ fontSize: "150%" }}>
-            Dein Kalorienbedarf:
-          </Typography>
-          <Typography
+        {isCalcKcalButtonClicked ? (
+          <Box
             sx={{
-              fontSize: "150%",
-              fontWeight: "bold",
-              paddingLeft: "2%",
+              display: "flex",
+              flexDirection: "row",
+              margin: "auto",
+              justifyContent: "center",
+              paddingTop: "5%",
             }}
           >
-            {kcalRequirement} kcal
-          </Typography>
-          {kcalRequirement === user?.kcalGoal ? (
-            <IconButton sx={{ marginLeft: "2%" }}>
-              <BookmarkIcon sx={{ color: theme.palette.primary.main }} />
-            </IconButton>
-          ) : (
-            <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
-              <IconButton
-                onClick={() => saveKcalReqAsKcalGoal(kcalRequirement)}
-                sx={{ marginLeft: "2%" }}
-              >
-                <BookmarkBorderIcon
-                  sx={{ color: theme.palette.primary.main }}
-                />
+            <Typography sx={{ fontSize: "150%" }}>
+              Dein Kalorienbedarf:
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "150%",
+                fontWeight: "bold",
+                paddingLeft: "2%",
+              }}
+            >
+              {kcalRequirement} kcal
+            </Typography>
+            {kcalRequirement === user?.kcalGoal ? (
+              <IconButton sx={{ marginLeft: "2%" }}>
+                <BookmarkIcon sx={{ color: theme.palette.primary.main }} />
               </IconButton>
-            </Tooltip>
-          )}
-        </Box>
-      ) : (
-        ""
-      )}
-      <Stack
-        sx={{
-          paddingTop: "5%",
-          width: "60%",
-          margin: "auto",
-        }}
-        spacing={2}
-      >
-        {isPalInfoIconClicked && (
-          <InfoAlert
-            title={"Kategorien des körperlichen Aktivitätslevels:"}
-            description={""}
-            table={<PalTable />}
-          />
+            ) : (
+              <Tooltip title="als neues Kalorienziel fürs Nutriprotokoll abspeichern">
+                <IconButton
+                  onClick={() => saveKcalReqAsKcalGoal(kcalRequirement)}
+                  sx={{ marginLeft: "2%" }}
+                >
+                  <BookmarkBorderIcon
+                    sx={{ color: theme.palette.primary.main }}
+                  />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
+        ) : (
+          ""
         )}
-        <InfoAlert
-          title={
-            dataFor14Days ? infoTextDataBased.title : infoTextFormula.title
-          }
-          description={
-            dataFor14Days
-              ? infoTextDataBased.description
-              : infoTextFormula.description
-          }
-        />
-      </Stack>
+        <Stack
+          sx={{
+            paddingTop: "5%",
+            width: "60%",
+            margin: "auto",
+          }}
+          spacing={2}
+        >
+          {isPalInfoIconClicked && (
+            <InfoAlert
+              title={"Kategorien des körperlichen Aktivitätslevels:"}
+              description={""}
+              table={<PalTable />}
+            />
+          )}
+          <InfoAlert
+            title={
+              dataFor14Days ? infoTextDataBased.title : infoTextFormula.title
+            }
+            description={
+              dataFor14Days
+                ? infoTextDataBased.description
+                : infoTextFormula.description
+            }
+          />
+        </Stack>
+      </>
     </Layout>
   );
 };
