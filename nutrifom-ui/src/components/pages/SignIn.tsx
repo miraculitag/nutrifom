@@ -138,12 +138,10 @@ export const SignIn = () => {
       googleIdToken: googleIdToken,
     })
       .then((response) => {
-        const decodedToken = jwtDecode(response.data.token);
-        const time = decodedToken.exp || 36000;
         signIn({
           token: response.data.token,
           tokenType: "Bearer",
-          expiresIn: time,
+          expiresIn: 36000,
           authState: {},
         });
         navigate("/");
