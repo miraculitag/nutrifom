@@ -12,21 +12,17 @@ import { BasicButton } from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { WeightLineChart } from "../partials/WeightLineChart";
 
-
 export const Weight = () => {
-
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
   const [dateHasError, setDateHasError] = React.useState<boolean>(false);
   const [weightHasError, setWeightHasError] = React.useState<boolean>(false);
-  const [isButtonClicked] = React.useState<boolean>(false);
   const [currentWeight, setCurrentWeight] = React.useState<number>(0);
-  const [weightUpdate, setWeightUpdate] = React.useState<number>(0);  
+  const [weightUpdate, setWeightUpdate] = React.useState<number>(0);
   const [dateErrorText, setDateErrorText] = React.useState<string>(
     "Du muss ein Datum auswählen."
   );
-  
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -39,21 +35,20 @@ export const Weight = () => {
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
   };
 
-
   const handleAddWeightClick = async () => {
     setWeightHasError(false);
     setDateHasError(false);
 
     const dateString: string =
       selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
-      await addWeightEntry(
-        { weight: currentWeight, entryDate: dateString },
-        auth(),
-        signOut,
-        navigate
-      ).then(() => {
-        setWeightUpdate((prevValue) => prevValue + 1);
-      })
+    await addWeightEntry(
+      { weight: currentWeight, entryDate: dateString },
+      auth(),
+      signOut,
+      navigate
+    ).then(() => {
+      setWeightUpdate((prevValue) => prevValue + 1);
+    });
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {
@@ -119,7 +114,6 @@ export const Weight = () => {
             <BasicButton
               label="Eintrag hinzufügen"
               width="100%"
-              isButtonClicked={isButtonClicked}
               onButtonClick={(e) => {
                 if (
                   currentWeight < 40 ||
@@ -136,14 +130,14 @@ export const Weight = () => {
                     selectedDate === null ||
                     dayjs().diff(selectedDate, "day") >= 14
                   ) {
+                    setDateHasError(true);
                     if (dayjs().diff(selectedDate, "day") >= 14) {
                       setDateErrorText(
                         "Du kannst dein Gewicht nur für die letzten 14 Tage eintragen."
                       );
                     } else {
-                      setDateErrorText("Du hast kein Gewicht eingetragen.");
+                      setDateErrorText("Du hast kein Datum eingetragen.");
                     }
-                    setDateHasError(true);
                   } else {
                     setDateHasError(false);
                   }

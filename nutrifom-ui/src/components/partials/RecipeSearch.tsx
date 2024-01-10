@@ -10,7 +10,7 @@ import { BasicButton } from "../common/BasicButton";
 
 
 interface RecipeSearchProps {
-  onNutrilogUpdate: () => void;
+  nutrilogUpdate: () => void;
   selectedDate: Dayjs | null;
 }
 
@@ -33,7 +33,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     });
   }, []);
 
-  const handleChangeSearchPortionRecipeText = async () => {
+  const handleAddButtonClick = async () => {
     setPortionAmountHasError(false);
     setRecipeSearchHasError(false);
 
@@ -50,7 +50,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
       signOut,
       navigate
     )
-    props.onNutrilogUpdate();
+    props.nutrilogUpdate();
   };
 
   return (
@@ -116,7 +116,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
               setRecipeSearchHasError(false);
             }
           } else {
-            handleChangeSearchPortionRecipeText();
+            handleAddButtonClick();
           }
         }}
       />

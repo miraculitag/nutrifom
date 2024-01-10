@@ -6,7 +6,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import dayjs, { Dayjs } from "dayjs";
 import { getNutrilog } from "../../api";
-import { NutritionData } from "../../types";
+import { FoodEntry, NutritionData, Recipe } from "../../types";
 import { useUser } from "../../userContext";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
@@ -23,7 +23,7 @@ export const Nutrilog = () => {
     dayjs(new Date())
   );
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const [allNutrilogItems, setAllNutrilogItems] = React.useState([
+  const [allNutrilogItems, setAllNutrilogItems] = React.useState<(FoodEntry | Recipe)[]>([
     ...(nutrilog?.products || []),
     ...(nutrilog?.recipes || []),
   ]);
@@ -110,7 +110,7 @@ export const Nutrilog = () => {
         sx={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
-          gridTemplateAreas: `"FoodSearch RecepieSearch KcalFoodChart"
+          gridTemplateAreas: `"FoodSearch RecipeSearch KcalFoodChart"
         "NutrilogTable NutrilogTable NutritionalTable"`,
           columnGap: 5,
           rowGap: 8,
@@ -119,14 +119,14 @@ export const Nutrilog = () => {
         <Box sx={{ gridArea: "FoodSearch" }}>
           <FoodSearch
             selectedDate={selectedDate}
-            onNutrilogUpdate={handleUpdateNutrilog}
+            nutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 
-        <Box sx={{ gridArea: "RecepieSearch" }}>
+        <Box sx={{ gridArea: "RecipeSearch" }}>
           <RecipeSearch
             selectedDate={selectedDate}
-            onNutrilogUpdate={handleUpdateNutrilog}
+            nutrilogUpdate={handleUpdateNutrilog}
           />
         </Box>
 
