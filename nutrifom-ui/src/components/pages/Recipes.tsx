@@ -227,7 +227,9 @@ export const Recipes = () => {
                         : "(" + recipe.ratingCount + " Bewertungen)"}
                     </Typography>
                   </Box>
-                  <Typography sx={{ color: "text.secondary" }}>
+                  <Typography
+                    sx={{ color: "text.secondary", fontSize: "100%" }}
+                  >
                     {recipe.tag}
                   </Typography>
                 </Box>
@@ -236,13 +238,13 @@ export const Recipes = () => {
                     color: "text.secondary",
                     flexShrink: 0,
                     paddingRight: "2%",
+                    fontSize: "100%",
                   }}
                 >
                   {recipe.uses} mal nachgekocht
                 </Typography>
               </Box>
             </AccordionSummary>
-
             <AccordionDetails>
               <Box
                 sx={{

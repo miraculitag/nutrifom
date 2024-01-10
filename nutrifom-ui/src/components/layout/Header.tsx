@@ -60,13 +60,19 @@ export const Header = () => {
         sx={{
           float: "right",
           padding: "1%",
-          marginTop: isScreenLarge ? "-4%" : "-6.5%",
+          marginTop: isScreenLarge ? "-4.5%" : "-6.5%",
           marginRight: "1%",
         }}
       >
         <Button onClick={handleSignOutButtonClick}>Ausloggen</Button>
         <IconButton onClick={() => navigate("/user")}>
-          <Avatar src={URL.createObjectURL(avatarBlob)} />
+          <Avatar
+            sx={{
+              width: isScreenLarge ? 50 : 40,
+              height: isScreenLarge ? 50 : 40,
+            }}
+            src={URL.createObjectURL(avatarBlob)}
+          />
         </IconButton>
       </Box>
       <AppBar sx={{ position: "static", marginBottom: "2%" }}>
