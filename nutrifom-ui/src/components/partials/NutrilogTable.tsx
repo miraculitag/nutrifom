@@ -6,9 +6,10 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import { FoodEntry, Recipe } from "../../types";
 
 export interface NutrilogTableProps {
-  nutrilogItems: any[] | undefined;
+  nutrilogItems: (FoodEntry | Recipe)[] | undefined;
   onSelectRow: (index: number) => void;
   selectedRow: number | null;
 }
@@ -16,19 +17,19 @@ export interface NutrilogTableProps {
 export const NutrilogTable = (props: NutrilogTableProps) => {
 
   //Structure from ChatGPT 3.5
-  const getEntryName = (entry: any): string => {
+  const getEntryName = (entry: (FoodEntry | Recipe)) => {
     if ("productCode" in entry && "productName" in entry) {
       return `${entry.productName} [g]`;
-    } else {
+    } else if ("recipeTitle" in entry && "portions" in entry) {
       return `${entry.recipeTitle} [Portion(en)]`;
     }
   };
 
   //Structure from ChatGPT 3.5
-  const getQuantity = (entry: any): string => {
+  const getQuantity = (entry: (FoodEntry | Recipe)) => {
     if ("productCode" in entry && "productName" in entry) {
       return entry.productQuantity;
-    } else {
+    } else if ("recipeTitle" in entry && "portions" in entry) {
       return entry.portions;
     }
   };

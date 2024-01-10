@@ -11,7 +11,7 @@ export interface KcalFoodChartProps {
 export const KcalFoodChart = (props: KcalFoodChartProps) => {
   const [remainingKcal, setRemainingKcal] = React.useState<number>(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState<number>(0);
-  const [overConsumedRemainingKcal, setOverConsumedRemainingKcal] =
+  const [overConsumedKcalRemaining, setOverConsumedKcalRemaining] =
     React.useState<number>(0);
 
   const theme = useTheme();
@@ -20,17 +20,17 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
     if (props.totalKcal >= props.consumedKcal) {
       setRemainingKcal(props.totalKcal - props.consumedKcal);
       setOverConsumedKcal(0);
-      setOverConsumedRemainingKcal(0);
+      setOverConsumedKcalRemaining(0);
     } else {
       setOverConsumedKcal(props.consumedKcal - props.totalKcal);
-      setOverConsumedRemainingKcal(props.totalKcal - overConsumedKcal);
+      setOverConsumedKcalRemaining(props.totalKcal - overConsumedKcal);
       setRemainingKcal(0);
     }
   }, [props.totalKcal, props.consumedKcal, overConsumedKcal]);
 
   const overconsumedData = [
     { value: overConsumedKcal, color: "red" },
-    { value: overConsumedRemainingKcal, color: "white" },
+    { value: overConsumedKcalRemaining, color: "white" },
   ];
 
   const data = [

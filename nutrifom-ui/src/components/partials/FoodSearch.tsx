@@ -9,7 +9,7 @@ import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 
 interface FoodSearchProps {
-  onNutrilogUpdate: () => void;
+  nutrilogUpdate: () => void;
   selectedDate: Dayjs | null;
 }
 
@@ -48,7 +48,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
 
   const currentDate = dayjs().format("YYYY-MM-DD");
 
-  const handleChangeSearchFoodTextAmount = async () => {
+  const handleAddButtonClick = async () => {
     setFoodAmountHasError(false);
     setFoodSearchHasError(false);
 
@@ -65,7 +65,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
       signOut,
       navigate
     );
-    props.onNutrilogUpdate();
+    props.nutrilogUpdate();
   };
 
   return (
@@ -137,7 +137,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
               setFoodSearchHasError(false);
             }
           } else {
-            handleChangeSearchFoodTextAmount();
+            handleAddButtonClick();
           }
         }}
       />
