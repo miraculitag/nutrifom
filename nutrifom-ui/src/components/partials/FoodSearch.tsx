@@ -3,7 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Box, Autocomplete, TextField } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { addProductToNutrilog, searchOFF } from "../../api";
+import {
+  addProductToNutrilog,
+  handleTokenExpiration,
+  isTokenExpired,
+  searchOFF,
+} from "../../api";
 import { FoodEntry } from "../../types";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
@@ -34,13 +39,12 @@ export const FoodSearch = (props: FoodSearchProps) => {
   React.useEffect(() => {
     if (searchTextFood && !selectedFood) {
       const timeoutId = setTimeout(async () => {
-        const response = await searchOFF(
-          searchTextFood,
-          auth(),
-          signOut,
-          navigate
-        );
-        setApiData(response.data);
+        if (isTokenExpired(auth())) {
+          handleTokenExpiration(signOut, navigate);
+        } else {
+          const response = await searchOFF(searchTextFood, auth());
+          setApiData(response.data);
+        }
       }, 400);
       return () => clearTimeout(timeoutId);
     }
@@ -54,18 +58,19 @@ export const FoodSearch = (props: FoodSearchProps) => {
 
     const dateString: string =
       props.selectedDate?.format("YYYY-MM-DD") || currentDate;
-
-    await addProductToNutrilog(
-      {
-        productCode: selectedFood?.productCode || "",
-        entryDate: dateString,
-        productQuantity: currentFoodAmount,
-      },
-      auth(),
-      signOut,
-      navigate
-    );
-    props.nutrilogUpdate();
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      await addProductToNutrilog(
+        {
+          productCode: selectedFood?.productCode || "",
+          entryDate: dateString,
+          productQuantity: currentFoodAmount,
+        },
+        auth()
+      );
+      props.nutrilogUpdate();
+    }
   };
 
   return (

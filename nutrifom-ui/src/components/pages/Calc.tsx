@@ -20,6 +20,8 @@ import { PalTable } from "../common/PalTable";
 import {
   getKcalLast14Days,
   getWeightLast14Days,
+  handleTokenExpiration,
+  isTokenExpired,
   putAppUserGoal,
   putAppUserKcalGoal,
   putAppUserPal,
@@ -49,14 +51,18 @@ export const Calc = () => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-    checkDataSufficiency();
-    setLocalStates();
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      checkDataSufficiency();
+      setLocalStates();
+    }
   }, [hasFetchedUser]);
 
   const checkDataSufficiency = async () => {
-    const weightResponse = await getWeightLast14Days(auth(), signOut, navigate);
+    const weightResponse = await getWeightLast14Days(auth());
 
-    const kcalResponse = await getKcalLast14Days(auth(), signOut, navigate);
+    const kcalResponse = await getKcalLast14Days(auth());
 
     const weightData = weightResponse.data;
     const kcalData = kcalResponse.data;
@@ -120,8 +126,12 @@ export const Calc = () => {
   };
 
   const saveKcalReqAsKcalGoal = (kcalGoal: number) => {
-    putAppUserKcalGoal(kcalGoal, auth(), signOut, navigate);
-    updateUserAttribute({ kcalGoal: kcalGoal });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      putAppUserKcalGoal(kcalGoal, auth());
+      updateUserAttribute({ kcalGoal: kcalGoal });
+    }
   };
 
   const calcUserAge = (dob: string) => {
@@ -152,8 +162,12 @@ export const Calc = () => {
   };
 
   const calcKcalMethodA = () => {
-    putAppUserGoal(goal, auth(), signOut, navigate);
-    updateUserAttribute({ goal: goal });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      putAppUserGoal(goal, auth());
+      updateUserAttribute({ goal: goal });
+    }
 
     const weightsWeek1 = weightFor14Days.slice(0, 7);
     const weightsWeek2 = weightFor14Days.slice(7);
@@ -187,13 +201,18 @@ export const Calc = () => {
     if (!user) {
       return 0;
     }
+
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      putAppUserPal(pal, auth());
+      putAppUserWpa(wpa, auth());
+      putAppUserGoal(goal, auth());
+
+      updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
+    }
+
     setWpaHasError(false);
-    putAppUserPal(pal, auth(), signOut, navigate);
-    putAppUserWpa(wpa, auth(), signOut, navigate);
-    putAppUserGoal(goal, auth(), signOut, navigate);
-
-    updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
-
     const userAge = calcUserAge(user.dob);
     let basalMetabolicRate;
 

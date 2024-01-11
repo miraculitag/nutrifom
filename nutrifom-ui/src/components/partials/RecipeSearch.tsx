@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Autocomplete, Box, TextField } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { addRecipeToNutrilog, getRecipes } from "../../api";
+import {
+  addRecipeToNutrilog,
+  getRecipes,
+  handleTokenExpiration,
+  isTokenExpired,
+} from "../../api";
 import { Recipe } from "../../types";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
-
 
 interface RecipeSearchProps {
   nutrilogUpdate: () => void;
@@ -18,19 +22,26 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
   const [isButtonClicked] = React.useState<boolean>(false);
   const [recipes, setRecipes] = React.useState<any[]>([]);
   const [selectedRecipe, setSelectedRecipe] = React.useState<Recipe>();
-  const [recipeSearchHasError, setRecipeSearchHasError] = React.useState<boolean>(false);
-  const [portionAmountHasError, setPortionAmountHasError] = React.useState<boolean>(false);
-  const [currentPortionAmount, setCurrentPortionAmount] = React.useState<number>(0);
- 
+  const [recipeSearchHasError, setRecipeSearchHasError] =
+    React.useState<boolean>(false);
+  const [portionAmountHasError, setPortionAmountHasError] =
+    React.useState<boolean>(false);
+  const [currentPortionAmount, setCurrentPortionAmount] =
+    React.useState<number>(0);
+
   const auth = useAuthHeader();
   const signOut = useSignOut();
   const navigate = useNavigate();
-  
+
   /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-    getRecipes(auth(), signOut, navigate).then((response) => {
-      setRecipes(response.data);
-    });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      getRecipes(auth()).then((response) => {
+        setRecipes(response.data);
+      });
+    }
   }, []);
 
   const handleAddButtonClick = async () => {
@@ -39,18 +50,19 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
 
     const dateString: string =
       props.selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD");
-
-    await addRecipeToNutrilog(
-      {
-        recipeId: selectedRecipe?.id || 0,
-        entryDate: dateString,
-        recipePortions: currentPortionAmount,
-      },
-      auth(),
-      signOut,
-      navigate
-    )
-    props.nutrilogUpdate();
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      await addRecipeToNutrilog(
+        {
+          recipeId: selectedRecipe?.id || 0,
+          entryDate: dateString,
+          recipePortions: currentPortionAmount,
+        },
+        auth()
+      );
+      props.nutrilogUpdate();
+    }
   };
 
   return (
@@ -122,4 +134,4 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
       />
     </>
   );
-}
+};

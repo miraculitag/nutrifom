@@ -5,9 +5,12 @@ import { useTheme } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
-import { getWeightHistory } from "../../api";
+import {
+  getWeightHistory,
+  handleTokenExpiration,
+  isTokenExpired,
+} from "../../api";
 import { WeightRequest } from "../../types";
-
 
 interface WeightLineChartProps {
   weightUpdate: number;
@@ -23,10 +26,13 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-    getWeightHistory(auth(), signOut, navigate)
-      .then((response) => {
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      getWeightHistory(auth()).then((response) => {
         setWeightHistory(response.data);
-      })
+      });
+    }
   }, [props.weightUpdate]);
 
   const customize = {
@@ -34,7 +40,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
     legend: { hidden: true },
     margin: { top: 5 },
   };
-  
+
   //Structure from ChatGPT 3.5
   const last14Days = Array.from({ length: 14 }, (_, index) =>
     dayjs().subtract(index, "day").format("YYYY-MM-DD")
@@ -86,11 +92,10 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
                 value == null ? "n.a." : value.toString() + " kg",
               color: theme.palette.primary.main,
             },
-          ]}          
+          ]}
           {...customize}
         />
       )}
     </>
   );
 };
-

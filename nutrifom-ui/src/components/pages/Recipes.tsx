@@ -13,7 +13,13 @@ import {
   useTheme,
 } from "@mui/material";
 import { ExpandMore, FilterAlt } from "@mui/icons-material";
-import { getRecipeById, getRecipes, rateRecipe } from "../../api";
+import {
+  getRecipeById,
+  getRecipes,
+  handleTokenExpiration,
+  isTokenExpired,
+  rateRecipe,
+} from "../../api";
 import { Recipe } from "../../types";
 import { FilterDialog } from "../dialogs/FilterDialog";
 import { NutritionalTable } from "../common/NutritionalTable";
@@ -36,14 +42,18 @@ export const Recipes = () => {
   /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
     setIsLoading(true);
-    getRecipes(auth(), signOut, navigate)
-      .then((response) => {
-        setRecipes(response.data);
-        setShownRecipes(response.data);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      getRecipes(auth())
+        .then((response) => {
+          setRecipes(response.data);
+          setShownRecipes(response.data);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   }, []);
 
   const filterHeading = "Rezeptkategorien";
@@ -57,7 +67,7 @@ export const Recipes = () => {
 
   const refreshRecipe = (recipeId: number) => {
     //Structure from ChatGPT 3.5
-    getRecipeById(recipeId, auth(), signOut, navigate).then((response) => {
+    getRecipeById(recipeId, auth()).then((response) => {
       const updatedRecipe = response.data;
       setRecipes((prevRecipes) => {
         const updatedRecipes = prevRecipes?.map((recipe) =>
@@ -79,14 +89,16 @@ export const Recipes = () => {
       (recipeId: number) =>
       (event: React.ChangeEvent<{}>, newRatingValue: number | null) => {
         if (newRatingValue !== null) {
-          rateRecipe(
-            { recipeId: recipeId, score: newRatingValue },
-            auth(),
-            signOut,
-            navigate
-          ).then(() => {
-            refreshRecipe(recipeId);
-          });
+          if (isTokenExpired(auth())) {
+            handleTokenExpiration(signOut, navigate);
+          } else {
+            rateRecipe(
+              { recipeId: recipeId, score: newRatingValue },
+              auth()
+            ).then(() => {
+              refreshRecipe(recipeId);
+            });
+          }
         }
       };
 

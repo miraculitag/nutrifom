@@ -5,7 +5,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import dayjs, { Dayjs } from "dayjs";
-import { getNutrilog } from "../../api";
+import { getNutrilog, handleTokenExpiration, isTokenExpired } from "../../api";
 import { FoodEntry, NutritionData, Recipe } from "../../types";
 import { useUser } from "../../userContext";
 import { NutritionalTable } from "../common/NutritionalTable";
@@ -23,10 +23,9 @@ export const Nutrilog = () => {
     dayjs(new Date())
   );
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const [allNutrilogItems, setAllNutrilogItems] = React.useState<(FoodEntry | Recipe)[]>([
-    ...(nutrilog?.products || []),
-    ...(nutrilog?.recipes || []),
-  ]);
+  const [allNutrilogItems, setAllNutrilogItems] = React.useState<
+    (FoodEntry | Recipe)[]
+  >([...(nutrilog?.products || []), ...(nutrilog?.recipes || [])]);
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -36,7 +35,11 @@ export const Nutrilog = () => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   React.useEffect(() => {
-    handleUpdateNutrilog();
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      handleUpdateNutrilog();
+    }
   }, [selectedDate]);
 
   React.useEffect(() => {
@@ -70,12 +73,7 @@ export const Nutrilog = () => {
   const handleUpdateNutrilog = async () => {
     if (selectedDate) {
       const formattedDate = selectedDate.format("YYYY-MM-DD");
-      const response = await getNutrilog(
-        formattedDate,
-        auth(),
-        signOut,
-        navigate
-      );
+      const response = await getNutrilog(formattedDate, auth());
       setNutrilog(response.data);
       setAllNutrilogItems([
         ...(response.data?.products || []),

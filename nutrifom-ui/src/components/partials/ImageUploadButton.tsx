@@ -4,7 +4,12 @@ import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { IconButton, LinearProgress, Tooltip, useTheme } from "@mui/material";
 import { FileUpload } from "@mui/icons-material";
 import { styled } from "@mui/system";
-import { getAppUser, putAppUserImage } from "../../api";
+import {
+  getAppUser,
+  handleTokenExpiration,
+  isTokenExpired,
+  putAppUserImage,
+} from "../../api";
 import { useUser } from "../../userContext";
 import { ErrorDialog } from "../dialogs/ErrorDialog";
 
@@ -44,15 +49,18 @@ export const ImageUploadButton = () => {
         const formData = new FormData();
         formData.append("image", image);
         setIsUploading(true);
-
-        putAppUserImage(formData, auth(), signOut, navigate)
-          .then(() => getAppUser(auth(), signOut, navigate))
-          .then((updatedUser) => {
-            updateUser(updatedUser.data);
-          })
-          .finally(() => {
-            setIsUploading(false);
-          });
+        if (isTokenExpired(auth())) {
+          handleTokenExpiration(signOut, navigate);
+        } else {
+          putAppUserImage(formData, auth())
+            .then(() => getAppUser(auth())) //tbd
+            .then((updatedUser) => {
+              updateUser(updatedUser.data);
+            })
+            .finally(() => {
+              setIsUploading(false);
+            });
+        }
       }
     }
   };

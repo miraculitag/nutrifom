@@ -4,7 +4,11 @@ import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { Alert, Box, Typography, useTheme } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
-import { addWeightEntry } from "../../api";
+import {
+  addWeightEntry,
+  handleTokenExpiration,
+  isTokenExpired,
+} from "../../api";
 import { JustifiedTypography } from "../common/JustifiedTypography";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { FloatInputField } from "../common/FloatInputField";
@@ -41,14 +45,16 @@ export const Weight = () => {
 
     const dateString: string =
       selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
-    await addWeightEntry(
-      { weight: currentWeight, entryDate: dateString },
-      auth(),
-      signOut,
-      navigate
-    ).then(() => {
-      setWeightUpdate((prevValue) => prevValue + 1);
-    });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      await addWeightEntry(
+        { weight: currentWeight, entryDate: dateString },
+        auth()
+      ).then(() => {
+        setWeightUpdate((prevValue) => prevValue + 1);
+      });
+    }
   };
 
   const handleDatePickerChange = (value: Dayjs | null) => {

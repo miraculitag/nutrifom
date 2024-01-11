@@ -13,7 +13,11 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
 import { useUser } from "../../userContext";
-import { deleteAppUser } from "../../api";
+import {
+  deleteAppUser,
+  handleTokenExpiration,
+  isTokenExpired,
+} from "../../api";
 import { ConfirmationDialog } from "../dialogs/ConfirmationDialog";
 import { ImageUploadButton } from "../partials/ImageUploadButton";
 import { Layout } from "../layout/Layout";
@@ -65,9 +69,13 @@ export const UserProfile = () => {
   };
 
   const deleteUserProfile = () => {
-    deleteAppUser(auth(), signOut, navigate)
-      .then(() => signOut())
-      .then(() => navigate("/signin"));
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      deleteAppUser(auth())
+        .then(() => signOut())
+        .then(() => navigate("/signin"));
+    }
   };
 
   return (
