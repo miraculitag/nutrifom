@@ -4,7 +4,7 @@ import { useTheme } from "@mui/material/styles";
 import { KcalFoodChartLabel } from "./KcalFoodChartLabel";
 
 export interface KcalFoodChartProps {
-  totalKcal: number;
+  kcalGoal: number;
   consumedKcal: number;
 }
 
@@ -17,16 +17,16 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
   const theme = useTheme();
 
   React.useEffect(() => {
-    if (props.totalKcal >= props.consumedKcal) {
-      setRemainingKcal(props.totalKcal - props.consumedKcal);
+    if (props.kcalGoal >= props.consumedKcal) {
+      setRemainingKcal(props.kcalGoal - props.consumedKcal);
       setOverConsumedKcal(0);
       setOverConsumedKcalRemaining(0);
     } else {
-      setOverConsumedKcal(props.consumedKcal - props.totalKcal);
-      setOverConsumedKcalRemaining(props.totalKcal - overConsumedKcal);
+      setOverConsumedKcal(props.consumedKcal - props.kcalGoal);
+      setOverConsumedKcalRemaining(props.kcalGoal - overConsumedKcal);
       setRemainingKcal(0);
     }
-  }, [props.totalKcal, props.consumedKcal, overConsumedKcal]);
+  }, [props.kcalGoal, props.consumedKcal, overConsumedKcal]);
 
   const overconsumedData = [
     { value: overConsumedKcal, color: "red" },
@@ -71,7 +71,7 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
         tooltip={{ trigger: "none" }}
       >
         <KcalFoodChartLabel
-          label={[`${props.consumedKcal} von `, `${props.totalKcal} kcal`]}
+          label={[`${props.consumedKcal} von `, `${props.kcalGoal} kcal`]}
         />
       </PieChart>
     </>

@@ -38,7 +38,7 @@ export const Nutrilog = () => {
     if (isTokenExpired(auth())) {
       handleTokenExpiration(signOut, navigate);
     } else {
-      handleUpdateNutrilog();
+      handleNutrilogUpdate();
     }
   }, [selectedDate]);
 
@@ -70,7 +70,7 @@ export const Nutrilog = () => {
     }
   };
 
-  const handleUpdateNutrilog = async () => {
+  const handleNutrilogUpdate = async () => {
     if (selectedDate) {
       const formattedDate = selectedDate.format("YYYY-MM-DD");
       const response = await getNutrilog(formattedDate, auth());
@@ -117,20 +117,20 @@ export const Nutrilog = () => {
         <Box sx={{ gridArea: "FoodSearch" }}>
           <FoodSearch
             selectedDate={selectedDate}
-            nutrilogUpdate={handleUpdateNutrilog}
+            nutrilogUpdate={handleNutrilogUpdate}
           />
         </Box>
 
         <Box sx={{ gridArea: "RecipeSearch" }}>
           <RecipeSearch
             selectedDate={selectedDate}
-            nutrilogUpdate={handleUpdateNutrilog}
+            nutrilogUpdate={handleNutrilogUpdate}
           />
         </Box>
 
         <Box sx={{ gridArea: "KcalFoodChart", height: "100%" }}>
           <KcalFoodChart
-            totalKcal={kcalGoal}
+            kcalGoal={kcalGoal}
             consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}
           />
         </Box>
