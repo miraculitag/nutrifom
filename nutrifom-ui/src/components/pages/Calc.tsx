@@ -194,7 +194,7 @@ export const Calc = () => {
 
     const dailyKcalDifference = weeklyKcalDifference / 7;
 
-    return dailyKcalDifference * -1 + avgKcalIntake; //tbd
+    return dailyKcalDifference * -1 + avgKcalIntake;
   };
 
   const calcKcalMethodB = () => {
@@ -208,7 +208,6 @@ export const Calc = () => {
       putAppUserPal(pal, auth());
       putAppUserWpa(wpa, auth());
       putAppUserGoal(goal, auth());
-
       updateUserAttribute({ pal: pal, wpa: wpa, goal: goal });
     }
 

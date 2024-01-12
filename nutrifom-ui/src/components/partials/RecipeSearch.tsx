@@ -50,6 +50,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
 
     const dateString: string =
       props.selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD");
+
     if (isTokenExpired(auth())) {
       handleTokenExpiration(signOut, navigate);
     } else {

@@ -45,6 +45,7 @@ export const Weight = () => {
 
     const dateString: string =
       selectedDate?.format("YYYY-MM-DD") ?? "1990-01-01";
+
     if (isTokenExpired(auth())) {
       handleTokenExpiration(signOut, navigate);
     } else {

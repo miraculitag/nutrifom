@@ -53,7 +53,7 @@ export const ImageUploadButton = () => {
           handleTokenExpiration(signOut, navigate);
         } else {
           putAppUserImage(formData, auth())
-            .then(() => getAppUser(auth())) //tbd
+            .then(() => getAppUser(auth()))
             .then((updatedUser) => {
               updateUser(updatedUser.data);
             })
