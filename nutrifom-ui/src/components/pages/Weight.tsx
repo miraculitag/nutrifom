@@ -52,9 +52,13 @@ export const Weight = () => {
   }, []);
 
   const handleWeightHistoryUpdate = async () => {
-    getWeightHistory(auth()).then((response) => {
-      setWeightHistory(response.data);
-    });
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      getWeightHistory(auth()).then((response) => {
+        setWeightHistory(response.data);
+      });
+    }
   };
 
   const handleAddWeightClick = async () => {
