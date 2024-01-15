@@ -6,7 +6,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import dayjs, { Dayjs } from "dayjs";
 import { getNutrilog, handleTokenExpiration, isTokenExpired } from "../../api";
-import { FoodEntry, NutritionData, Recipe } from "../../types";
+import { FoodEntry, NutrilogData, Recipe } from "../../types";
 import { useUser } from "../../userContext";
 import { NutritionalTable } from "../common/NutritionalTable";
 import { Layout } from "../layout/Layout";
@@ -22,7 +22,7 @@ export const Nutrilog = () => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
   );
-  const [nutrilog, setNutrilog] = React.useState<NutritionData>();
+  const [nutrilog, setNutrilog] = React.useState<NutrilogData>();
   const [nutrilogItems, setNutrilogItems] = React.useState<
     (FoodEntry | Recipe)[]
   >([...(nutrilog?.products || []), ...(nutrilog?.recipes || [])]);

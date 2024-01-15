@@ -1,39 +1,15 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthHeader, useSignOut } from "react-auth-kit";
 import { useTheme } from "@mui/material";
 import { LineChart } from "@mui/x-charts/LineChart";
 import dayjs from "dayjs";
 import "dayjs/locale/de";
-import {
-  getWeightHistory,
-  handleTokenExpiration,
-  isTokenExpired,
-} from "../../api";
 import { WeightRequest } from "../../types";
 
 interface WeightLineChartProps {
-  updatedWeight: number;
+  weightHistory: WeightRequest[];
 }
 
 export const WeightLineChart = (props: WeightLineChartProps) => {
-  const [weightHistory, setWeightHistory] = React.useState<WeightRequest[]>([]);
-
   const theme = useTheme();
-  const auth = useAuthHeader();
-  const signOut = useSignOut();
-  const navigate = useNavigate();
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-  React.useEffect(() => {
-    if (isTokenExpired(auth())) {
-      handleTokenExpiration(signOut, navigate);
-    } else {
-      getWeightHistory(auth()).then((response) => {
-        setWeightHistory(response.data);
-      });
-    }
-  }, [props.updatedWeight]);
 
   const customize = {
     height: 540,
@@ -47,7 +23,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
   ).reverse();
 
   const dataPoints = last14Days.map((date) => {
-    const weightData = weightHistory.find(
+    const weightData = props.weightHistory.find(
       (entry) => dayjs(entry.entryDate).format("YYYY-MM-DD") === date
     );
     return weightData ? weightData.weight : null;

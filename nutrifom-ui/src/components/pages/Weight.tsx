@@ -6,15 +6,18 @@ import { InfoOutlined } from "@mui/icons-material";
 import dayjs, { Dayjs } from "dayjs";
 import {
   addWeightEntry,
+  getWeightHistory,
   handleTokenExpiration,
   isTokenExpired,
 } from "../../api";
+import { WeightRequest } from "../../types";
 import { JustifiedTypography } from "../common/JustifiedTypography";
 import { BasicDatePicker } from "../common/BasicDatePicker";
 import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { WeightLineChart } from "../partials/WeightLineChart";
+
 
 export const Weight = () => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
@@ -23,10 +26,10 @@ export const Weight = () => {
   const [dateHasError, setDateHasError] = React.useState<boolean>(false);
   const [weightHasError, setWeightHasError] = React.useState<boolean>(false);
   const [currentWeight, setCurrentWeight] = React.useState<number>(0);
-  const [updatedWeight, setUpdatedWeight] = React.useState<number>(0);
   const [dateErrorText, setDateErrorText] = React.useState<string>(
     "Du musst ein Datum auswählen."
   );
+  const [weightHistory, setWeightHistory] = React.useState<WeightRequest[]>([]);
 
   const theme = useTheme();
   const auth = useAuthHeader();
@@ -37,6 +40,21 @@ export const Weight = () => {
     title: "Gewichtsveränderung:",
     description:
       "Beachte, dass kurzfristige Gewichtsschwankungen mit Wassereinlagerungen zusammenhängen können. Wenn du mehr Kohlenhydrate oder mehr Salz als sonst gegessen hast, kann es gut sein, dass du am nächsten Tag ein paar kg mehr wiegst.",
+  };
+
+  /* eslint-disable react-hooks/exhaustive-deps */
+  React.useEffect(() => {
+    if (isTokenExpired(auth())) {
+      handleTokenExpiration(signOut, navigate);
+    } else {
+      handleWeightHistoryUpdate();
+    }
+  }, []);
+
+  const handleWeightHistoryUpdate = async () => {
+    getWeightHistory(auth()).then((response) => {
+      setWeightHistory(response.data);
+    });
   };
 
   const handleAddWeightClick = async () => {
@@ -52,11 +70,11 @@ export const Weight = () => {
       await addWeightEntry(
         { weight: currentWeight, entryDate: dateString },
         auth()
-      ).then(() => {
-        setUpdatedWeight((prevValue) => prevValue + 1);
-      });
+      )
+      handleWeightHistoryUpdate();
     }
   };
+
 
   const handleDatePickerChange = (value: Dayjs | null) => {
     setSelectedDate(value);
@@ -72,7 +90,7 @@ export const Weight = () => {
           width: "100%",
         }}
       >
-        <WeightLineChart updatedWeight={updatedWeight} />
+        <WeightLineChart weightHistory={weightHistory} />
         <Box
           sx={{
             display: "flex",

@@ -93,7 +93,7 @@ export type FoodEntry = {
   productQuantity: number;
 };
 
-export type NutritionData = {
+export type NutrilogData = {
   products: FoodEntry[];
   recipes: Recipe[];
   totalProteins: number;
