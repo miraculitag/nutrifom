@@ -1,17 +1,17 @@
 import React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useTheme } from "@mui/material/styles";
-import { KcalFoodChartLabel } from "./KcalFoodChartLabel";
+import { KcalChartLabel } from "./KcalChartLabel";
 
-export interface KcalFoodChartProps {
+export interface KcalChartProps {
   kcalGoal: number;
   consumedKcal: number;
 }
 
-export const KcalFoodChart = (props: KcalFoodChartProps) => {
+export const KcalChart = (props: KcalChartProps) => {
   const [remainingKcal, setRemainingKcal] = React.useState<number>(0);
   const [overConsumedKcal, setOverConsumedKcal] = React.useState<number>(0);
-  const [overConsumedKcalRemaining, setOverConsumedKcalRemaining] =
+  const [outerSectionPlaceholder, setOuterSectionPlaceholder] =
     React.useState<number>(0);
 
   const theme = useTheme();
@@ -20,17 +20,17 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
     if (props.kcalGoal >= props.consumedKcal) {
       setRemainingKcal(props.kcalGoal - props.consumedKcal);
       setOverConsumedKcal(0);
-      setOverConsumedKcalRemaining(0);
+      setOuterSectionPlaceholder(0);
     } else {
       setOverConsumedKcal(props.consumedKcal - props.kcalGoal);
-      setOverConsumedKcalRemaining(props.kcalGoal - overConsumedKcal);
+      setOuterSectionPlaceholder(props.kcalGoal - overConsumedKcal);
       setRemainingKcal(0);
     }
   }, [props.kcalGoal, props.consumedKcal, overConsumedKcal]);
 
   const overconsumedData = [
     { value: overConsumedKcal, color: "red" },
-    { value: overConsumedKcalRemaining, color: "white" },
+    { value: outerSectionPlaceholder, color: "white" },
   ];
 
   const data = [
@@ -70,7 +70,7 @@ export const KcalFoodChart = (props: KcalFoodChartProps) => {
         }}
         tooltip={{ trigger: "none" }}
       >
-        <KcalFoodChartLabel
+        <KcalChartLabel
           label={[`${props.consumedKcal} von `, `${props.kcalGoal} kcal`]}
         />
       </PieChart>

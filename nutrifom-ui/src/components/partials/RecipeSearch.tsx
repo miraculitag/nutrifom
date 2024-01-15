@@ -14,8 +14,8 @@ import { FloatInputField } from "../common/FloatInputField";
 import { BasicButton } from "../common/BasicButton";
 
 interface RecipeSearchProps {
-  nutrilogUpdate: () => void;
   selectedDate: Dayjs | null;
+  nutrilogUpdate: () => void;
 }
 
 export const RecipeSearch = (props: RecipeSearchProps) => {
@@ -44,7 +44,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     }
   }, []);
 
-  const handleAddButtonClick = async () => {
+  const handleAddrecipeClick = async () => {
     setPortionAmountHasError(false);
     setRecipeSearchHasError(false);
 
@@ -129,7 +129,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
               setRecipeSearchHasError(false);
             }
           } else {
-            handleAddButtonClick();
+            handleAddrecipeClick();
           }
         }}
       />

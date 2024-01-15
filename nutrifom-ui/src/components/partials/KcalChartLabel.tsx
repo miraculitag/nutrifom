@@ -1,17 +1,19 @@
 import { styled } from "@mui/material/styles";
 import { useDrawingArea } from "@mui/x-charts";
 
-const StyledText = styled("text")(({ theme }) => ({
-  textAnchor: "middle",
-  dominantBaseline: "central",
-  fontFamily: theme.typography.fontFamily,
-}));
 
-interface KcalFoodChartLabelProps {
+
+interface KcalChartLabelProps {
   label: [string, string];
 }
 
-export const KcalFoodChartLabel = (props: KcalFoodChartLabelProps) => {
+export const KcalChartLabel = (props: KcalChartLabelProps) => {
+  const StyledText = styled("text")(({ theme }) => ({
+    textAnchor: "middle",
+    dominantBaseline: "central",
+    fontFamily: theme.typography.fontFamily,
+  }));
+  
   const { width, height, left, top } = useDrawingArea();
 
   const lineHeight = 20;

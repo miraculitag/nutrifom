@@ -10,7 +10,7 @@ import { FoodEntry, Recipe } from "../../types";
 
 export interface NutrilogTableProps {
   nutrilogItems: (FoodEntry | Recipe)[] | undefined;
-  onSelectRow: (index: number) => void;
+  handleSelectRow: (index: number) => void;
   selectedRow: number | null;
 }
 
@@ -41,7 +41,7 @@ export const NutrilogTable = (props: NutrilogTableProps) => {
           {props.nutrilogItems?.map((entry, entryIndex) => (
             <TableRow
               key={entryIndex}
-              onClick={() => props.onSelectRow(entryIndex)}
+              onClick={() => props.handleSelectRow(entryIndex)}
               selected={entryIndex === props.selectedRow}
               sx={{ cursor: "pointer" }}
             >

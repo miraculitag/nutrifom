@@ -13,7 +13,7 @@ import { Layout } from "../layout/Layout";
 import { NutrilogTable } from "../partials/NutrilogTable";
 import { FoodSearch } from "../partials/FoodSearch";
 import { RecipeSearch } from "../partials/RecipeSearch";
-import { KcalFoodChart } from "../partials/KcalFoodChart";
+import { KcalChart } from "../partials/KcalChart";
 
 export const Nutrilog = () => {
   const [kcalGoal, setKcalGoal] = React.useState<number>(0);
@@ -129,7 +129,7 @@ export const Nutrilog = () => {
         </Box>
 
         <Box sx={{ gridArea: "KcalFoodChart", height: "100%" }}>
-          <KcalFoodChart
+          <KcalChart
             kcalGoal={kcalGoal}
             consumedKcal={Math.round(nutrilog?.totalEnergyKcal || 0)}
           />
@@ -173,7 +173,7 @@ export const Nutrilog = () => {
           </Box>
           <NutrilogTable
             nutrilogItems={allNutrilogItems}
-            onSelectRow={handleRowClick}
+            handleSelectRow={handleRowClick}
             selectedRow={selectedRow}
           />
         </Box>
