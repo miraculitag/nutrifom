@@ -4,11 +4,11 @@ export interface FloatInputFieldProps {
   label: string;
   suffix: string;
   width: string;
-  value: number;
-  setValue: (value: number) => void;
   required: boolean;
   hasError: boolean;
   errorText: string;
+  value: number;
+  setValue: (value: number) => void;
 }
 
 export const FloatInputField = (props: FloatInputFieldProps) => {

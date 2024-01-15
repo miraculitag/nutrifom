@@ -3,9 +3,9 @@ import { TextField } from "@mui/material";
 export interface TextInputFieldProps {
   label: string;
   width: string;
+  required: boolean;
   value: string;
   setValue: (value: string) => void;
-  required: boolean;
   type?: string;
   autoComplete?: string;
   autoFocus?: boolean;

@@ -11,14 +11,14 @@ export interface DropDownProps {
   title: string;
   width: string;
   options: string[];
+  required: boolean;
   value: string;
   setValue: (value: string) => void;
   infoIcon?: boolean;
-  isInfoIconClicked?: boolean;
-  setIsInfoIconClicked?: (isInfoIconClicked: boolean) => void;
-  required: boolean;
   hasError?: boolean;
   errorText?: string;
+  isInfoIconClicked?: boolean;
+  setIsInfoIconClicked?: (isInfoIconClicked: boolean) => void;
 }
 
 export const DropDownMenu = (props: DropDownProps) => {
