@@ -18,7 +18,6 @@ import { BasicButton } from "../common/BasicButton";
 import { Layout } from "../layout/Layout";
 import { WeightLineChart } from "../partials/WeightLineChart";
 
-
 export const Weight = () => {
   const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(
     dayjs(new Date())
@@ -52,13 +51,9 @@ export const Weight = () => {
   }, []);
 
   const handleWeightHistoryUpdate = async () => {
-    if (isTokenExpired(auth())) {
-      handleTokenExpiration(signOut, navigate);
-    } else {
-      getWeightHistory(auth()).then((response) => {
-        setWeightHistory(response.data);
-      });
-    }
+    getWeightHistory(auth()).then((response) => {
+      setWeightHistory(response.data);
+    });
   };
 
   const handleAddWeightClick = async () => {
@@ -74,11 +69,10 @@ export const Weight = () => {
       await addWeightEntry(
         { weight: currentWeight, entryDate: dateString },
         auth()
-      )
+      );
       handleWeightHistoryUpdate();
     }
   };
-
 
   const handleDatePickerChange = (value: Dayjs | null) => {
     setSelectedDate(value);
