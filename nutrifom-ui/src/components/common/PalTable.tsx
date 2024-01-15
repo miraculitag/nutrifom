@@ -24,6 +24,7 @@ export const PalTable = () => {
     createData("aktiv:", "überwiegend stehende und gehende Tätigkeiten"),
     createData("sehr aktiv:", "körperlich anstrengende Tätigkeit"),
   ];
+
   return (
     <TableContainer
       sx={{

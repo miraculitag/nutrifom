@@ -15,7 +15,7 @@ import { BasicButton } from "../common/BasicButton";
 
 interface RecipeSearchProps {
   selectedDate: Dayjs | null;
-  nutrilogUpdate: () => void;
+  handleNutrilogUpdate: () => void;
 }
 
 export const RecipeSearch = (props: RecipeSearchProps) => {
@@ -44,7 +44,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
     }
   }, []);
 
-  const handleAddrecipeClick = async () => {
+  const handleAddRecipeClick = async () => {
     setPortionAmountHasError(false);
     setRecipeSearchHasError(false);
 
@@ -62,7 +62,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
         },
         auth()
       );
-      props.nutrilogUpdate();
+      props.handleNutrilogUpdate();
     }
   };
 
@@ -103,7 +103,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
           value={currentPortionAmount}
           setValue={setCurrentPortionAmount}
           hasError={portionAmountHasError}
-          errorText="Die Portionen kann nicht negativ oder 0 sein."
+          errorText="Die Portionsanzahl kann nicht negativ oder 0 sein."
           width="100%"
           required={true}
         />
@@ -129,7 +129,7 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
               setRecipeSearchHasError(false);
             }
           } else {
-            handleAddrecipeClick();
+            handleAddRecipeClick();
           }
         }}
       />

@@ -15,7 +15,7 @@ import { BasicButton } from "../common/BasicButton";
 
 interface FoodSearchProps {
   selectedDate: Dayjs | null;
-  nutrilogUpdate: () => void;
+  handleNutrilogUpdate: () => void;
 }
 
 export const FoodSearch = (props: FoodSearchProps) => {
@@ -69,7 +69,7 @@ export const FoodSearch = (props: FoodSearchProps) => {
         },
         auth()
       );
-      props.nutrilogUpdate();
+      props.handleNutrilogUpdate();
     }
   };
 

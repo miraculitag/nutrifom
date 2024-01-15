@@ -13,7 +13,7 @@ import {
 import { WeightRequest } from "../../types";
 
 interface WeightLineChartProps {
-  weightUpdate: number;
+  updatedWeight: number;
 }
 
 export const WeightLineChart = (props: WeightLineChartProps) => {
@@ -33,7 +33,7 @@ export const WeightLineChart = (props: WeightLineChartProps) => {
         setWeightHistory(response.data);
       });
     }
-  }, [props.weightUpdate]);
+  }, [props.updatedWeight]);
 
   const customize = {
     height: 540,

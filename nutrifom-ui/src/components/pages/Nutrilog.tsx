@@ -23,7 +23,7 @@ export const Nutrilog = () => {
     dayjs(new Date())
   );
   const [nutrilog, setNutrilog] = React.useState<NutritionData>();
-  const [allNutrilogItems, setAllNutrilogItems] = React.useState<
+  const [nutrilogItems, setNutrilogItems] = React.useState<
     (FoodEntry | Recipe)[]
   >([...(nutrilog?.products || []), ...(nutrilog?.recipes || [])]);
 
@@ -54,11 +54,11 @@ export const Nutrilog = () => {
 
   React.useEffect(() => {
     if (selectedRow != null) {
-      setSelectedFood(allNutrilogItems[selectedRow]);
+      setSelectedFood(nutrilogItems[selectedRow]);
     } else {
       setSelectedFood(null);
     }
-  }, [selectedRow, allNutrilogItems]);
+  }, [selectedRow, nutrilogItems]);
 
   const sevenDaysAgo = dayjs().subtract(7, "day");
 
@@ -75,7 +75,7 @@ export const Nutrilog = () => {
       const formattedDate = selectedDate.format("YYYY-MM-DD");
       const response = await getNutrilog(formattedDate, auth());
       setNutrilog(response.data);
-      setAllNutrilogItems([
+      setNutrilogItems([
         ...(response.data?.products || []),
         ...(response.data?.recipes || []),
       ]);
@@ -117,14 +117,14 @@ export const Nutrilog = () => {
         <Box sx={{ gridArea: "FoodSearch" }}>
           <FoodSearch
             selectedDate={selectedDate}
-            nutrilogUpdate={handleNutrilogUpdate}
+            handleNutrilogUpdate={handleNutrilogUpdate}
           />
         </Box>
 
         <Box sx={{ gridArea: "RecipeSearch" }}>
           <RecipeSearch
             selectedDate={selectedDate}
-            nutrilogUpdate={handleNutrilogUpdate}
+            handleNutrilogUpdate={handleNutrilogUpdate}
           />
         </Box>
 
@@ -172,8 +172,8 @@ export const Nutrilog = () => {
             )}
           </Box>
           <NutrilogTable
-            nutrilogItems={allNutrilogItems}
-            handleSelectRow={handleRowClick}
+            nutrilogItems={nutrilogItems}
+            handleRowClick={handleRowClick}
             selectedRow={selectedRow}
           />
         </Box>

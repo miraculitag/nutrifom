@@ -23,9 +23,9 @@ export const Weight = () => {
   const [dateHasError, setDateHasError] = React.useState<boolean>(false);
   const [weightHasError, setWeightHasError] = React.useState<boolean>(false);
   const [currentWeight, setCurrentWeight] = React.useState<number>(0);
-  const [weightUpdated, setWeightUpdated] = React.useState<number>(0);
+  const [updatedWeight, setUpdatedWeight] = React.useState<number>(0);
   const [dateErrorText, setDateErrorText] = React.useState<string>(
-    "Du muss ein Datum auswählen."
+    "Du musst ein Datum auswählen."
   );
 
   const theme = useTheme();
@@ -53,7 +53,7 @@ export const Weight = () => {
         { weight: currentWeight, entryDate: dateString },
         auth()
       ).then(() => {
-        setWeightUpdated((prevValue) => prevValue + 1);
+        setUpdatedWeight((prevValue) => prevValue + 1);
       });
     }
   };
@@ -72,7 +72,7 @@ export const Weight = () => {
           width: "100%",
         }}
       >
-        <WeightLineChart weightUpdate={weightUpdated} />
+        <WeightLineChart updatedWeight={updatedWeight} />
         <Box
           sx={{
             display: "flex",
@@ -143,7 +143,7 @@ export const Weight = () => {
                         "Du kannst dein Gewicht nur für die letzten 14 Tage eintragen."
                       );
                     } else {
-                      setDateErrorText("Du hast kein Datum eingetragen.");
+                      setDateErrorText("Du musst ein Datum auswählen.");
                     }
                   } else {
                     setDateHasError(false);

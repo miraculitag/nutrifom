@@ -13,6 +13,7 @@ import { useUser } from "../../userContext";
 
 export const Header = () => {
   const [avatarBlob, setAvatarBlob] = React.useState<Blob>(new Blob());
+
   const signOut = useSignOut();
   const navigate = useNavigate();
   const { user } = useUser();

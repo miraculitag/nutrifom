@@ -10,14 +10,13 @@ import { FoodEntry, Recipe } from "../../types";
 
 export interface NutrilogTableProps {
   nutrilogItems: (FoodEntry | Recipe)[] | undefined;
-  handleSelectRow: (index: number) => void;
   selectedRow: number | null;
+  handleRowClick: (index: number) => void;
 }
 
 export const NutrilogTable = (props: NutrilogTableProps) => {
-
   //Structure from ChatGPT 3.5
-  const getEntryName = (entry: (FoodEntry | Recipe)) => {
+  const getEntryName = (entry: FoodEntry | Recipe) => {
     if ("productCode" in entry && "productName" in entry) {
       return `${entry.productName} [g]`;
     } else if ("recipeTitle" in entry && "portions" in entry) {
@@ -26,7 +25,7 @@ export const NutrilogTable = (props: NutrilogTableProps) => {
   };
 
   //Structure from ChatGPT 3.5
-  const getQuantity = (entry: (FoodEntry | Recipe)) => {
+  const getQuantity = (entry: FoodEntry | Recipe) => {
     if ("productCode" in entry && "productName" in entry) {
       return entry.productQuantity;
     } else if ("recipeTitle" in entry && "portions" in entry) {
@@ -41,7 +40,7 @@ export const NutrilogTable = (props: NutrilogTableProps) => {
           {props.nutrilogItems?.map((entry, entryIndex) => (
             <TableRow
               key={entryIndex}
-              onClick={() => props.handleSelectRow(entryIndex)}
+              onClick={() => props.handleRowClick(entryIndex)}
               selected={entryIndex === props.selectedRow}
               sx={{ cursor: "pointer" }}
             >
