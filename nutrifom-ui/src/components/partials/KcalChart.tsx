@@ -28,7 +28,7 @@ export const KcalChart = (props: KcalChartProps) => {
     }
   }, [props.kcalGoal, props.consumedKcal, overConsumedKcal]);
 
-  const overconsumedData = [
+  const outerSectionData = [
     { value: overConsumedKcal, color: "red" },
     { value: outerSectionPlaceholder, color: "white" },
   ];
@@ -55,7 +55,7 @@ export const KcalChart = (props: KcalChartProps) => {
             innerRadius: 50,
           },
           {
-            data: overconsumedData,
+            data: outerSectionData,
             innerRadius: 80,
             outerRadius: 65,
           },
