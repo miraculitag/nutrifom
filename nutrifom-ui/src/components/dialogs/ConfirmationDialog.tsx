@@ -10,7 +10,7 @@ export interface ConfirmationDialogProps {
   dialogMessage: string;
   open: boolean;
   setOpen: (open: boolean) => void;
-  onClose: (value?: string) => void;
+  onClose: () => void;
 }
 
 export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
