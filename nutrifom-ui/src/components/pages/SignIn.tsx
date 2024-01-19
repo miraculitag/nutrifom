@@ -57,7 +57,7 @@ export const SignIn = () => {
     "sehr aktiv",
   ];
   const goals = ["Bitte wählen", "Aufbauen", "Definieren", "Halten"];
-  const genders = ["Bitte wählen", "Männlich", "Weiblich", "Divers"];
+  const genders = ["Bitte wählen", "Männlich", "Weiblich"];
 
   const handleSignInButtonClick = () => {
     authenticateAppUser({ email: emailSignIn, password: passwordSignIn })
